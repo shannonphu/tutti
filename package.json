@@ -1,13 +1,13 @@
 {
-  "name": "tutti",
-  "version": "1.0.0",
-  "description": "tutti",
-  "main": "",
-  "devDependencies": {
-    "eslint": "^4.16.0",
-    "eslint-plugin-react": "^7.6.1"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  }
+    "name": "tutti",
+    "version": "1.0.0",
+    "description": "tutti",
+    "main": "",
+    "devDependencies": {
+        "eslint": "^4.16.0",
+        "eslint-plugin-react": "^7.6.1"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
 }
