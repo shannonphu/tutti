@@ -1,4 +1,4 @@
-function UserReducer(state = {}, action) {
+function UserReducer(state = { name: null }, action) {
     switch (action.type) {
         case 'GET_USER_NAME':
             return {

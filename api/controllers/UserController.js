@@ -8,7 +8,7 @@ function getName(req, res) {
 	res.json({ data: 'Joe Bruin' })
 }
 
-function addName(req, res) {
+function editName(req, res) {
 	let name = req.body.name;
 	res.json({ data: name })
 }
@@ -16,5 +16,5 @@ function addName(req, res) {
 module.exports = {
 	index,
 	getName,
-	addName
+	editName
 };

@@ -7,10 +7,15 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootReducer from './reducers/index';
 
-const defaultState = {};
+// Setup socket.io store
+import createSocketIoMiddleware from 'redux-socket.io';
+import io from 'socket.io-client';
+const config = require('./config');
+const serverBaseURL = `http://${config.server.host}:${config.server.port}`;
+const socket = io(serverBaseURL);
+const socketIoMiddleware = createSocketIoMiddleware(socket, "socket/");
 
-const store = createStore(rootReducer, defaultState,
- composeWithDevTools(applyMiddleware(thunk)));
+let store = createStore(rootReducer, applyMiddleware(thunk, socketIoMiddleware));
 
 if (module.hot) {
    module.hot.accept('./reducers/',() => {
