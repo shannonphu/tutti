@@ -12,7 +12,7 @@ export function getUsername() {
 }
 
 export function editUsername(name) {
-	return post(`${serverBaseURL}/user/name/edit`, {
-		name
-	});
+    return post(`${serverBaseURL}/user/name/edit`, {
+        name
+    });
 }
