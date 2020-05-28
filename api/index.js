@@ -15,9 +15,6 @@ app.use(cors({
 
 const config = require('./config');
 
-// Connect to database
-require('./models');
-
 // Set up router endpoints
 const userRouter = require('./routes/user');
 app.use('/user', userRouter);

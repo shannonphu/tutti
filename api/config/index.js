@@ -5,11 +5,6 @@ module.exports = (() => {
 	case 'development':
 	default:
 		return {
-			// MongoDB connection settings
-			database: {
-				uri: 'mongodb://db_mongo'
-			},
-
 			// Server settings
 			server: {
 				host: 'localhost',

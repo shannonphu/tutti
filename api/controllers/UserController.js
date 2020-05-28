@@ -1,7 +1,5 @@
 'use strict';
 
-const User = require('../models/User'); // eslint-disable-line
-
 function index(req, res) {
 	res.json({ data: 'Hello World!' })
 }

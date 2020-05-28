@@ -1,17 +1,9 @@
 version: '3'
 services:
-  db_mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    logging: 
-      driver: "none"
   api:
     build: ./api
     ports:
       - "8080:8080"
-    links:
-      - db_mongo
   web_client:
     build: ./client
     expose:
