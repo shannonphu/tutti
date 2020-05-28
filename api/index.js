@@ -5,7 +5,9 @@ const http = require('http');
 const app = express();
 const server = http.createServer(app);
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
+app.use(bodyParser.json())
 app.use(cors({
     credentials: true,
     origin: true
