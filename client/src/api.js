@@ -11,8 +11,8 @@ export function getUsername() {
     return get(`${serverBaseURL}/user/name`);
 }
 
-export function addUsername(name) {
-	return post(`${serverBaseURL}/user/name/add`, {
+export function editUsername(name) {
+	return post(`${serverBaseURL}/user/name/edit`, {
 		name
 	});
 }

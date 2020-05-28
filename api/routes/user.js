@@ -7,6 +7,6 @@ const userController = require('../controllers/UserController');
 
 router.get('/', userController.index);
 router.get('/name', userController.getName);
-router.post('/name/add', userController.addName);
+router.post('/name/edit', userController.editName);
 
 module.exports = router;
