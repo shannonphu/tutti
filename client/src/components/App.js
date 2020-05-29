@@ -6,7 +6,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as actionCreators from '../actions/actionCreators';
+import * as actionCreators from '../actions';
 import Main from './Main/Main';
 
 // These are the properties we'll automatically pass to Main

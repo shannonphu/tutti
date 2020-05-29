@@ -1,4 +1,4 @@
-import * as api from '../api';
+import * as api from '../api/endpoints';
 
 /**
  * @description Calls the API method to get username and update store
@@ -18,17 +18,5 @@ export function editUsername(name, cb) {
             .then(response => dispatch({ type: 'GET_USER_NAME', name: response.data }))
             .then(() => { if (cb) cb(); })
             .catch(error => console.error("Error in addUsername: " + error));
-    };
-}
-
-export function pingHello(text) {
-    return (dispatch, prevState) => {
-        dispatch({ type: 'socket/HELLO', data: text });
-    };
-}
-
-export function addMessage(message) {
-    return (dispatch, prevState) => {
-        dispatch({ type: 'socket/MESSAGE', message });
     };
 }
