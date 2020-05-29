@@ -31,8 +31,8 @@ It is often slow to do front-end/back-end development in a Docker container and 
 4. Start a new terminal window
 5. `cd api`
 6. `npm install` (do this only the first time or if you change `api/package.json`)
-7. `npm start`
-8. Whenever you change code in the `api` folder, restart the server with `npm start`. The client hot-reloads so you don't need to restart that.
+7. `npm run dev`
+8. Both the client and server hot-reloads so you don't need to restart either when making code changes.
 
 ## Git Workflow
 1. `git checkout -b <your-name>/<feature-name>`
