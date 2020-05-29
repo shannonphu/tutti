@@ -13,12 +13,12 @@ import './index.css'; // Our own main stylesheet
 import store from './store';
 
 const router = (
-   <Provider store={store}>
-      <BrowserRouter>
-         <App/>
-      </BrowserRouter>
-   </Provider>
-)
+    <Provider store={store}>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
+    </Provider>
+);
 
 ReactDOM.render(router, document.getElementById('root'));
 registerServiceWorker();
