@@ -22,15 +22,19 @@ This workflow is for if you want to run the entire application using Docker.
 3. Run `docker-compose up --build` when you've made changes to the code. Or omit the `--build` flag if you have made no changes.
 4. Go to http://localhost:3000/
 
-## React.js Development Workflow
-It is often slow to do front-end development in a Docker container and wait for code to build. If you are only working on the frontend, run only the backend services through docker-compose, and run the frontend locally.
+## Local Development Workflow
+It is often slow to do front-end/back-end development in a Docker container and wait for code to build.
 #### Steps:
-1. Comment out the `client` configs in `docker-compose.yml`.
-2. `cd client`
-3. `npm install` (do this only the first time or if you change `client/package.json`)
-4. `npm start`
+1. `cd client`
+2. `npm install` (do this only the first time or if you change `client/package.json`)
+3. `npm start`
+4. Start a new terminal window
+5. `cd api`
+6. `npm install` (do this only the first time or if you change `api/package.json`)
+7. `npm start`
+8. Whenever you change code in the `api` folder, restart the server with `npm start`. The client hot-reloads so you don't need to restart that.
 
-## Git Development Workflow
+## Git Workflow
 1. `git checkout -b <your-name>/<feature-name>`
 2. Code until you hit a good checkpoint. Make sure there are no errors/broken builds.
 3. `git status` shows you what files you have changed.

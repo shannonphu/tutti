@@ -3,7 +3,6 @@ import { createBrowserHistory } from 'history';
 
 // import the root reducer
 import thunk from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootReducer from './reducers/index';
 
