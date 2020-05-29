@@ -4,18 +4,10 @@
         {
             "label": "start all",
             "dependsOn": [
-                "npm: start - api",
+                "npm: dev - api",
                 "npm: start - client"
             ],
             "problemMatcher": []
-        },
-        {
-            "type": "npm",
-            "script": "start",
-            "path": "api/",
-            "problemMatcher": [],
-            "label": "npm: start - api",
-            "detail": "start api"
         },
         {
             "type": "npm",
@@ -24,6 +16,14 @@
             "problemMatcher": [],
             "label": "npm: start - client",
             "detail": "start client"
+        },
+        {
+            "type": "npm",
+            "script": "dev",
+            "path": "api/",
+            "problemMatcher": [],
+            "label": "npm: dev - api",
+            "detail": "export NODE_ENV=development && nodemon"
         }
     ]
 }
