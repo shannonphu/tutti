@@ -4,12 +4,12 @@ import * as api from '../api/endpoints';
  * @description Calls the API method to get username and update store
  */
 export function getUsername(cb) {
-   return (dispatch, prevState) => {
+    return (dispatch, prevState) => {
         api.getUsername()
             .then(response => dispatch({ type: 'GET_USER_NAME', name: response.data }))
             .then(() => { if (cb) cb(); })
-            .catch(error => console.error("Error in getUsername: " + error));
-   };
+            .catch(error => console.error('Error in getUsername: ' + error));
+    };
 }
 
 export function editUsername(name, cb) {
@@ -17,6 +17,6 @@ export function editUsername(name, cb) {
         api.editUsername(name)
             .then(response => dispatch({ type: 'GET_USER_NAME', name: response.data }))
             .then(() => { if (cb) cb(); })
-            .catch(error => console.error("Error in addUsername: " + error));
+            .catch(error => console.error('Error in addUsername: ' + error));
     };
 }

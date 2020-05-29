@@ -7,14 +7,14 @@ module.exports = function (server) {
     //  Main handler that fires on client connection
     function setEventHandlers() {
         io.sockets.on('connection', onSocketConnection);
-    };
+    }
 
     // Set up main handlers for each client that connects
     function onSocketConnection(client) {
         console.log('A user connected');
         client.on('disconnect', onClientDisconnect);
         client.on('action', onAction);
-    };
+    }
 
     function onClientDisconnect(client) {
         console.log('A user disconnected');
@@ -22,14 +22,14 @@ module.exports = function (server) {
 
     function onAction(action) {
         switch (action.type) {
-            case 'socket/HELLO':
-                onHello(action);
-                break;
-            case 'socket/MESSAGE':
-                onMessage(action);
-                break;
-            default:
-                break;
+        case 'socket/HELLO':
+            onHello(action);
+            break;
+        case 'socket/MESSAGE':
+            onMessage(action);
+            break;
+        default:
+            break;
         }
     }
 

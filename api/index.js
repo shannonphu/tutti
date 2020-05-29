@@ -8,14 +8,14 @@ const config = require('./config');
 
 const app = express();
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(cors({
     credentials: true,
     origin: true
 }));
 
 const server = http.createServer(app);
-const socket = require('./socket')(server);
+require('./socket')(server);
 
 // Set up router endpoints
 const userRouter = require('./routes/user');
