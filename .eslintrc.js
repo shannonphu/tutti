@@ -22,7 +22,7 @@ module.exports = {
         "no-console": "off",
         "indent": [
             "error",
-            "tab"
+            4
         ],
         "linebreak-style": [
             "error",

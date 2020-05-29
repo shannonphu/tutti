@@ -18,7 +18,7 @@ class DummyPost extends Component {
     render() {
         return (
             <div>
-                <h3>Container</h3>
+                <h3>DummyPost</h3>
                 <p>This is an example of a normal GET/POST request</p>
                 <div>This text will update to whatever was input below: {this.props.user.name}</div>
                 <form onSubmit={this.submitHandler}>
