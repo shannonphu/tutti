@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "label": "start all",
+            "dependsOn": [
+                "npm: start - api",
+                "npm: start - client"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "start",
+            "path": "api/",
+            "problemMatcher": [],
+            "label": "npm: start - api",
+            "detail": "start api"
+        },
+        {
+            "type": "npm",
+            "script": "start",
+            "path": "client/",
+            "problemMatcher": [],
+            "label": "npm: start - client",
+            "detail": "start client"
+        }
+    ]
+}
