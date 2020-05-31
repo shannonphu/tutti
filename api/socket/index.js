@@ -13,7 +13,10 @@ module.exports = function (server) {
     function onSocketConnection(client) {
         console.log('A user connected');
         client.on('disconnect', onClientDisconnect);
-        client.on('action', (action) => onAction(action, client));
+        client.on('action', onAction);
+        client.on('room', function(room) {
+            client.join(room);
+        });
     }
 
     function onClientDisconnect(client) {
