@@ -16,3 +16,15 @@ export function editUsername(name) {
         name
     });
 }
+
+export function getRoom(code) {
+    return get(`${serverBaseURL}/room/${code}`);
+}
+
+export function addRoom(bpm, numBars, numLoops) {
+    return post(`${serverBaseURL}/room/new`, {
+        bpm, 
+        numBars, 
+        numLoops
+    });
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
 import { GameSettingPanel } from '..'
 
 class RoomPageContainer extends Component {
@@ -11,17 +12,22 @@ class RoomPageContainer extends Component {
 
     render() {
         return (
-            <Grid container spacing={3}>
-                <Grid item xs={4}>
-                    <GameSettingPanel {...this.props} />
+            <Container fixed>
+                <Grid container
+                    direction="row"
+                    justify="center"
+                    alignItems="center">
+                    <Grid item xs>
+                        <GameSettingPanel {...this.props} />
+                    </Grid>
+                    <Grid item xs>
+                        <Paper>Room info goes here</Paper>
+                    </Grid>
+                    <Grid item xs>
+                        <Paper>Chat goes here</Paper>
+                    </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                    <Paper>xs=6</Paper>
-                </Grid>
-                <Grid item xs={4}>
-                    <Paper>xs=6</Paper>
-                </Grid>
-            </Grid>
+            </Container>
         )
     }
 }
