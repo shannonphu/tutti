@@ -15,7 +15,7 @@ class DummyPost extends Component {
 
     handleTextFieldChange(e) {
         this.setState({
-            [e.target.name]: e.target.value
+            [e.target.id]: e.target.value
         });
     }
 
@@ -37,7 +37,7 @@ class DummyPost extends Component {
                 <div>This text will update to whatever was input below: {this.props.user.name}</div>
                 <form onSubmit={this.submitHandler}>
                     <div>
-                        <TextField ref="name" name="name" label="Name" value={this.state.name} onChange={this.handleTextFieldChange} />
+                        <TextField ref="name" id="name" label="Name" value={this.state.name} onChange={this.handleTextFieldChange} />
                     </div>
                     <div>
                         <Button variant="contained" label="Submit" type="submit">Submit</Button>
