@@ -3,7 +3,7 @@ const randomize = require('randomatic');
 let rooms = {};
 
 function _generateRandomCode(numChar = 8, namespace = 'ABCDEFG') {
-    return randomize('?', numChar, { chars: namespace })
+    return randomize('?', numChar, { chars: namespace });
 }
 
 function getRoom(req, res) {
