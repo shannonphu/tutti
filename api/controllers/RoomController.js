@@ -34,7 +34,8 @@ function addRoom(req, res) {
         bpm: _bpm,
         numBars: _numBars,
         numLoops: _numLoops,
-        totalBars: _numBars * _numLoops
+        totalBars: _numBars * _numLoops,
+        players: []
     };
 
     console.log(rooms);
