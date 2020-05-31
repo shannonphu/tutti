@@ -1,18 +1,32 @@
 import React, { Component } from 'react';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 class DummyPost extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            name: ''
+        };
         this.submitHandler = this.submitHandler.bind(this);
+        this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
         props.getUsername();
+    }
+
+    handleTextFieldChange(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
     }
 
     submitHandler(event) {
         event.preventDefault();
-        let name = this.refs.name.value;
-        this.props.editUsername(name);
-        this.refs.name.value = null;
+        if (this.state.name.length > 0) {
+            this.props.editUsername(this.state.name);
+            this.setState({
+                name: ''
+            });
+        }
     }
 
     render() {
@@ -23,10 +37,10 @@ class DummyPost extends Component {
                 <div>This text will update to whatever was input below: {this.props.user.name}</div>
                 <form onSubmit={this.submitHandler}>
                     <div>
-                        <input type="text" placeholder="Name" ref="name" />
+                        <TextField ref="name" name="name" label="Name" value={this.state.name} onChange={this.handleTextFieldChange} />
                     </div>
                     <div>
-                        <button type="submit" name="action">Submit</button>
+                        <Button variant="contained" label="Submit" type="submit">Submit</Button>
                     </div>
                 </form>
             </div>
