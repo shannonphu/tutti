@@ -2,8 +2,7 @@ function RoomReducer(state = {
     code: null, 
     bpm: 120, 
     numBars: 4, 
-    numLoops: 3,
-    players: []
+    numLoops: 3
 }, action) {
     switch (action.type) {
         case 'LOAD_ROOM':
@@ -12,8 +11,7 @@ function RoomReducer(state = {
                 code: action.roomCode,
                 bpm: action.bpm,
                 numBars: action.numBars,
-                numLoops: action.numLoops,
-                players: action.players
+                numLoops: action.numLoops
             };
         default:
             return state;
