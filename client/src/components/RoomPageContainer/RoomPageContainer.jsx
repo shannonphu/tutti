@@ -20,12 +20,16 @@ class RoomPageContainer extends Component {
                     <Grid item xs>
                         <GameSettingPanel {...this.props} />
                     </Grid>
-                    <Grid item xs>
-                        <RoomInfoPanel {...this.props} />
-                    </Grid>
-                    <Grid item xs>
-                        <Paper>Chat goes here</Paper>
-                    </Grid>
+                    {this.props.room.code ? 
+                        <Grid item xs>
+                            <RoomInfoPanel {...this.props} />
+                        </Grid> 
+                        : <Grid item xs></Grid>}
+                    {this.props.room.code ? 
+                        <Grid item xs>
+                            <Paper>Chat goes here</Paper>
+                        </Grid>
+                        : <Grid item xs></Grid>}
                 </Grid>
             </Container>
         )
