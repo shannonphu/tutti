@@ -9,7 +9,7 @@ class Container extends Component {
                 <hr />
                 <DummyChat {...this.props} />
             </div>
-        )
+        );
     }
 }
 

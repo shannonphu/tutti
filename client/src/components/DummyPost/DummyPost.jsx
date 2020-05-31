@@ -44,7 +44,7 @@ class DummyPost extends Component {
                     </div>
                 </form>
             </div>
-        )
+        );
     }
 }
 
