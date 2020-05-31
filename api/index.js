@@ -19,7 +19,9 @@ require('./socket')(server);
 
 // Set up router endpoints
 const userRouter = require('./routes/user');
+const roomRouter = require('./routes/room');
 app.use('/user', userRouter);
+app.use('/room', roomRouter);
 
 
 server.listen(config.server.port, () => {
