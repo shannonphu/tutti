@@ -14,6 +14,9 @@ module.exports = function (server) {
         console.log('A user connected');
         client.on('disconnect', onClientDisconnect);
         client.on('action', onAction);
+        client.on('room', function(room) {
+            client.join(room);
+        });
     }
 
     function onClientDisconnect(client) {
