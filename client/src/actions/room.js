@@ -4,6 +4,10 @@ export function getRoom(code, cb) {
     return (dispatch, prevState) => {
         api.getRoom(code)
             .then((response) => {
+                if (response.data == null) {
+                    throw 'Room code does not exist.'
+                }
+
                 dispatch({
                     type: 'LOAD_ROOM',
                     roomCode: response.data.code,
