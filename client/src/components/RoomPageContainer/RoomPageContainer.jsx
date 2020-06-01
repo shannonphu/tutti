@@ -3,11 +3,16 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { GameSettingPanel, RoomInfoPanel, ChatMessageBox } from '..'
+import {isRoomCodeSet} from '../../utils/roomUtils.js';
 
 class RoomPageContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+        // join room if exists
+        if(isRoomCodeSet(this.props)) {
+            this.props.joinRoom(this.props.room.code);
+        }
     }
 
     render() {

@@ -4,8 +4,8 @@ export function pingHello(text) {
     };
 }
 
-export function addMessage(playerName, message) {
+export function addMessage(playerName, message, roomCode) {
     return (dispatch, prevState) => {
-        dispatch({ type: 'socket/MESSAGE', playerName, message });
+        dispatch({ type: 'socket/MESSAGE', playerName, message, roomCode });
     };
 }

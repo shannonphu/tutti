@@ -13,23 +13,38 @@ module.exports = function (server) {
     function onSocketConnection(client) {
         console.log('A user connected');
         client.on('disconnect', onClientDisconnect);
-        client.on('action', onAction);
+        client.on('action', (action) => onAction(action, client));
     }
 
     function onClientDisconnect(client) {
         console.log('A user disconnected');
     }
 
-    function onAction(action) {
+    function onAction(action, client) {
         switch (action.type) {
         case 'socket/HELLO':
             onHello(action);
             break;
         case 'socket/MESSAGE':
-            onMessage(action);
+            onMessage(action, client);
+            break;
+        case 'socket/JOIN_ROOM':
+            onJoinRoom(action, client);
             break;
         default:
             break;
+        }
+    }
+    // TODO
+    function isValidRoomCode(roomCode) {
+        return true;
+    }
+
+    function onJoinRoom(action, client) {
+        if (isValidRoomCode(action.roomCode)) {
+            let roomCode = action.roomCode;
+            client.join(roomCode);
+            console.log(`User joined room code: ${roomCode}`);
         }
     }
 
@@ -38,8 +53,11 @@ module.exports = function (server) {
     }
 
     function onMessage(action) {
-        console.log(`Socket received message from ${action.playerName}: ${action.message}`);
-        io.emit('action', {
+        console.log(`Socket received message from
+            ${action.playerName}: ${action.message} 
+            in room: ${action.roomCode}`);
+
+        io.sockets.in(action.roomCode).emit('action', {
             type: 'RECEIVE_CHAT_MESSAGE',
             playerName: action.playerName,
             message: action.message

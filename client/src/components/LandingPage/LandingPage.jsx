@@ -50,7 +50,7 @@ class LandingPage extends Component {
                 <CssBaseline/>
                 <Grid item xs={12} sm={8} md={5} 
                     component={Paper}
-                    elevation={6} 
+                    variant="outlined"
                     square
                 >
                     <Grid container

@@ -39,3 +39,9 @@ export function addRoom(bpm, numBars, numLoops, cb) {
             .catch(error => console.error('Error in addRoom: ' + error));
     };
 }
+
+export function joinRoom(roomCode) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'socket/JOIN_ROOM', roomCode });
+    };
+}
