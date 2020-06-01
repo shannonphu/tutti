@@ -3,7 +3,10 @@ function ChatReducer(state = { messages: [] }, action) {
         case 'RECEIVE_CHAT_MESSAGE':
             return {
                 ...state,
-                messages: [...state.messages, action.message]
+                messages: [...state.messages, {
+                    playerName: action.playerName,
+                    message: action.message
+                }]
             };
         default:
             return state;

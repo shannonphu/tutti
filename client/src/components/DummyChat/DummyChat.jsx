@@ -10,7 +10,8 @@ class DummyChat extends Component {
     submitHandler(event) {
         event.preventDefault();
         let text = this.refs.text.value;
-        this.props.addMessage(text);
+        const name = 'Shannon'
+        this.props.addMessage(name, text);
         this.refs.text.value = null;
     }
 
@@ -24,7 +25,7 @@ class DummyChat extends Component {
                     <div><button type="submit" name="action">Submit</button></div>
                 </form>
                 <div>
-                    {this.props.chat.messages.map((message) => <li>{message}</li>)}
+                    {this.props.chat.messages.map((data, index) => <li key={index}>{data.message}</li>)}
                 </div>
             </div>
         )
