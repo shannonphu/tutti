@@ -15,7 +15,7 @@ class PlayerAvatar extends Component {
         const { classes } = this.props;
         return(
             <div className={classes.root}>
-                <Avatar className={classes.purple}>{this.props.name.charAt(0).toUpperCase()}</Avatar>
+                <Avatar className={`${classes.purple} ${classes.medium}`}>{this.props.name.charAt(0).toUpperCase()}</Avatar>
             </div>
         )
     }
