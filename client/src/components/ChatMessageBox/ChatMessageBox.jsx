@@ -25,7 +25,7 @@ class ChatMessageBox extends Component {
         event.preventDefault();
         if (this.state.currMessage.length > 0) {
             const playerName = 'Shannon';
-            this.props.addMessage(playerName, this.state.currMessage);
+            this.props.addMessage(playerName, this.state.currMessage, this.props.room.code);
         }
     }
 

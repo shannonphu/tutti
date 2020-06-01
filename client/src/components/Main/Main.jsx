@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, Container, LandingPage, RoomPageContainer, GamePortalContainer } from '..'
+import { Nav, Container, LandingPage, RoomPageContainer, GamePortalContainer } from '..';
 import { Route, Switch } from 'react-router-dom';
 
 class Main extends Component {

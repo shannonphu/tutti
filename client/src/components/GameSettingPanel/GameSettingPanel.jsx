@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-
+import {isRoomCodeSet} from '../../utils/roomUtils.js';
 class GameSettingPanel extends Component {
     constructor(props) {
         super(props);
@@ -16,19 +16,14 @@ class GameSettingPanel extends Component {
             numLoops: props.room.numLoops
         };
         
-        this.isRoomCodeSet = this.isRoomCodeSet.bind(this);
         this.submitHandler = this.submitHandler.bind(this);
         this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
         this.getTextFieldId = this.getTextFieldId.bind(this);
         this.isInputValid = this.isInputValid.bind(this);
     }
 
-    isRoomCodeSet() {
-        return this.props.match.params.roomId !== undefined || (this.props.room !== null && this.props.room.code !== null);
-    }
-
     getTextFieldId() {
-        if (this.isRoomCodeSet()) {
+        if (isRoomCodeSet(this.props)) {
             return 'standard-disabled';
         } else {
             return 'standard-required';
@@ -54,6 +49,9 @@ class GameSettingPanel extends Component {
         event.preventDefault();
         if (this.isInputValid()) {
             this.props.addRoom(this.state.bpm, this.state.numBars, this.state.numLoops);
+            if(isRoomCodeSet(this.props)) { // join the created room
+                this.props.joinRoom(this.props.room.code);
+            }
         }
     }
 
@@ -61,11 +59,11 @@ class GameSettingPanel extends Component {
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
-                    <div><TextField id={this.getTextFieldId()} name='bpm' type='number' label='BPM' value={this.state.bpm} InputProps={{ readOnly: this.isRoomCodeSet() }} onChange={this.handleTextFieldChange} error={this.state.bpm <= 0} helperText={this.state.bpm <= 0 ? 'BPM must be greater than 0' : ''} /></div>
-                    <div><TextField id={this.getTextFieldId()} name='numBars' type='number' label='# Bars' value={this.state.numBars} InputProps={{ readOnly: this.isRoomCodeSet() }} onChange={this.handleTextFieldChange} error={this.state.numBars <= 0} helperText={this.state.numBars <= 0 ? '# Bars must be greater than 0' : ''} /></div>
-                    <div><TextField id={this.getTextFieldId()} name='numLoops' type='number' label='# Loops' value={this.state.numLoops} InputProps={{ readOnly: this.isRoomCodeSet() }} onChange={this.handleTextFieldChange} error={this.state.numLoops <= 0} helperText={this.state.numLoops <= 0 ? '# Loops must be greater than 0' : ''} /></div>
+                    <div><TextField id={this.getTextFieldId()} name='bpm' type='number' label='BPM' value={this.state.bpm} InputProps={{ readOnly: isRoomCodeSet(this.props) }} onChange={this.handleTextFieldChange} error={this.state.bpm <= 0} helperText={this.state.bpm <= 0 ? 'BPM must be greater than 0' : ''} /></div>
+                    <div><TextField id={this.getTextFieldId()} name='numBars' type='number' label='# Bars' value={this.state.numBars} InputProps={{ readOnly: isRoomCodeSet(this.props) }} onChange={this.handleTextFieldChange} error={this.state.numBars <= 0} helperText={this.state.numBars <= 0 ? '# Bars must be greater than 0' : ''} /></div>
+                    <div><TextField id={this.getTextFieldId()} name='numLoops' type='number' label='# Loops' value={this.state.numLoops} InputProps={{ readOnly: isRoomCodeSet(this.props) }} onChange={this.handleTextFieldChange} error={this.state.numLoops <= 0} helperText={this.state.numLoops <= 0 ? '# Loops must be greater than 0' : ''} /></div>
                     <div>Total Bars: {this.state.numBars * this.state.numLoops}</div>
-                    {this.isRoomCodeSet() ? null : 
+                    {isRoomCodeSet(this.props) ? null : 
                         (<div><Button variant='contained' label='Submit' type='submit' disabled={!this.isInputValid()}>Submit</Button></div>)}
                 </form>
             </div>
