@@ -38,9 +38,10 @@ module.exports = function (server) {
     }
 
     function onMessage(action) {
-        console.log('Socket received message: ' + action.message);
+        console.log(`Socket received message from ${action.playerName}: ${action.message}`);
         io.emit('action', {
             type: 'RECEIVE_CHAT_MESSAGE',
+            playerName: action.playerName,
             message: action.message
         });
     }

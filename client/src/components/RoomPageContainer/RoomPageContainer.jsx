@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { GameSettingPanel, RoomInfoPanel } from '..'
+import { GameSettingPanel, RoomInfoPanel, ChatMessageBox } from '..'
 
 class RoomPageContainer extends Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class RoomPageContainer extends Component {
                         : <Grid item xs></Grid>}
                     {this.props.room.code ? 
                         <Grid item xs>
-                            <Paper>Chat goes here</Paper>
+                            <Paper><ChatMessageBox {...this.props} /></Paper>
                         </Grid>
                         : <Grid item xs></Grid>}
                 </Grid>
