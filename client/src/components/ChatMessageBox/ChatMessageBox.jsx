@@ -9,27 +9,7 @@ class ChatMessageBox extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currMessage: '',
-            messages: [
-                new Message({
-                    id: 1,
-                    message: 'Im the recipient! (The person youre talking to) Im the recipient! (The person youre talking to) Im the recipient! (The person youre talking to)',
-                    senderName: 'Shannon'
-                }), // Gray bubble
-                new Message({ id: 2, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 3, message: 'Im you -- the blue bubble!', senderName: 'Bro' }), // Blue bubble
-                new Message({ id: 2, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 2, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-                new Message({ id: 0, message: 'Im you -- the blue bubble!', senderName: 'Allen' }), // Blue bubble
-            ],
+            currMessage: ''
         };
         this.submitHandler = this.submitHandler.bind(this);
         this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
@@ -47,7 +27,6 @@ class ChatMessageBox extends Component {
             const playerName = 'Shannon';
             this.props.addMessage(playerName, this.state.currMessage);
         }
-        this.refs.message.value = null;
     }
 
     render() {
@@ -76,7 +55,7 @@ class ChatMessageBox extends Component {
                     <form onSubmit={this.submitHandler} autoComplete='off'>
                         <Grid container>
                             <Grid item xs={11}>
-                                <TextField style={{'width': '100%'}} name='currMessage' ref='message' value={this.state.currMessage} onChange={this.handleTextFieldChange} helperText={'Type a message...'} />
+                                <TextField autoFocus style={{'width': '100%'}} name='currMessage' ref='message' value={this.state.currMessage} onChange={this.handleTextFieldChange} helperText={'Type a message...'} />
                             </Grid>
                             <Grid item xs={1}>
                                 <IconButton aria-label='send' type='submit' name='action'>
