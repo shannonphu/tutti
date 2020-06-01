@@ -4,8 +4,9 @@ function ChatReducer(state = { messages: [] }, action) {
             return {
                 ...state,
                 messages: [...state.messages, {
-                    playerName: action.playerName,
-                    message: action.message
+                    senderName: action.playerName,
+                    message: action.message,
+                    id: 0
                 }]
             };
         default:

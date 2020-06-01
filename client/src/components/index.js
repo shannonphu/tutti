@@ -7,3 +7,4 @@ export { default as RoomPageContainer } from './RoomPageContainer/RoomPageContai
 export { default as GameSettingPanel } from './GameSettingPanel/GameSettingPanel';
 export { default as RoomInfoPanel } from './RoomInfoPanel/RoomInfoPanel';
 export { default as PlayerAvatar } from './PlayerAvatar/PlayerAvatar';
+export { default as ChatMessageBox } from './ChatMessageBox/ChatMessageBox';
