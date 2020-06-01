@@ -12,9 +12,8 @@ class Main extends Component {
                 <Switch>
                     <Route path="/room/:roomId?" component={(props) => <RoomPageContainer {...this.props} {...props} />} />
                     <Route path="/game/:roomId?" component={(props) => <GamePortalContainer {...this.props} {...props} />} />
-                    <Route path='/home' render={() => <LandingPage {...this.props} />} />                    
-                    <Route path='/test' render={() => <Container {...this.props} />} />
-                    <Route exact path='/' render={() => <Container {...this.props} />} />
+                    <Route path='/test' render={() => <Container {...this.props} />} />                    
+                    <Route path='/' render={() => <LandingPage {...this.props} />} />                    
                 </Switch>
             </div>
         );
