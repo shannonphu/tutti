@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, Container, RoomPageContainer } from '..'
-import LandingPage from '../LandingPage/LandingPage.jsx';
+import { Nav, Container, LandingPage, RoomPageContainer, GamePortalContainer } from '..'
 import { Route, Switch } from 'react-router-dom';
 
 class Main extends Component {
@@ -12,9 +11,10 @@ class Main extends Component {
                 {/*Alternate pages beneath navbar, based on current route*/}
                 <Switch>
                     <Route path="/room/:roomId?" component={(props) => <RoomPageContainer {...this.props} {...props} />} />
+                    <Route path="/game/:roomId?" component={(props) => <GamePortalContainer {...this.props} {...props} />} />
+                    <Route path='/home' render={() => <LandingPage {...this.props} />} />                    
                     <Route path='/test' render={() => <Container {...this.props} />} />
                     <Route exact path='/' render={() => <Container {...this.props} />} />
-                    <Route path='/home' render={() => <LandingPage {...this.props} />} />
                 </Switch>
             </div>
         );

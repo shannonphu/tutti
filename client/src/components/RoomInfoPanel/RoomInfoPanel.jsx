@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -17,11 +17,15 @@ class RoomInfoPanel extends Component {
         };
         this.getInternalRoomUrl = this.getInternalRoomUrl.bind(this);
         this.getExternalRoomUrl = this.getExternalRoomUrl.bind(this);
+        this.getInternalGameUrl = this.getInternalGameUrl.bind(this);
     }
 
     getInternalRoomUrl() {
-        const baseURL = `http://${config.client.internalHost}:${config.client.port}`;
-        return `${baseURL}/room/${this.props.room.code}`;
+        return `/room/${this.props.room.code}`;
+    }
+
+    getInternalGameUrl() {
+        return `/game/${this.props.room.code}`;
     }
 
     getExternalRoomUrl() {
@@ -33,14 +37,14 @@ class RoomInfoPanel extends Component {
             <div>
                 <h3>Your room:</h3>
                 <div>
-                    <Link href={this.getInternalRoomUrl()}>{this.getExternalRoomUrl()}</Link>
+                    <Link to={this.getInternalRoomUrl()}>{this.getExternalRoomUrl()}</Link>
                 </div>
                 <div>
                     <IconButton aria-label='copy' onClick={() => { navigator.clipboard.writeText(this.getInternalRoomUrl()) }}>
                         <FileCopyIcon />
                     </IconButton>
                 </div>
-                <Button variant='contained' label='Submit' type='submit'>Start</Button>
+                <Link to={this.getInternalGameUrl()}><Button variant='contained' label='Submit' type='submit'>Start</Button></Link>
                 <div>
                     <GridList cellHeight={50} cols={6}>
                         {this.state.players.map((player) => (
