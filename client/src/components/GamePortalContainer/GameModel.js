@@ -14,9 +14,7 @@ class Game {
     next() {
         switch (this.state) {
             case this._states.SELECTING_BASELINE_PLAYER:
-                console.log('aa');
                 this.state = this._states.BASELINE_PLAYER_RECORDING;
-                console.log(this.state);
                 break;
             case this._states.BASELINE_PLAYER_RECORDING:
                 this.state = this._states.OTHER_PLAYERS_LISTENING_TO_BASELINE
