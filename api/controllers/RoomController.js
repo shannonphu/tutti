@@ -1,6 +1,21 @@
 const randomize = require('randomatic');
 
-let rooms = {};
+let rooms = {
+    'ABCDE': {
+        code: 'ABCDE',
+        bpm: 120,
+        numBars: 3,
+        numLoops: 4,
+        totalBars: 3 * 4
+    },
+    'ABCDF': {
+        code: 'ABCDF',
+        bpm: 60,
+        numBars: 4,
+        numLoops: 6,
+        totalBars: 4 * 6
+    },
+};
 
 function _generateRandomCode(numChar = 8, namespace = 'ABCDEFG') {
     return randomize('?', numChar, { chars: namespace });

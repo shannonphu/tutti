@@ -32,6 +32,11 @@ function RoomReducer(state = {
                 lastUpdatedField: 'numLoops',
                 numLoops: action.numLoops
             };
+        case 'CHAT_MESSAGE_SENT':
+            return {
+                ...state,
+                lastUpdatedField: 'chat'
+            };
         default:
             return state;
     }

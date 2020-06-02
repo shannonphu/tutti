@@ -63,3 +63,9 @@ export function updateRoomNumLoopsSettings(numLoops) {
         dispatch({ type: 'EDIT_ROOM_NUM_LOOPS', numLoops })
     };
 }
+
+export function sentMessageToRoom() {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'CHAT_MESSAGE_SENT' })
+    };
+}
