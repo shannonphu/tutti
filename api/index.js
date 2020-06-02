@@ -4,9 +4,12 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const NodeCache = require('node-cache');
+
 const config = require('./config');
 
 const app = express();
+const cache = new NodeCache();
 
 app.use(bodyParser.json());
 app.use(cors({
@@ -18,11 +21,13 @@ const server = http.createServer(app);
 require('./socket')(server);
 
 // Set up router endpoints
-const userRouter = require('./routes/user');
-const roomRouter = require('./routes/room');
+const UserRouter = require('./routes/user');
+const userRouter = new UserRouter(cache);
 app.use('/user', userRouter);
-app.use('/room', roomRouter);
 
+const RoomRouter = require('./routes/room');
+const roomRouter = new RoomRouter(cache);
+app.use('/room', roomRouter);
 
 server.listen(config.server.port, () => {
     console.log('Listening on port ' + config.server.port);
