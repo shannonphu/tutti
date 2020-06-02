@@ -1,20 +1,16 @@
-'use strict';
+function UserController(cache) {
+    this.index = (req, res) => {
+        res.json({ data: 'Hello World!' });
+    }
 
-function index(req, res) {
-    res.json({ data: 'Hello World!' });
+    this.getName = (req, res) => {
+        res.json({ data: 'Joe Bruin' });
+    }
+
+    this.editName = (req, res) => {
+        let name = req.body.name;
+        res.json({ data: name });
+    }
 }
 
-function getName(req, res) {
-    res.json({ data: 'Joe Bruin' });
-}
-
-function editName(req, res) {
-    let name = req.body.name;
-    res.json({ data: name });
-}
-
-module.exports = {
-    index,
-    getName,
-    editName
-};
+module.exports = UserController;
