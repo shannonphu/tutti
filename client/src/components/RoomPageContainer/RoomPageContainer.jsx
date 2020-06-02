@@ -9,9 +9,18 @@ class RoomPageContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        // join room if exists
-        if(isRoomCodeSet(this.props)) {
-            this.props.joinRoom(this.props.room.code);
+
+        // If someone new is trying to join the room, get the roomcode 
+        // from the URL and fetch the room data from the API and load 
+        // the data into the Redux store
+        if (props.match.params.roomId && props.room.code == null) {
+            props.getRoom(props.match.params.roomId);
+        }
+
+        // Join client socket to room if it exists in server
+        if (isRoomCodeSet(props)) {
+            let code = props.room.code || props.match.params.roomId;
+            props.joinRoom(code);
         }
     }
 
