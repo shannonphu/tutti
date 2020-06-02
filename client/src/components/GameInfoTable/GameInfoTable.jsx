@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Button from '@material-ui/core/Button';
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import EditIcon from '@material-ui/icons/Edit';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,6 +17,7 @@ class GameInfoTable extends Component {
         this.state = { isEditable: true };
         this.restructureData = this.restructureData.bind(this);
         this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
+        this.submitHandler = this.submitHandler.bind(this);
     }
 
     restructureData() {
@@ -44,47 +48,69 @@ class GameInfoTable extends Component {
         }
     }
 
+    submitHandler(event) {
+        event.preventDefault();
+    }
+
     render() {
         let data = this.restructureData();
         return (
-            <form>
-            <TableContainer component={Paper}>
-                <Table aria-label='simple table'>
-                    <TableBody>
-                        {data.map((row, index) => (
-                            <TableRow key={index}>
+            <form onSubmit={this.submitHandler}>
+                <TableContainer component={Paper}>
+                    <Table aria-label='simple table'>
+                        <TableBody>
+                            {data.map((row, index) => (
+                                <TableRow key={index}>
+                                    <TableCell component='th' scope='row'>
+                                        {row.label}
+                                        {row.name == 'bpm' ? <Metronome {...this.props} /> : null}
+                                    </TableCell>
+                                    <TableCell align='left' colSpan={2}>
+                                        {this.state.isEditable ? 
+                                            <TextField
+                                                autoFocus={this.props.room.lastUpdatedField == row.name}
+                                                value={row.value}
+                                                name={row.name}
+                                                type='number'
+                                                onChange={this.handleTextFieldChange}
+                                                margin='none'
+                                                error={row.value <= 0}
+                                                helperText={row.value <= 0 ? `${row.label} must be greater than 0` : ''}
+                                                style={{ width: '100%' }}
+                                            /> : row.value
+                                        }
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+
+                            <TableRow>
                                 <TableCell component='th' scope='row'>
-                                    {row.label}
-                                    {row.name == 'bpm' ? <Metronome {...this.props} /> : null}
+                                    Total Measures
                                 </TableCell>
-                                <TableCell align='right'>
+                                <TableCell>
+                                    {this.props.room.numBars * this.props.room.numLoops}
+                                </TableCell>
+                                <TableCell align='right' style={{ padding: '0 16px 0 0' }}>
                                     {this.state.isEditable ? 
-                                        <TextField
-                                            autoFocus={this.props.room.lastUpdatedField == row.name}
-                                            value={row.value}
-                                            name={row.name}
-                                            type='number'
-                                            onChange={this.handleTextFieldChange}
-                                            margin='none'
-                                            error={row.value <= 0}
-                                            helperText={row.value <= 0 ? `${row.label} must be greater than 0` : ''}
-                                        /> : row.value
+                                        <Button
+                                            type='submit' 
+                                            name='action'
+                                            color='primary'
+                                            endIcon={<MusicNoteIcon fontSize='small' />}>
+                                            Start Game
+                                        </Button>
+                                        : 
+                                        <Button
+                                            color='primary'
+                                            endIcon={<EditIcon fontSize='small' />}>
+                                            Edit
+                                        </Button>
                                     }
                                 </TableCell>
                             </TableRow>
-                        ))}
-
-                        <TableRow>
-                            <TableCell component='th' scope='row'>
-                                Total Measures
-                            </TableCell>
-                            <TableCell align='right'>
-                                {this.props.room.numBars * this.props.room.numLoops}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </form>
         );
     }
