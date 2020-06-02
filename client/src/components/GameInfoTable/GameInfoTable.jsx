@@ -28,15 +28,15 @@ class GameInfoTable extends Component {
         let data = this.restructureData();
         return (
             <TableContainer component={Paper}>
-                <Table aria-label="simple table">
+                <Table aria-label='simple table'>
                     <TableBody>
                         {data.map((row, index) => (
                             <TableRow key={index}>
-                                <TableCell component="th" scope="row">
+                                <TableCell component='th' scope='row'>
                                     {row.key}
                                     {row.key == 'BPM' ? <Metronome {...this.props} /> : null}
                                 </TableCell>
-                                <TableCell align="right">{row.value}</TableCell>
+                                <TableCell align='right'>{row.value}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
