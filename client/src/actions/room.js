@@ -5,7 +5,8 @@ export function getRoom(code, cb) {
         api.getRoom(code)
             .then((response) => {
                 if (response.data == null) {
-                    throw 'Room code does not exist.';
+                    console.error('Room code does not exist.');
+                    return null;
                 }
 
                 dispatch({

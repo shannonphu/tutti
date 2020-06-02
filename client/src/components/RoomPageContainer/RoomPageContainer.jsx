@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { RoomInfoPanel, ChatMessageBox, GameInfoTable } from '..'
 import { isRoomCodeSet } from '../../utils/roomUtils.js';
+import { Redirect } from "react-router-dom";
 
 class RoomPageContainer extends Component {
     constructor(props) {
@@ -27,25 +28,27 @@ class RoomPageContainer extends Component {
     render() {
         return (
             <Container fixed>
-                <Grid container
-                    direction="row"
-                    justify="center"
-                    alignItems="center">
-                    <Grid item xs>
-                        <GameInfoTable {...this.props} />
-                    </Grid>
-                    {this.props.room.code ? 
+                {isRoomCodeSet(this.props) ?
+                    <Grid container
+                        direction="row"
+                        justify="center"
+                        alignItems="center">
                         <Grid item xs>
-                            <RoomInfoPanel {...this.props} />
-                        </Grid> 
-                        : <Grid item xs></Grid>}
-                    {this.props.room.code ? 
-                        <Grid item xs>
-                            <Paper><ChatMessageBox {...this.props} /></Paper>
+                            <GameInfoTable {...this.props} />
                         </Grid>
-                        : <Grid item xs></Grid>}
-                </Grid>
-            </Container>
+                        {this.props.room.code ? 
+                            <Grid item xs>
+                                <RoomInfoPanel {...this.props} />
+                            </Grid> 
+                            : <Grid item xs></Grid>}
+                        {this.props.room.code ? 
+                            <Grid item xs>
+                                <Paper><ChatMessageBox {...this.props} /></Paper>
+                            </Grid>
+                            : <Grid item xs></Grid>}
+                    </Grid> 
+                    : <Redirect to='/' />}
+                </Container>
         )
     }
 }
