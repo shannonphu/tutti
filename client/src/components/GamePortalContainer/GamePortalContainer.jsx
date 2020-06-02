@@ -15,19 +15,7 @@ class GamePortalContainer extends Component {
     render() {
         return (
             <Container fixed>
-                <Grid container
-                    direction="row"
-                    justify="center"
-                    alignItems="center">
-                    <Grid item xs={9}>
-                        <div><Metronome {...this.props} /></div>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <ChatMessageBox {...this.props} />
-                        <GameInfoTable {...this.props} />
-                    </Grid>
-                </Grid>
-                {/* {this.props.room.code ? 
+                {this.props.room.code ? 
                     <Grid container
                         direction="row"
                         justify="center"
@@ -40,7 +28,7 @@ class GamePortalContainer extends Component {
                             <GameInfoTable {...this.props} />
                         </Grid>
                     </Grid>
-                    : <div>Join the room first!</div>} */}
+                    : <div>Join the room first!</div>}
             </Container>
         )
     }

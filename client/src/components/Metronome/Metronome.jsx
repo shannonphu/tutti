@@ -1,24 +1,31 @@
 import React, { Component } from 'react';
-import { PulseOscillator, Player } from 'tone';
+import Tone from 'tone';
+import IconButton from '@material-ui/core/IconButton';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import StopIcon from '@material-ui/icons/Stop';
 
 class Metronome extends Component {
     constructor(props) {
         super(props);
         this.state = { isOn: false };
         this.handleClick = this.handleClick.bind(this);
-        this.pulse = new PulseOscillator("E5", 0.4).toMaster();
 
-        this.player = new Player({
-            "url": "https://raw.githubusercontent.com/osidesigns/mp3/master/playlist/far_away.mp3",
-            "loop": true
-        }).toMaster();
+        Tone.Transport.bpm.value = this.props.room.bpm;
+
+        let volume = new Tone.Volume(10);
+        let synth = new Tone.MembraneSynth().chain(volume, Tone.Master);
+        this.loop = new Tone.Loop((time) => {
+            synth.triggerAttackRelease('C1', '4n', time);
+        }, '4n');
     }
 
     handleClick() {
         if (this.state.isOn) {
-            this.pulse.stop();
+            this.loop.stop();
+            Tone.Transport.stop();
         } else {
-            this.pulse.start();
+            Tone.Transport.start();
+            this.loop.start();
         }
 
         this.setState({ isOn: !this.state.isOn })
@@ -26,23 +33,15 @@ class Metronome extends Component {
 
     render() {
         return (
-            <div>
-                <tone-content>
-                    <tone-oscilloscope></tone-oscilloscope>
-                    <tone-fft></tone-fft>
-                    <tone-play-toggle></tone-play-toggle>
-                </tone-content>
-                <button onClick={this.handleClick}>
-                    On/Off
-                </button>
-                {
-                    document.querySelector("tone-play-toggle").bind(this.player) &&
-                    document.querySelector("tone-oscilloscope").bind(this.player) &&
-                    document.querySelector("tone-fft").bind(this.player)
-                }
-            </div>
+            <IconButton 
+                aria-label='send' 
+                type='submit' 
+                name='action' 
+                onClick={this.handleClick}
+                style={{ margin: '0 0 0 10px', padding: 0 }}>
+                {this.state.isOn ? <StopIcon /> : <PlayArrowIcon />}
+            </IconButton>
         )
-
     }
 }
 
