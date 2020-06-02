@@ -18,7 +18,9 @@ app.use(cors({
 }));
 
 const server = http.createServer(app);
-require('./socket')(server);
+
+const SocketRouter = require('./socket');
+const socketRouter = new SocketRouter(server, cache);
 
 // Set up router endpoints
 const UserRouter = require('./routes/user');
