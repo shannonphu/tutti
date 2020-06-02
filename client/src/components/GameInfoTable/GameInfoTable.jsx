@@ -5,6 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Metronome } from '..';
 
 class GameInfoTable extends Component {
     constructor(props) {
@@ -27,12 +28,15 @@ class GameInfoTable extends Component {
         let data = this.restructureData();
         return (
             <TableContainer component={Paper}>
-                <Table aria-label="simple table">
+                <Table aria-label='simple table'>
                     <TableBody>
                         {data.map((row, index) => (
                             <TableRow key={index}>
-                                <TableCell component="th" scope="row">{row.key}</TableCell>
-                                <TableCell align="right">{row.value}</TableCell>
+                                <TableCell component='th' scope='row'>
+                                    {row.key}
+                                    {row.key == 'BPM' ? <Metronome {...this.props} /> : null}
+                                </TableCell>
+                                <TableCell align='right'>{row.value}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

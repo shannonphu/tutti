@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { ChatMessageBox, GameInfoTable } from '..'
+import { ChatMessageBox, GameInfoTable, Metronome } from '..';
+import Game from './GameModel';
 
 class GamePortalContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            game: new Game()
+        };
     }
 
     render() {
