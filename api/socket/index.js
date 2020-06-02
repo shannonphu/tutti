@@ -31,6 +31,9 @@ module.exports = function (server) {
         case 'socket/JOIN_ROOM':
             onJoinRoom(action, client);
             break;
+        case 'socket/EDIT_ROOM_BPM':
+            onEditRoomBpm(action);
+            break;
         default:
             break;
         }
@@ -62,5 +65,8 @@ module.exports = function (server) {
             playerName: action.playerName,
             message: action.message
         });
+    }
+
+    function onEditRoomBpm(action) {
     }
 };

@@ -45,3 +45,31 @@ export function joinRoom(roomCode) {
         dispatch({ type: 'socket/JOIN_ROOM', roomCode });
     };
 }
+
+export function updateRoomBpmSettings(bpm) {
+    return (dispatch, prevState) => {
+        // Update this client's state
+        dispatch({ type: 'EDIT_ROOM_BPM', bpm });
+        // Emit action to socket API
+        const { room: { code } } = prevState();
+        dispatch({ type: 'socket/EDIT_ROOM_BPM', roomCode: code, bpm });
+    };
+}
+
+export function updateRoomNumBarsSettings(numBars) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'EDIT_ROOM_NUM_BARS', numBars });
+    };
+}
+
+export function updateRoomNumLoopsSettings(numLoops) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'EDIT_ROOM_NUM_LOOPS', numLoops })
+    };
+}
+
+export function sentMessageToRoom() {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'CHAT_MESSAGE_SENT' })
+    };
+}
