@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { GameSettingPanel, RoomInfoPanel, ChatMessageBox } from '..'
+import { RoomInfoPanel, ChatMessageBox, GameInfoTable } from '..'
 import {isRoomCodeSet} from '../../utils/roomUtils.js';
 
 class RoomPageContainer extends Component {
@@ -23,7 +23,7 @@ class RoomPageContainer extends Component {
                     justify="center"
                     alignItems="center">
                     <Grid item xs>
-                        <GameSettingPanel {...this.props} />
+                        <GameInfoTable {...this.props} />
                     </Grid>
                     {this.props.room.code ? 
                         <Grid item xs>

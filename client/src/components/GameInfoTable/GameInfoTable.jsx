@@ -6,42 +6,86 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Metronome } from '..';
+import TextField from '@material-ui/core/TextField';
 
 class GameInfoTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = { isEditable: true };
         this.restructureData = this.restructureData.bind(this);
+        this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
     }
 
     restructureData() {
         let { room: { bpm, numBars, numLoops } } = this.props;
         return [
-            { key: 'BPM', value: bpm },
-            { key: '# Bars', value: numBars },
-            { key: '# Loops', value: numLoops },
-            { key: 'Total Bars', value: numBars * numLoops }
+            { label: 'BPM', name: 'bpm', value: bpm },
+            { label: '# Bars', name: 'numBars', value: numBars },
+            { label: '# Loops', name: 'numLoops', value: numLoops }
         ]
+    }
+
+    handleTextFieldChange(e) {
+        let key = e.target.name;
+        let value = parseInt(e.target.value) || 0;
+
+        switch (key) {
+            case 'bpm':
+                this.props.updateRoomBpmSettings(value);
+                break;
+            case 'numBars':
+                this.props.updateRoomNumBarsSettings(value);
+                break;
+            case 'numLoops':
+                this.props.updateRoomNumLoopsSettings(value)
+                break;
+            default:
+                break;
+        }
     }
 
     render() {
         let data = this.restructureData();
         return (
+            <form>
             <TableContainer component={Paper}>
                 <Table aria-label='simple table'>
                     <TableBody>
                         {data.map((row, index) => (
                             <TableRow key={index}>
                                 <TableCell component='th' scope='row'>
-                                    {row.key}
-                                    {row.key == 'BPM' ? <Metronome {...this.props} /> : null}
+                                    {row.label}
+                                    {row.name == 'bpm' ? <Metronome {...this.props} /> : null}
                                 </TableCell>
-                                <TableCell align='right'>{row.value}</TableCell>
+                                <TableCell align='right'>
+                                    {this.state.isEditable ? 
+                                        <TextField
+                                            autoFocus={this.props.room.lastUpdatedField == row.name}
+                                            value={row.value}
+                                            name={row.name}
+                                            type='number'
+                                            onChange={this.handleTextFieldChange}
+                                            margin='none'
+                                            error={row.value <= 0}
+                                            helperText={row.value <= 0 ? `${row.label} must be greater than 0` : ''}
+                                        /> : row.value
+                                    }
+                                </TableCell>
                             </TableRow>
                         ))}
+
+                        <TableRow>
+                            <TableCell component='th' scope='row'>
+                                Total Measures
+                            </TableCell>
+                            <TableCell align='right'>
+                                {this.props.room.numBars * this.props.room.numLoops}
+                            </TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
+            </form>
         );
     }
 }

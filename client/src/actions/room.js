@@ -45,3 +45,21 @@ export function joinRoom(roomCode) {
         dispatch({ type: 'socket/JOIN_ROOM', roomCode });
     };
 }
+
+export function updateRoomBpmSettings(bpm) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'EDIT_ROOM_BPM', bpm });
+    };
+}
+
+export function updateRoomNumBarsSettings(numBars) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'EDIT_ROOM_NUM_BARS', numBars });
+    };
+}
+
+export function updateRoomNumLoopsSettings(numLoops) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'EDIT_ROOM_NUM_LOOPS', numLoops })
+    };
+}
