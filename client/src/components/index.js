@@ -5,7 +5,6 @@ export { default as LandingPage } from './LandingPage/LandingPage';
 export { default as DummyChat } from './DummyChat/DummyChat';
 export { default as DummyPost } from './DummyPost/DummyPost';
 export { default as RoomPageContainer } from './RoomPageContainer/RoomPageContainer';
-export { default as GameSettingPanel } from './GameSettingPanel/GameSettingPanel';
 export { default as RoomInfoPanel } from './RoomInfoPanel/RoomInfoPanel';
 export { default as PlayerAvatar } from './PlayerAvatar/PlayerAvatar';
 export { default as ChatMessageBox } from './ChatMessageBox/ChatMessageBox';

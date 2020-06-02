@@ -3,7 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { RoomInfoPanel, ChatMessageBox, GameInfoTable } from '..'
-import {isRoomCodeSet} from '../../utils/roomUtils.js';
+import { isRoomCodeSet } from '../../utils/roomUtils.js';
 
 class RoomPageContainer extends Component {
     constructor(props) {
