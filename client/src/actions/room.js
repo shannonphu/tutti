@@ -48,7 +48,11 @@ export function joinRoom(roomCode) {
 
 export function updateRoomBpmSettings(bpm) {
     return (dispatch, prevState) => {
+        // Update this client's state
         dispatch({ type: 'EDIT_ROOM_BPM', bpm });
+        // Emit action to socket API
+        const { room: { code } } = prevState();
+        dispatch({ type: 'socket/EDIT_ROOM_BPM', roomCode: code, bpm });
     };
 }
 
