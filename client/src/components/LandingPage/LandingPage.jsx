@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -7,6 +7,8 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import theLick from '../../assets/transparent_lick.png';
 import { TextField } from '@material-ui/core';
+import { Route } from 'react-router-dom';
+import { RoomPageContainer } from '..';
 
 const styles = {
     root: {
@@ -32,12 +34,29 @@ class LandingPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: ''
+            playerName : props.playerName
         };
+
+        this.handleJoinRoom   = this.handleJoinRoom.bind(this);
+        this.handleCreateRoom = this.handleCreateRoom.bind(this);
+        this.handleChange     = this.handleChange.bind(this);
     }
 
-    submitHandler(event) {
+    handleJoinRoom(event) {
         event.preventDefault();
+        this.props.addUserToRoom(this.playerName, this.props.roomCode)
+    }
+
+    handleCreateRoom(event) {
+        event.preventDefault();
+        return <RoomPageContainer {...this.props} />;
+
+    }
+
+    handleChange(event) {
+        this.setState({
+            playerName: event.target.value
+        });
     }
 
     render() {
@@ -64,7 +83,7 @@ class LandingPage extends Component {
                         <Grid item>
                             <form
                                 noValidate
-                                onSubmit={this.submitHandler}
+                                onSubmit={this.handleJoinRoom}
                             > 
                                 <Grid container
                                     spacing={2}
@@ -73,11 +92,13 @@ class LandingPage extends Component {
                                 >
                                     <Grid item>
                                         <TextField
+                                            onChange={this.handleChange}
                                             variant="outlined"
                                             margin="normal"
                                             required
                                             fullWidth
                                             id="name"
+                                            value={this.playerName}
                                             label="Name"
                                             autoComplete="off"
                                             autoFocus
@@ -96,10 +117,10 @@ class LandingPage extends Component {
                         </Grid>
                         <Grid item>
                             <Button
-                                type="button"
+                                onClick={this.handleCreateRoom}
                                 variant="contained"
                             >
-                        Create Private Room
+                        Create Room
                             </Button>
                         </Grid>
                     </Grid>

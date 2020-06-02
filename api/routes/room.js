@@ -3,7 +3,8 @@ let router = express.Router();
 
 const roomController = require('../controllers/RoomController');
 
-router.get('/:code', roomController.getRoom);
+router.get('/:roomCode', roomController.getRoom);
+router.get('/:roomCode/:playerName/new', roomController.addUserToRoom);
 router.post('/new', roomController.addRoom);
 
 module.exports = router;

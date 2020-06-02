@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as api from '../api/endpoints';
 
 export function getRoom(code, cb) {
@@ -9,11 +10,12 @@ export function getRoom(code, cb) {
                 }
 
                 dispatch({
-                    type: 'LOAD_ROOM',
+                    type    : 'LOAD_ROOM',
                     roomCode: response.data.code,
-                    bpm: response.data.bpm,
-                    numBars: response.data.numBars,
-                    numLoops: response.data.numLoops
+                    bpm     : response.data.bpm,
+                    numBars : response.data.numBars,
+                    numLoops: response.data.numLoops,
+                    users   : response.data.users
                 });
                 return response;
             })
@@ -43,5 +45,20 @@ export function addRoom(bpm, numBars, numLoops, cb) {
 export function joinRoom(roomCode) {
     return (dispatch, prevState) => {
         dispatch({ type: 'socket/JOIN_ROOM', roomCode });
+    };
+}
+
+export function addUserToRoom(playerName, roomCode, cb) {
+    return (dispatch, prevState) => {
+        api.addUserToRoom(playerName, roomCode)
+            .then((response) => {
+                dispatch({
+                    type: 'ADD_USER',
+                    playerName: playerName
+                });
+                return response;
+            })
+            .then((response) => { if (cb) cb(response); })
+            .catch(error => console.error('Error in addUserToRoom: ' + error));
     };
 }

@@ -1,28 +1,34 @@
 import { get, post } from '../utils/httpHelper';
 
 const config = require('../config');
-const serverBaseURL = `http://${config.server.host}:${config.server.port}`;
+const serverBaseUrl = `http://${config.server.host}:${config.server.port}`;
 
 /**
  * @description Makes server request for username
  * @returns {JSON} username in JSON format
  */
 export function getUsername() {
-    return get(`${serverBaseURL}/user/name`);
+    return get(`${serverBaseUrl}/user/name`);
 }
 
 export function editUsername(name) {
-    return post(`${serverBaseURL}/user/name/edit`, {
+    return post(`${serverBaseUrl}/user/name/edit`, {
         name
     });
 }
 
-export function getRoom(code) {
-    return get(`${serverBaseURL}/room/${code}`);
+export function getRoom(roomCode) {
+    return get(`${serverBaseUrl}/room/${roomCode}`);
+}
+
+export function addUserToRoom(playerName, roomCode) {
+    return post(`${serverBaseUrl}/room/${roomCode}/player/new`, {
+        playerName
+    });
 }
 
 export function addRoom(bpm, numBars, numLoops) {
-    return post(`${serverBaseURL}/room/new`, {
+    return post(`${serverBaseUrl}/room/new`, {
         bpm, 
         numBars, 
         numLoops
