@@ -47,18 +47,20 @@ class RoomController {
             }
         };
         this.addRoom = function (req, res) {
-            let { bpm, numBars, numLoops, users } = req.body;
+            let { bpm, numBars, numLoops, user } = req.body;
             let _bpm = parseInt(bpm);
             let _numBars = parseInt(numBars);
             let _numLoops = parseInt(numLoops);
             let roomCode = _generateRandomCode(8, 'ABCDEFG');
-            _addRoomToCache(roomCode, _bpm, _numBars, _numLoops);
+            let users = {user}
+            _addRoomToCache(roomCode, _bpm, _numBars, _numLoops, users);
             res.json({ data: roomCode });
         };
         
         this.addUserToRoom = function (req, res) {
             let roomCode = req.params.roomCode;
-            let user = req.user;
+            let user = req.body;
+            console.log(user)
             let room = _getRoomFromCache(roomCode);
             if (room) { // add user to room
                 let usersInRoom = room.users;

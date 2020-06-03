@@ -1,7 +1,5 @@
 export function isRoomCodeSet(props) {
-    let isRoomCodeSet = 
-        (props.roomCode !== null)
-        && (props.room.roomCode !== null);
+    let isRoomCodeSet = props.room.roomCode !== null;
     return isRoomCodeSet;
 }
 
@@ -9,8 +7,8 @@ export function isUserCreated(props) {
     let user = props.user;
     let isUserCreated =  
         (user != null)
-        && (user != undefined)
+        && (user !== undefined)
         && (user.playerName != null) 
-        && (user.playerName != undefined);
+        && (user.playerName !== undefined);
     return (isUserCreated);
 }

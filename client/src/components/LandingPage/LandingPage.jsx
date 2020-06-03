@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -7,7 +8,6 @@ import Paper from '@material-ui/core/Paper';
 // import Typography from '@material-ui/core/Typography';
 import theLick from '../../assets/transparent_lick.png';
 import { TextField } from '@material-ui/core';
-import { RoomPageContainer } from '..';
 import { isUserCreated, isRoomCodeSet } from'../../utils/roomUtils.js';
 
 const styles = {
@@ -35,8 +35,6 @@ class LandingPage extends Component {
         super(props);
         this.state = {
             playerName : this.props.playerName,
-            roomCode   : this.props.roomCode,
-            isTimeToCreateRoom: false
         };
 
         this.handleJoinRoom   = this.handleJoinRoom.bind(this);
@@ -48,17 +46,19 @@ class LandingPage extends Component {
     handleJoinRoom(event) {
         event.preventDefault(); 
         let user = { playerName: this.state.playerName }
-        this.props.addUser(user);
+
+        this.props.addUser(user.playerName);
+        this.props.addUserToRoom(user, this.props.roomCode);
     }
 
     handleCreateRoom(event) {
         event.preventDefault();
         let user = { playerName: this.state.playerName }
-        this.props.addUser(user);
-        this.setState({
-            ...this.state,
-            isTimeToCreateRoom: true
-        })
+        let defaultRoom = this.props.room;
+
+        this.props.addUser(user.playerName);
+        this.props.addRoom(defaultRoom.bpm, defaultRoom.numBars, defaultRoom.numLoops, user);
+
     }
 
     handleTextChange(event) {
@@ -70,7 +70,6 @@ class LandingPage extends Component {
 
     buttonGenerator() {
         var button
-        console.log(isRoomCodeSet(this.props));
         if (isRoomCodeSet(this.props)) {
             button = 
                 <Button
@@ -95,9 +94,9 @@ class LandingPage extends Component {
     render() {
         const { classes } = this.props; // paradigm for styling
 
-        // once the user is created, hop on to the room page
-        if (isUserCreated(this.props)) {
-            return (<RoomPageContainer {...this.props} />);
+        // once the user is created, and we got a room, hop on to theroom page
+        if (isUserCreated(this.props) && isRoomCodeSet(this.props)) {
+            return <Redirect to= {`/room/${this.props.room.roomCode}`} />;
         }
         else {
             return (
