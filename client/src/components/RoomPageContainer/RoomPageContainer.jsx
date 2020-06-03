@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import Paper from '@material-ui/core/Paper';
+import { Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { RoomInfoPanel, ChatMessageBox, GameInfoTable } from '..'
 import { isRoomCodeSet } from '../../utils/roomUtils.js';
+import { ROOM_STATE } from '../../utils/stateEnums';
 
 class RoomPageContainer extends Component {
     constructor(props) {
@@ -27,25 +30,26 @@ class RoomPageContainer extends Component {
     render() {
         return (
             <Container fixed>
-                <Grid container
-                    direction="row"
-                    justify="center"
-                    alignItems="center">
-                    <Grid item xs>
-                        <GameInfoTable {...this.props} />
-                    </Grid>
-                    {this.props.room.code ? 
-                        <Grid item xs>
-                            <RoomInfoPanel {...this.props} />
-                        </Grid> 
-                        : <Grid item xs></Grid>}
-                    {this.props.room.code ? 
-                        <Grid item xs>
-                            <Paper><ChatMessageBox {...this.props} /></Paper>
-                        </Grid>
-                        : <Grid item xs></Grid>}
-                </Grid>
-            </Container>
+                {(() => {
+                    switch (this.props.room.roomState) {
+                        case ROOM_STATE.EMPTY:
+                            return(
+                                <Backdrop open>
+                                    <CircularProgress color='inherit' />
+                                </Backdrop>);
+                        case ROOM_STATE.VALID:
+                            return(
+                                <Grid container direction="row" justify="center" alignItems="center">
+                                    <Grid item xs><GameInfoTable {...this.props} /></Grid>
+                                    <Grid item xs><RoomInfoPanel {...this.props} /></Grid>
+                                    <Grid item xs><ChatMessageBox {...this.props} /></Grid>
+                                </Grid>);
+                        case ROOM_STATE.INVALID:
+                        default:
+                            return <Redirect to='/' />;
+                    }
+                })()}
+                </Container>
         )
     }
 }

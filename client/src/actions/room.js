@@ -5,17 +5,22 @@ export function getRoom(code, cb) {
         api.getRoom(code)
             .then((response) => {
                 if (response.data == null) {
-                    throw 'Room code does not exist.';
+                    console.error('Room code does not exist.');
+                    dispatch({
+                        type: 'SET_INVALID_ROOM',
+                        code
+                    });
+                    return null;
+                } else {
+                    dispatch({
+                        type: 'LOAD_ROOM',
+                        code: response.data.code,
+                        bpm: response.data.bpm,
+                        numBars: response.data.numBars,
+                        numLoops: response.data.numLoops
+                    });
+                    return response;
                 }
-
-                dispatch({
-                    type: 'LOAD_ROOM',
-                    roomCode: response.data.code,
-                    bpm: response.data.bpm,
-                    numBars: response.data.numBars,
-                    numLoops: response.data.numLoops
-                });
-                return response;
             })
             .then((response) => { if (cb) cb(response); })
             .catch(error => console.error('Error in getRoom: ' + error));

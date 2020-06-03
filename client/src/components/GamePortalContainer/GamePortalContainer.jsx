@@ -20,10 +20,10 @@ class GamePortalContainer extends Component {
                         direction="row"
                         justify="center"
                         alignItems="center">
-                        <Grid item xs={9}>
+                        <Grid item xs={8}>
                             <div></div>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={4}>
                             <ChatMessageBox {...this.props} />
                             <GameInfoTable {...this.props} />
                         </Grid>

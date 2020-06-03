@@ -27,6 +27,7 @@ function RoomController(cache) {
             return room;
         } else {
             console.error(`Could not get key ${code} from cache`);
+            return null;
         }
     }
 
