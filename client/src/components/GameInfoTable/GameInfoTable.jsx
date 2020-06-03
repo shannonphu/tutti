@@ -27,7 +27,7 @@ class GameInfoTable extends Component {
             { label: 'BPM', name: 'bpm', value: bpm },
             { label: '# Bars', name: 'numBars', value: numBars },
             { label: '# Loops', name: 'numLoops', value: numLoops }
-        ]
+        ];
     }
 
     handleTextFieldChange(e) {
@@ -35,17 +35,17 @@ class GameInfoTable extends Component {
         let value = parseInt(e.target.value) || 0;
 
         switch (key) {
-            case 'bpm':
-                this.props.updateRoomBpmSettings(value);
-                break;
-            case 'numBars':
-                this.props.updateRoomNumBarsSettings(value);
-                break;
-            case 'numLoops':
-                this.props.updateRoomNumLoopsSettings(value)
-                break;
-            default:
-                break;
+        case 'bpm':
+            this.props.updateRoomBpmSettings(value);
+            break;
+        case 'numBars':
+            this.props.updateRoomNumBarsSettings(value);
+            break;
+        case 'numLoops':
+            this.props.updateRoomNumLoopsSettings(value);
+            break;
+        default:
+            break;
         }
     }
 
