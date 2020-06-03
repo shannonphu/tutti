@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
 import IconButton from '@material-ui/core/IconButton';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import StopIcon from '@material-ui/icons/Stop';
+import MicIcon from '@material-ui/icons/Mic';
+import MicOffIcon from '@material-ui/icons/MicOff';
 
 class Microphone extends Component {
     constructor(props) {
@@ -12,21 +12,16 @@ class Microphone extends Component {
             blobData: null,
             blobUri: null
         };
-        this.handleClick = this.handleClick.bind(this);
-        this.chunks = [];
-    
-        this.startRecording = this.startRecording.bind(this);
-        this.stopRecording = this.stopRecording.bind(this);
-        this.saveAudio = this.saveAudio.bind(this);
 
-        this.analyser = new Tone.Analyser({
-            "type" : "waveform",
-            "size" : 1024
-        });
+        this.chunks = [];
 
         this.mic = new Tone.UserMedia();
         this.mic.connect(Tone.Master);
-        this.mic.connect(this.analyser);
+
+        this.handleClick = this.handleClick.bind(this);
+        this.startRecording = this.startRecording.bind(this);
+        this.stopRecording = this.stopRecording.bind(this);
+        this.saveAudio = this.saveAudio.bind(this);
     }
 
     async componentDidMount() {
@@ -40,54 +35,54 @@ class Microphone extends Component {
     }
 
     startRecording() {
-        console.log('start rec')
         this.chunks = [];
-        this.mediaRecorder.start(5);
-        this.setState({ isRecording: true });
-        console.log('chunks')
-        console.log(this.chunks)
+
+        // Ask the user to activate their mic
+        this.mic.open().then(() => {
+            Tone.Transport.start();
+            this.mediaRecorder.start(5);
+            this.setState({ isRecording: true });
+        });
     }
 
     stopRecording() {
-        console.log('mic closed');
         this.mediaRecorder.stop();
+        this.mic.close();
+        Tone.Transport.stop();
         this.setState({ isRecording: false });
-        this.saveAudio();
     }
 
     saveAudio() {
-        console.log('save chunks')
-        console.log(this.chunks)
         const blob = new Blob(this.chunks, { type: 'audio/webm;codecs=opus' });
         const audioURL = URL.createObjectURL(blob);
-        new Audio(audioURL).play();
+        this.setState({
+            blobData: blob,
+            blobUri: audioURL
+        });
     }
 
     handleClick() {
         if (this.state.isRecording) {
-            this.stopRecording()
-            this.mic.close();
-            Tone.Transport.stop();
+            this.stopRecording();
+            this.saveAudio();
         } else {
-            // Ask the user to activate their mic
-            this.mic.open().then(() => {
-                Tone.Transport.start();
-                let sig = this.analyser.getValue();
-                this.startRecording();
-            });
+            this.startRecording();
         }
     }
 
     render() {
+        if (this.state.blobUri) {
+            new Audio(this.state.blobUri).play();
+        }
+
         return (
             <div>
                 <IconButton
-                    aria-label='send'
                     type='submit'
                     name='action'
                     onClick={this.handleClick}
                     style={{ margin: '0 0 0 10px', padding: 0 }}>
-                    {this.state.isOn ? <StopIcon /> : <PlayArrowIcon />}
+                    {this.state.isRecording ? <MicOffIcon /> : <MicIcon />}
                 </IconButton>
             </div>
         )
