@@ -1,16 +1,16 @@
 export function isRoomCodeSet(props) {
-    let isRoomCodeSet = props.match.params.roomId !== undefined 
-        || (props.room !== null && props.room.code !== null);
+    let isRoomCodeSet = 
+        (props.roomCode !== null)
+        && (props.room.roomCode !== null);
     return isRoomCodeSet;
 }
 
 export function isUserCreated(props) {
     let user = props.user;
-    let isUserCreated = ( 
+    let isUserCreated =  
         (user != null)
         && (user != undefined)
         && (user.playerName != null) 
-        && (user.playerName != undefined)
-    );
+        && (user.playerName != undefined);
     return (isUserCreated);
 }

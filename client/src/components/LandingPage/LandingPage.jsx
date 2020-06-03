@@ -41,7 +41,8 @@ class LandingPage extends Component {
 
         this.handleJoinRoom   = this.handleJoinRoom.bind(this);
         this.handleCreateRoom = this.handleCreateRoom.bind(this);
-        this.handleChange     = this.handleChange.bind(this);
+        this.handleTextChange = this.handleTextChange.bind(this);
+        this.buttonGenerator  = this.buttonGenerator.bind(this);
     }
 
     handleJoinRoom(event) {
@@ -60,84 +61,94 @@ class LandingPage extends Component {
         })
     }
 
-    handleChange(event) {
+    handleTextChange(event) {
         this.setState({
             ...this.state,
             playerName: event.target.value
         });
     }
 
+    buttonGenerator() {
+        var button
+        console.log(isRoomCodeSet(this.props));
+        if (isRoomCodeSet(this.props)) {
+            button = 
+                <Button
+                    onClick = {this.handleJoinRoom}
+                    variant = "contained"
+                >
+                Join Room
+            </Button>
+        }
+        else {
+            button =
+                <Button 
+                    onClick = {this.handleCreateRoom} 
+                    variant = "contained"
+                >
+                    Create Room
+                </Button>
+        }
+        return button
+    }
+
     render() {
         const { classes } = this.props; // paradigm for styling
-        if (isUserCreated(this.props)) return (<RoomPageContainer {...this.props} />);
-        else
+
+        // once the user is created, hop on to the room page
+        if (isUserCreated(this.props)) {
+            return (<RoomPageContainer {...this.props} />);
+        }
+        else {
             return (
                 <Grid container 
-                    component="main"
-                    className={classes.root}
-                >
+                    component = "main"
+                    className = {classes.root}
+                > 
                     <CssBaseline/>
-                    <Grid item xs={12} sm={8} md={5} 
-                        component={Paper}
-                        variant="outlined"
+
+                    <Grid item xs   = {12} sm = {8} md = {5}
+                        component = {Paper}
+                        variant   = "outlined"
                         square
                     >
                         <Grid container
-                            spacing={3}
-                            direction="column"
-                            alignItems="center"
-                            justify="center"
-                            className={classes.container}
+                            spacing    = {2}
+                            direction  = "column"
+                            alignItems = "center"
+                            justify    = "center"
+                            className  = {classes.container}
                         >
                             <Grid item>
-                                <form
-                                    noValidate
-                                    onSubmit={this.handleJoinRoom}
-                                > 
-                                    <Grid container
-                                        spacing={2}
-                                        direction="column"
-                                        alignItems="center"   
-                                    >
-                                        <Grid item>
-                                            <TextField
-                                                onChange={this.handleChange}
-                                                variant="outlined"
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                id="name"
-                                                value={this.playerName}
-                                                label="Name"
-                                                autoComplete="off"
-                                                autoFocus
-                                            />
-                                        </Grid>
-                                        <Grid item>
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                            >
-                                                Join Room
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
+                                <form noValidate>    
+                                    <TextField
+                                        onChange     = {this.handleTextChange}
+                                        variant      = "outlined"
+                                        margin       = "normal"
+                                        id           = "name"
+                                        value        = {this.playerName}
+                                        label        = "Name"
+                                        autoComplete = "off"
+                                        fullWidth
+                                        autoFocus
+                                    />
                                 </form>
                             </Grid>
                             <Grid item>
-                                <Button
-                                    onClick={this.handleCreateRoom}
-                                    variant="contained"
-                                >
-                                    Create Room
-                                </Button>
+                                {this.buttonGenerator()}
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={false} sm={4} md ={7} className={classes.image} />
-                </Grid>
-            );
-    }
+                    <Grid item 
+                        xs = {false} 
+                        sm = {4} 
+                        md = {7} 
+                        className = {classes.image} 
+                    />
+                /</Grid> // Grid container main
+            ) // return    
+        } // if
+    } // render
 }
 
 export default withStyles(styles)(LandingPage);
