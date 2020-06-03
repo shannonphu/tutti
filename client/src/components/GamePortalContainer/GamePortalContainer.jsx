@@ -21,14 +21,15 @@ class GamePortalContainer extends Component {
                         justify="center"
                         alignItems="center">
                         <Grid item xs={8}>
-                            <div><Microphone {...this.props} /></div>
+                            <div></div>
                         </Grid>
                         <Grid item xs={4}>
                             <ChatMessageBox {...this.props} />
                             <GameInfoTable {...this.props} />
+                            <Microphone {...this.props} />
                         </Grid>
                     </Grid>
-                    : <div>Join the room first!</div>}
+                     : <div>Join the room first!</div>}
             </Container>
         )
     }
