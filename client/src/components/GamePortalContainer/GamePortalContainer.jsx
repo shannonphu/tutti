@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { ChatMessageBox, GameInfoTable, Microphone } from '..';
+import { ChatMessageBox, GameInfoTable } from '..';
 import Game from './GameModel';
 
 class GamePortalContainer extends Component {
