@@ -1,5 +1,4 @@
-// Handles socket connections and event callbacks
-module.exports = function (server) {
+const SocketRouter = function (server, cache) {
     const socketio = require('socket.io');
     const io = socketio.listen(server);
     setEventHandlers();
@@ -25,17 +24,20 @@ module.exports = function (server) {
 
     function onAction(action, client) {
         switch (action.type) {
-        case 'socket/HELLO':
-            onHello(action);
-            break;
-        case 'socket/MESSAGE':
-            onMessage(action, client);
-            break;
-        case 'socket/JOIN_ROOM':
-            onJoinRoom(action, client);
-            break;
-        default:
-            break;
+            case 'socket/HELLO':
+                onHello(action);
+                break;
+            case 'socket/MESSAGE':
+                onMessage(action, client);
+                break;
+            case 'socket/JOIN_ROOM':
+                onJoinRoom(action, client);
+                break;
+            case 'socket/EDIT_ROOM_BPM':
+                onEditRoomBpm(action);
+                break;
+            default:
+                break;
         }
     }
     // TODO
@@ -66,4 +68,9 @@ module.exports = function (server) {
             message: action.message
         });
     }
+
+    function onEditRoomBpm(action) {
+    }
 };
+
+module.exports = SocketRouter;

@@ -19,7 +19,8 @@ class Metronome extends Component {
         }, '4n');
     }
 
-    handleClick() {
+    handleClick(e) {
+        e.preventDefault();
         if (this.state.isOn) {
             this.loop.stop();
             Tone.Transport.stop();

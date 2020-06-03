@@ -1,27 +1,57 @@
+import { ROOM_STATE } from '../utils/stateEnums';
+
 function RoomReducer(state = { 
-    code      : null,
-    bpm       : 120,
-    numBars   : 4,
-    numLoops  : 3,
-    users     : {},
-    playerName: ''
+    code: null, 
+    roomState: ROOM_STATE.EMPTY,
+    bpm: 120, 
+    numBars: 4, 
+    numLoops: 3,
+    lastUpdatedField: 'bpm'
 }, action) {
     switch (action.type) {
+        case 'SET_INVALID_ROOM':
+            return {
+                ...state,
+                code: action.code,
+                roomState: ROOM_STATE.INVALID
+            };
         case 'LOAD_ROOM':
             return {
                 ...state,
-                code      : action.roomCode,
-                bpm       : action.bpm,
-                numBars   : action.numBars,
-                numLoops  : action.numLoops,
-                users     : action.users,
+                code: action.code,
+                roomState: ROOM_STATE.VALID,
+                bpm: action.bpm,
+                numBars: action.numBars,
+                numLoops: action.numLoops
+            };
+        case 'EDIT_ROOM_BPM':
+            return {
+                ...state,
+                lastUpdatedField: 'bpm',
+                bpm: action.bpm
+            };
+        case 'EDIT_ROOM_NUM_BARS':
+            return {
+                ...state,
+                lastUpdatedField: 'numBars',
+                numBars: action.numBars
+            };
+        case 'EDIT_ROOM_NUM_LOOPS':
+            return {
+                ...state,
+                lastUpdatedField: 'numLoops',
+                numLoops: action.numLoops
+            };
+        case 'CHAT_MESSAGE_SENT':
+            return {
+                ...state,
+                lastUpdatedField: 'chat'
             };
         case 'ADD_USER':
-            console.log('I am called ' + action.playerName);
             return {
                 ...state,
                 playerName : action.playerName
-            }
+            };
         default:
             return state;
     }
