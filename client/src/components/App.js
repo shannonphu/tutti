@@ -13,9 +13,9 @@ import Main from './Main/Main';
 function mapStateToProps(state) {
     console.log('Redux Store: ' + JSON.stringify(state));
     return {
-        user: state.user,
-        chat: state.chat,
-        room: state.room
+        user      : state.user,
+        chat      : state.chat,
+        room      : state.room,
     };
 }
 

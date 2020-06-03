@@ -4,8 +4,9 @@ const RoomRouter = function (cache) {
 
     const RoomController = require('../controllers/RoomController');
     const roomController = new RoomController(cache);
-    router.get('/:code', roomController.getRoom);
+    router.get('/:roomCode', roomController.getRoom);
     router.post('/new', roomController.addRoom);
+    router.post('/:roomCode/user/new', roomController.addUserToRoom);
 
     return router;
 };

@@ -93,7 +93,7 @@ class GameInfoTable extends Component {
                                 </TableCell>
                                 <TableCell align='right' style={{ padding: '0 16px 0 0' }}>
                                     {this.state.isEditable ? 
-                                        <Link to={`/game/${this.props.room.code}`} style={{ textDecoration: 'none' }}>
+                                        <Link to={`/game/${this.props.room.roomCode}`} style={{ textDecoration: 'none' }}>
                                             <Button
                                                 type='submit'
                                                 name='action'

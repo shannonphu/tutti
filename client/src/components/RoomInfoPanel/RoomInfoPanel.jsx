@@ -19,11 +19,11 @@ class RoomInfoPanel extends Component {
     }
 
     getInternalRoomUrl() {
-        return `/room/${this.props.room.code}`;
+        return `/room/${this.props.room.roomCode}`;
     }
 
     getExternalRoomUrl() {
-        return `https://${config.client.externalHost}/room/${this.props.room.code}`;
+        return `https://${config.client.externalHost}/room/${this.props.room.roomCode}`;
     }
 
     render() {
