@@ -21,10 +21,8 @@ export function getRoom(roomCode) {
     return get(`${serverBaseUrl}/room/${roomCode}`);
 }
 
-export function addUserToRoom(playerName, roomCode) {
-    return post(`${serverBaseUrl}/room/${roomCode}/player/new`, {
-        playerName
-    });
+export function addUserToRoom(user, roomCode) {
+    return post(`${serverBaseUrl}/room/${roomCode}/user/new`, user);
 }
 
 export function addRoom(bpm, numBars, numLoops) {

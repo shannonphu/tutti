@@ -4,12 +4,11 @@ import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import theLick from '../../assets/transparent_lick.png';
 import { TextField } from '@material-ui/core';
-import { Route, Switch } from 'react-router-dom';
 import { RoomPageContainer } from '..';
-import { isPlayerNameSet, isRoomCodeSet } from'../../utils/roomUtils.js';
+import { isUserCreated, isRoomCodeSet } from'../../utils/roomUtils.js';
 
 const styles = {
     root: {
@@ -46,14 +45,15 @@ class LandingPage extends Component {
     }
 
     handleJoinRoom(event) {
-        event.preventDefault();
-        this.props.addUserToRoom(this.playerName, this.props.roomCode);
-
+        event.preventDefault(); 
+        let user = { playerName: this.state.playerName }
+        this.props.addUser(user);
     }
 
     handleCreateRoom(event) {
         event.preventDefault();
-        this.props.addUserToRoom(this.playerName, 'landing');
+        let user = { playerName: this.state.playerName }
+        this.props.addUser(user);
         this.setState({
             ...this.state,
             isTimeToCreateRoom: true
@@ -69,7 +69,7 @@ class LandingPage extends Component {
 
     render() {
         const { classes } = this.props; // paradigm for styling
-        if (isPlayerNameSet(this.props)) return (<RoomPageContainer {...this.props} />);
+        if (isUserCreated(this.props)) return (<RoomPageContainer {...this.props} />);
         else
             return (
                 <Grid container 
@@ -118,7 +118,7 @@ class LandingPage extends Component {
                                                 type="submit"
                                                 variant="contained"
                                             >
-                                    Join Room
+                                                Join Room
                                             </Button>
                                         </Grid>
                                     </Grid>
@@ -129,7 +129,7 @@ class LandingPage extends Component {
                                     onClick={this.handleCreateRoom}
                                     variant="contained"
                                 >
-                        Create Room
+                                    Create Room
                                 </Button>
                             </Grid>
                         </Grid>

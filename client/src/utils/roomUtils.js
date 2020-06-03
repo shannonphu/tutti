@@ -4,10 +4,13 @@ export function isRoomCodeSet(props) {
     return isRoomCodeSet;
 }
 
-export function isPlayerNameSet(props) {
-    let playerName = props.playerName;
-    let isPlayerNameSet = ( (playerName != '') && (playerName != undefined) );
-    // console.log(`isPlayerNameSet: ${isPlayerNameSet}`);
-    // console.log(`playerName: ${playerName}`);
-    return (isPlayerNameSet);
+export function isUserCreated(props) {
+    let user = props.user;
+    let isUserCreated = ( 
+        (user != null)
+        && (user != undefined)
+        && (user.playerName != null) 
+        && (user.playerName != undefined)
+    );
+    return (isUserCreated);
 }

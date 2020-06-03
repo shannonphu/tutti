@@ -1,21 +1,21 @@
 /* eslint-disable no-unused-vars */
 import * as api from '../api/endpoints';
 
-export function getRoom(code, cb) {
+export function getRoom(roomCode, cb) {
     return (dispatch, prevState) => {
-        api.getRoom(code)
+        api.getRoom(roomCode)
             .then((response) => {
                 if (response.data == null) {
                     console.error('Room code does not exist.');
                     dispatch({
                         type: 'SET_INVALID_ROOM',
-                        code
+                        roomCode
                     });
                     return null;
                 } else {
                     dispatch({
                         type: 'LOAD_ROOM',
-                        code: response.data.code,
+                        roomCode: response.data.roomCode,
                         bpm: response.data.bpm,
                         numBars: response.data.numBars,
                         numLoops: response.data.numLoops
