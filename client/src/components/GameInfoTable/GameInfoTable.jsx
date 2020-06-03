@@ -96,7 +96,7 @@ class GameInfoTable extends Component {
                                         switch (this.props.game.stage) {
                                         case GAME_STAGE.WAITING_FOR_PLAYERS:
                                             return (
-                                                <Link to={`/game/${this.props.room.code}`} onClick={this.handleSubmit} style={{ textDecoration: 'none' }}>
+                                                <Link to={`/game/${this.props.room.roomCode}`} onClick={this.handleSubmit} style={{ textDecoration: 'none' }}>
                                                     <Button type='submit' name='start' color='primary' endIcon={<MusicNoteIcon fontSize='small' />}>Enter Room</Button>
                                                 </Link>);
                                         case GAME_STAGE.WAITING_TO_START:
