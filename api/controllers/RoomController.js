@@ -31,8 +31,8 @@ function RoomController(cache) {
         }
     }
 
-    _addRoomToCache('ABCDE', 120, 3, 4);
-    _addRoomToCache('ABCDF', 60, 4, 6);
+    _addRoomToCache('ABC', 120, 3, 4);
+    _addRoomToCache('AAA', 60, 4, 6);
 
     this.getRoom = function(req, res) {
         let code = req.params.code;
