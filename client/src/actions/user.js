@@ -21,7 +21,7 @@ export function editUsername(name, cb) {
     };
 }
 
-export function addUser(playerName, cb) {
+export function addUser(playerName) {
     return (dispatch, prevState) => {
         dispatch({ type: 'ADD_USER', playerName });
     };

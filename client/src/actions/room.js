@@ -28,7 +28,7 @@ export function getRoom(roomCode, cb) {
     };
 }
 
-export function addRoom(bpm, numBars, numLoops, cb) {
+export function addRoom(bpm, numBars, numLoops, user, cb) {
     return (dispatch, prevState) => {
         api.addRoom(bpm, numBars, numLoops)
             .then((response) => {
@@ -80,13 +80,13 @@ export function sentMessageToRoom() {
     };
 }
 
-export function addUserToRoom(playerName, roomCode, cb) {
+export function addUserToRoom(user, roomCode, cb) {
     return (dispatch, prevState) => {
-        api.addUserToRoom(playerName, roomCode)
+        api.addUserToRoom(user, roomCode)
             .then((response) => {
                 dispatch({
                     type: 'ADD_USER',
-                    playerName
+                    user
                 });
                 return response;
             })

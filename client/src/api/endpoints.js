@@ -25,10 +25,11 @@ export function addUserToRoom(user, roomCode) {
     return post(`${serverBaseUrl}/room/${roomCode}/user/new`, user);
 }
 
-export function addRoom(bpm, numBars, numLoops) {
+export function addRoom(bpm, numBars, numLoops, user) {
     return post(`${serverBaseUrl}/room/new`, {
         bpm, 
         numBars, 
-        numLoops
+        numLoops,
+        user
     });
 }

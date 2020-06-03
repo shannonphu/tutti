@@ -46,7 +46,7 @@ const SocketRouter = function (server, cache) {
         if (isValidRoomCode(action.roomCode)) {
             let roomCode = action.roomCode;
             client.join(roomCode);
-            console.log(`User joined room code: ${roomCode}`);
+            console.log(`User is in room: ${roomCode}`);
         }
     }
 
