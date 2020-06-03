@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -17,15 +16,10 @@ class RoomInfoPanel extends Component {
         };
         this.getInternalRoomUrl = this.getInternalRoomUrl.bind(this);
         this.getExternalRoomUrl = this.getExternalRoomUrl.bind(this);
-        this.getInternalGameUrl = this.getInternalGameUrl.bind(this);
     }
 
     getInternalRoomUrl() {
         return `/room/${this.props.room.code}`;
-    }
-
-    getInternalGameUrl() {
-        return `/game/${this.props.room.code}`;
     }
 
     getExternalRoomUrl() {
@@ -44,7 +38,6 @@ class RoomInfoPanel extends Component {
                         <FileCopyIcon />
                     </IconButton>
                 </div>
-                <Link to={this.getInternalGameUrl()}><Button variant='contained' label='Submit' type='submit'>Start</Button></Link>
                 <div>
                     <GridList cellHeight={50} cols={6}>
                         {this.state.players.map((player) => (

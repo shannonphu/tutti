@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import EditIcon from '@material-ui/icons/Edit';
@@ -92,13 +93,15 @@ class GameInfoTable extends Component {
                                 </TableCell>
                                 <TableCell align='right' style={{ padding: '0 16px 0 0' }}>
                                     {this.state.isEditable ? 
-                                        <Button
-                                            type='submit' 
-                                            name='action'
-                                            color='primary'
-                                            endIcon={<MusicNoteIcon fontSize='small' />}>
-                                            Start Game
-                                        </Button>
+                                        <Link to={`/game/${this.props.room.code}`} style={{ textDecoration: 'none' }}>
+                                            <Button
+                                                type='submit'
+                                                name='action'
+                                                color='primary'
+                                                endIcon={<MusicNoteIcon fontSize='small' />}>
+                                                Start Game
+                                            </Button>
+                                        </Link>
                                         : 
                                         <Button
                                             color='primary'
