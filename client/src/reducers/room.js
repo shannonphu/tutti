@@ -3,20 +3,21 @@ function RoomReducer(state = {
     bpm       : 120,
     numBars   : 4,
     numLoops  : 3,
-    users     : null,
+    users     : {},
     playerName: ''
 }, action) {
     switch (action.type) {
         case 'LOAD_ROOM':
             return {
                 ...state,
-                code    : action.roomCode,
-                bpm     : action.bpm,
-                numBars : action.numBars,
-                numLoops: action.numLoops,
-                users   : action.users
+                code      : action.roomCode,
+                bpm       : action.bpm,
+                numBars   : action.numBars,
+                numLoops  : action.numLoops,
+                users     : action.users,
             };
         case 'ADD_USER':
+            console.log('I am called ' + action.playerName);
             return {
                 ...state,
                 playerName : action.playerName

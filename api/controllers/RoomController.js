@@ -1,6 +1,15 @@
 const randomize = require('randomatic');
 
-let rooms = {};
+let rooms = {
+    'landing': { 
+        roomCode : 'landing',
+        bpm      : 120,
+        numBars  : 4,
+        numLoops : 3,
+        totalBars: 12,
+        users    : {}
+    } 
+};
 
 function _generateRandomCode(numChar = 8, namespace = 'ABCDEFG') {
     return randomize('?', numChar, { chars: namespace });
@@ -45,6 +54,8 @@ function addRoom(req, res) {
 function addUserToRoom(req, res) {
     let roomCode = req.params.roomCode; 
     let playerName = req.body;
+    console.log(rooms);
+    console.log(rooms[roomCode]);
     rooms[roomCode].users[playerName] = {
         name: req.playerName
     };

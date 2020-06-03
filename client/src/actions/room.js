@@ -54,7 +54,7 @@ export function addUserToRoom(playerName, roomCode, cb) {
             .then((response) => {
                 dispatch({
                     type: 'ADD_USER',
-                    playerName: playerName
+                    playerName
                 });
                 return response;
             })
