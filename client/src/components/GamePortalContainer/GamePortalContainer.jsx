@@ -15,7 +15,7 @@ class GamePortalContainer extends Component {
     render() {
         return (
             <Container fixed>
-                {this.props.room.code ? 
+                {this.props.room.roomCode ? 
                     <Grid container
                         direction="row"
                         justify="center"
