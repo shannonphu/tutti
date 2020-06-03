@@ -21,20 +21,20 @@ const SocketRouter = function (server, cache) {
 
     function onAction(action, client) {
         switch (action.type) {
-            case 'socket/HELLO':
-                onHello(action);
-                break;
-            case 'socket/MESSAGE':
-                onMessage(action, client);
-                break;
-            case 'socket/JOIN_ROOM':
-                onJoinRoom(action, client);
-                break;
-            case 'socket/EDIT_ROOM_BPM':
-                onEditRoomBpm(action);
-                break;
-            default:
-                break;
+        case 'socket/HELLO':
+            onHello(action);
+            break;
+        case 'socket/MESSAGE':
+            onMessage(action);
+            break;
+        case 'socket/JOIN_ROOM':
+            onJoinRoom(action, client);
+            break;
+        case 'socket/EDIT_ROOM_BPM':
+            onEditRoomBpm(action);
+            break;
+        default:
+            break;
         }
     }
     // TODO

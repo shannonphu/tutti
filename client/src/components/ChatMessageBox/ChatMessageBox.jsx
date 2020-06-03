@@ -24,8 +24,8 @@ class ChatMessageBox extends Component {
     submitHandler(event) {
         event.preventDefault();
         if (this.state.currMessage.length > 0) {
-            const playerName = 'Shannon';
-            this.props.addMessage(playerName, this.state.currMessage, this.props.room.code);
+            let playerName = this.props.user.playerName;
+            this.props.addMessage(playerName, this.state.currMessage, this.props.room.roomCode);
             this.props.sentMessageToRoom();
         }
     }

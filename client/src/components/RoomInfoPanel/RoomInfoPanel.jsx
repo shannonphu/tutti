@@ -22,7 +22,7 @@ class RoomInfoPanel extends Component {
     }
 
     getExternalRoomUrl() {
-        return `https://${config.client.externalHost}/room/${this.props.room.code}`;
+        return `https://${config.client.externalHost}/room/${this.props.room.roomCode}`;
     }
 
     render() {
@@ -34,11 +34,11 @@ class RoomInfoPanel extends Component {
                 <Grid container>
                     <Grid item xs={6}>
                         <div className={classes.link}>
-                            <Link to={`/room/${this.props.room.code}`}>{this.getExternalRoomUrl()}</Link>
+                            <Link to={`/room/${this.props.room.roomCode}`}>{this.getExternalRoomUrl()}</Link>
                         </div>
                     </Grid>
                     <Grid item xs={6}>
-                        <IconButton aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.code}`) }}>
+                        <IconButton aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>
                             <FileCopyIcon />
                         </IconButton>
                     </Grid>

@@ -1,20 +1,21 @@
+/* eslint-disable no-unused-vars */
 import * as api from '../api/endpoints';
 
-export function getRoom(code, cb) {
+export function getRoom(roomCode, cb) {
     return (dispatch, prevState) => {
-        api.getRoom(code)
+        api.getRoom(roomCode)
             .then((response) => {
                 if (response.data == null) {
                     console.error('Room code does not exist.');
                     dispatch({
                         type: 'SET_INVALID_ROOM',
-                        code
+                        roomCode
                     });
                     return null;
                 } else {
                     dispatch({
                         type: 'LOAD_ROOM',
-                        code: response.data.code,
+                        roomCode: response.data.roomCode,
                         bpm: response.data.bpm,
                         numBars: response.data.numBars,
                         numLoops: response.data.numLoops
@@ -69,12 +70,27 @@ export function updateRoomNumBarsSettings(numBars) {
 
 export function updateRoomNumLoopsSettings(numLoops) {
     return (dispatch, prevState) => {
-        dispatch({ type: 'EDIT_ROOM_NUM_LOOPS', numLoops })
+        dispatch({ type: 'EDIT_ROOM_NUM_LOOPS', numLoops });
     };
 }
 
 export function sentMessageToRoom() {
     return (dispatch, prevState) => {
-        dispatch({ type: 'CHAT_MESSAGE_SENT' })
+        dispatch({ type: 'CHAT_MESSAGE_SENT' });
+    };
+}
+
+export function addUserToRoom(playerName, roomCode, cb) {
+    return (dispatch, prevState) => {
+        api.addUserToRoom(playerName, roomCode)
+            .then((response) => {
+                dispatch({
+                    type: 'ADD_USER',
+                    playerName
+                });
+                return response;
+            })
+            .then((response) => { if (cb) cb(response); })
+            .catch(error => console.error('Error in addUserToRoom: ' + error));
     };
 }

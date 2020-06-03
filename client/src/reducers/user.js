@@ -1,13 +1,13 @@
-function UserReducer(state = { name: null }, action) {
+function UserReducer(state = { playerName: null }, action) {
     switch (action.type) {
-        case 'GET_USER_NAME':
+        case 'ADD_USER':
             return {
                 ...state,
-                name: action.name
+                playerName : action.playerName
             };
         default:
             return state;
-    }
+        }
 }
 
 export default UserReducer;

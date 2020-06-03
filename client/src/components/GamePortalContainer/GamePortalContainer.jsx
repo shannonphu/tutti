@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { ChatMessageBox, GameInfoTable, Metronome } from '..';
+import { ChatMessageBox, GameInfoTable } from '..';
 import Game from './GameModel';
 
 class GamePortalContainer extends Component {
@@ -15,7 +15,7 @@ class GamePortalContainer extends Component {
     render() {
         return (
             <Container fixed>
-                {this.props.room.code ? 
+                {this.props.room.roomCode ? 
                     <Grid container
                         direction="row"
                         justify="center"
@@ -24,13 +24,13 @@ class GamePortalContainer extends Component {
                             <div></div>
                         </Grid>
                         <Grid item xs={4}>
-                            <ChatMessageBox {...this.props} />
                             <GameInfoTable {...this.props} />
+                            <ChatMessageBox {...this.props} />
                         </Grid>
                     </Grid>
-                    : <div>Join the room first!</div>}
+                 : <div>Join the room first!</div>}
             </Container>
-        )
+        );
     }
 }
 
