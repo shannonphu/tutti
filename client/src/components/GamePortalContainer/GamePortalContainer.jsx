@@ -24,14 +24,14 @@ class GamePortalContainer extends Component {
                             <div></div>
                         </Grid>
                         <Grid item xs={4}>
-                            <ChatMessageBox {...this.props} />
                             <GameInfoTable {...this.props} />
+                            <ChatMessageBox {...this.props} />
                             <Microphone {...this.props} />
                         </Grid>
                     </Grid>
-                     : <div>Join the room first!</div>}
+                 : <div>Join the room first!</div>}
             </Container>
-        )
+        );
     }
 }
 

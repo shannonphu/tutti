@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import config from '../../config';
 import { PlayerAvatar } from '..';
+import styles from './RoomInfoPanelStyles';
 
 class RoomInfoPanel extends Component {
     constructor(props) {
@@ -14,12 +18,7 @@ class RoomInfoPanel extends Component {
         this.state = {
             players: ['Allen', 'Shannon', 'Al', 'Sam', 'Y', 'W', 'F', 'G', 'Qu', 'Jo'] // temporary dummy data; replace with this.props.room.players
         };
-        this.getInternalRoomUrl = this.getInternalRoomUrl.bind(this);
         this.getExternalRoomUrl = this.getExternalRoomUrl.bind(this);
-    }
-
-    getInternalRoomUrl() {
-        return `/room/${this.props.room.roomCode}`;
     }
 
     getExternalRoomUrl() {
@@ -27,29 +26,37 @@ class RoomInfoPanel extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
-            <div>
+            <div className={classes.root}>
                 <h3>Your room:</h3>
-                <div>
-                    <Link to={this.getInternalRoomUrl()}>{this.getExternalRoomUrl()}</Link>
-                </div>
-                <div>
-                    <IconButton aria-label='copy' onClick={() => { navigator.clipboard.writeText(this.getInternalRoomUrl()) }}>
-                        <FileCopyIcon />
-                    </IconButton>
-                </div>
-                <div>
-                    <GridList cellHeight={50} cols={6}>
-                        {this.state.players.map((player) => (
-                            <GridListTile key={player} cols={1}>
-                                <PlayerAvatar {...this.props} name={player} />
-                            </GridListTile>
-                        ))}
-                    </GridList>
-                </div>
+                <Grid container>
+                    <Grid item xs={6}>
+                        <div className={classes.link}>
+                            <Link to={`/room/${this.props.room.roomCode}`}>{this.getExternalRoomUrl()}</Link>
+                        </div>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <IconButton aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>
+                            <FileCopyIcon />
+                        </IconButton>
+                    </Grid>
+                </Grid>
+                <GridList cellHeight={70} cols={5}>
+                    {this.state.players.map((player) => (
+                        <GridListTile key={player} cols={1}>
+                            <PlayerAvatar {...this.props} name={player} />
+                        </GridListTile>
+                    ))}
+                </GridList>
             </div>
         )
     }
 }
 
-export default RoomInfoPanel;
+RoomInfoPanel.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(RoomInfoPanel);
