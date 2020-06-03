@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { RoomInfoPanel, ChatMessageBox, GameInfoTable } from '..'
+import { RoomInfoPanel, ChatMessageBox, GameInfoTable, LandingPage } from '..';
 import { isUserCreated, isRoomCodeSet } from '../../utils/roomUtils.js';
 import { ROOM_STATE } from '../../utils/stateEnums';
 
@@ -50,7 +50,7 @@ class RoomPageContainer extends Component {
                             } // fallthrough
                         case ROOM_STATE.INVALID:
                         default:
-                            return <Redirect to='/' />;
+                            return <LandingPage {...this.props}/>;
                     }
                 })()}
                 </Container>

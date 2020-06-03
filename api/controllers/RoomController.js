@@ -60,7 +60,6 @@ class RoomController {
         this.addUserToRoom = function (req, res) {
             let roomCode = req.params.roomCode;
             let user = req.body;
-            console.log(user)
             let room = _getRoomFromCache(roomCode);
             if (room) { // add user to room
                 let usersInRoom = room.users;

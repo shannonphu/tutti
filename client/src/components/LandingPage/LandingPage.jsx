@@ -48,7 +48,7 @@ class LandingPage extends Component {
         let user = { playerName: this.state.playerName }
 
         this.props.addUser(user.playerName);
-        this.props.addUserToRoom(user, this.props.roomCode);
+        this.props.addUserToRoom(user, this.props.room.roomCode);
     }
 
     handleCreateRoom(event) {
