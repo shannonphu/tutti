@@ -11,3 +11,4 @@ export { default as ChatMessageBox } from './ChatMessageBox/ChatMessageBox';
 export { default as GamePortalContainer } from './GamePortalContainer/GamePortalContainer';
 export { default as GameInfoTable } from './GameInfoTable/GameInfoTable';
 export { default as Metronome } from './Metronome/Metronome';
+export { default as Microphone } from './Microphone/Microphone';

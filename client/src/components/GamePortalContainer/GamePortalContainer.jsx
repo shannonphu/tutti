@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { ChatMessageBox, GameInfoTable } from '..';
+import { ChatMessageBox, GameInfoTable, Microphone } from '..';
 import Game from './GameModel';
 
 class GamePortalContainer extends Component {
@@ -26,6 +26,7 @@ class GamePortalContainer extends Component {
                         <Grid item xs={4}>
                             <GameInfoTable {...this.props} />
                             <ChatMessageBox {...this.props} />
+                            <Microphone {...this.props} />
                         </Grid>
                     </Grid>
                  : <div>Join the room first!</div>}
