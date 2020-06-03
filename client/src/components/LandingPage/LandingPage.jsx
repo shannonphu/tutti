@@ -15,15 +15,15 @@ const styles = {
         flexGrow: 1,
     },
     image: {
-        backgroundImage: `url(${theLick})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '90%',
-        backgroundColor: '#434343ff',
+        backgroundImage   : `url(${theLick})`,
+        backgroundRepeat  : 'no-repeat',
+        backgroundSize    : '90%',
+        backgroundColor   : '#434343ff',
         backgroundPosition: 'center center',
     },
     paper: {
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems   : 'center',
     },
     container: {
         minHeight: '100vh',

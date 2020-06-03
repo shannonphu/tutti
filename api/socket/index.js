@@ -25,7 +25,7 @@ const SocketRouter = function (server, cache) {
             onHello(action);
             break;
         case 'socket/MESSAGE':
-            onMessage(action, client);
+            onMessage(action);
             break;
         case 'socket/JOIN_ROOM':
             onJoinRoom(action, client);
