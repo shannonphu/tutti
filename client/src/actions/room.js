@@ -18,7 +18,8 @@ export function getRoom(roomCode, cb) {
                         roomCode: response.data.roomCode,
                         bpm: response.data.bpm,
                         numBars: response.data.numBars,
-                        numLoops: response.data.numLoops
+                        numLoops: response.data.numLoops,
+                        users: response.data.users
                     });
                     return response;
                 }
