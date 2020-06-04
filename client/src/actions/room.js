@@ -39,6 +39,10 @@ export function addRoom(bpm, numBars, numLoops, user, cb) {
                     numBars, 
                     numLoops
                 });
+                dispatch({
+                    type: 'ADD_USER',
+                    playerName: user.playerName
+                });
                 return response;
             })
             .then((response) => { if (cb) cb(response); })
@@ -86,13 +90,15 @@ export function sentMessageToRoom() {
     };
 }
 
-export function addUserToRoom(user, roomCode, cb) {
+export function addUserToRoom(user, cb) {
     return (dispatch, prevState) => {
+        const { room: { roomCode } } = prevState();
+
         api.addUserToRoom(user, roomCode)
             .then((response) => {
                 dispatch({
                     type: 'ADD_USER',
-                    user
+                    playerName: user.playerName
                 });
                 return response;
             })

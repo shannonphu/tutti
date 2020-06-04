@@ -20,9 +20,3 @@ export function editUsername(name, cb) {
             .catch(error => console.error('Error in addUsername: ' + error));
     };
 }
-
-export function addUser(playerName) {
-    return (dispatch, prevState) => {
-        dispatch({ type: 'ADD_USER', playerName });
-    };
-}
