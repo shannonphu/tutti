@@ -44,11 +44,11 @@ class RoomInfoPanel extends Component {
                     </Grid>
                 </Grid>
                 <GridList cellHeight={70} cols={5}>
-                    {this.state.players.map((player) => (
+                    {Object.entries(this.props.room.users).map(([player, data]) => 
                         <GridListTile key={player} cols={1}>
                             <PlayerAvatar name={player} />
-                        </GridListTile>
-                    ))}
+                        </GridListTile>    
+                    )}
                 </GridList>
             </div>
         )

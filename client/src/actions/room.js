@@ -81,12 +81,6 @@ export function updateRoomNumLoopsSettings(numLoops) {
     };
 }
 
-export function sentMessageToRoom() {
-    return (dispatch, prevState) => {
-        dispatch({ type: 'CHAT_MESSAGE_SENT' });
-    };
-}
-
 export function addUserToRoom(user, cb) {
     return (dispatch, prevState) => {
         const { room: { roomCode } } = prevState();
@@ -97,7 +91,7 @@ export function addUserToRoom(user, cb) {
                     type: 'ADD_USER',
                     playerName: user.playerName
                 });
-                dispatch({ type: 'socket/JOIN_ROOM', roomCode });
+                dispatch({ type: 'socket/JOIN_ROOM', user, roomCode });
                 return response;
             })
             .then((response) => { if (cb) cb(response); })
