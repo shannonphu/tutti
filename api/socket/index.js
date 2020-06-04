@@ -31,7 +31,16 @@ const SocketRouter = function (server, cache) {
             onJoinRoom(action, client);
             break;
         case 'socket/EDIT_ROOM_BPM':
-            onEditRoomBpm(action);
+            // Emits ROOM_BPM_UPDATED
+            onEditRoomProperties(action, 'bpm');
+            break;
+        case 'socket/EDIT_ROOM_NUM_BARS':
+            // Emits ROOM_NUMBARS_UPDATED
+            onEditRoomProperties(action, 'numBars');
+            break;
+        case 'socket/EDIT_ROOM_NUM_LOOPS':
+            // Emits ROOM_NUMLOOPS_UPDATED
+            onEditRoomProperties(action, 'numLoops');
             break;
         default:
             break;
@@ -66,7 +75,22 @@ const SocketRouter = function (server, cache) {
         });
     }
 
-    function onEditRoomBpm(action) {
+    function onEditRoomProperties(action, property) {
+        let room = cache.get(action.roomCode);
+        if (room == undefined) {
+            return;
+        }
+
+        if (cache.set(action.roomCode, {
+            ...room,
+            [property]: action[property]
+        })) {
+            console.log(`Updated room ${action.roomCode} ${property} from ${room[property]} to ${action[property]}`);
+            io.sockets.in(action.roomCode).emit('action', {
+                type: `ROOM_${property.toUpperCase()}_UPDATED`,
+                [property]: action[property]
+            });
+        }
     }
 };
 

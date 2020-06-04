@@ -46,7 +46,7 @@ class RoomInfoPanel extends Component {
                 <GridList cellHeight={70} cols={5}>
                     {this.state.players.map((player) => (
                         <GridListTile key={player} cols={1}>
-                            <PlayerAvatar {...this.props} name={player} />
+                            <PlayerAvatar name={player} />
                         </GridListTile>
                     ))}
                 </GridList>

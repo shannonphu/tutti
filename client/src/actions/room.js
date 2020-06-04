@@ -57,20 +57,26 @@ export function updateRoomBpmSettings(bpm) {
         // Update this client's state
         dispatch({ type: 'EDIT_ROOM_BPM', bpm });
         // Emit action to socket API
-        const { room: { code } } = prevState();
-        dispatch({ type: 'socket/EDIT_ROOM_BPM', roomCode: code, bpm });
+        const { room: { roomCode } } = prevState();
+        dispatch({ type: 'socket/EDIT_ROOM_BPM', roomCode, bpm });
     };
 }
 
 export function updateRoomNumBarsSettings(numBars) {
     return (dispatch, prevState) => {
         dispatch({ type: 'EDIT_ROOM_NUM_BARS', numBars });
+        // Emit action to socket API
+        const { room: { roomCode } } = prevState();
+        dispatch({ type: 'socket/EDIT_ROOM_NUM_BARS', roomCode, numBars });
     };
 }
 
 export function updateRoomNumLoopsSettings(numLoops) {
     return (dispatch, prevState) => {
         dispatch({ type: 'EDIT_ROOM_NUM_LOOPS', numLoops });
+        // Emit action to socket API
+        const { room: { roomCode } } = prevState();
+        dispatch({ type: 'socket/EDIT_ROOM_NUM_LOOPS', roomCode, numLoops });
     };
 }
 
