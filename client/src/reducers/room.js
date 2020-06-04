@@ -64,7 +64,7 @@ function RoomReducer(state = {
                 ...state,
                 lastUpdatedField: 'chat'
             };
-        case 'NEW_PLAYER_ADDED':
+        case 'ROOM_PLAYERS_UPDATED':
             return {
                 ...state,
                 users: { ...action.users }
