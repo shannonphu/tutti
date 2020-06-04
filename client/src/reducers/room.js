@@ -64,6 +64,11 @@ function RoomReducer(state = {
                 ...state,
                 lastUpdatedField: 'chat'
             };
+        case 'NEW_PLAYER_ADDED':
+            return {
+                ...state,
+                users: { ...action.users }
+            };
         default:
             return state;
     }

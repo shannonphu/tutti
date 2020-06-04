@@ -59,6 +59,17 @@ const SocketRouter = function (server, cache) {
             let roomCode = action.roomCode;
             client.join(roomCode);
             console.log(`User is in room: ${roomCode}`);
+
+            let room = cache.get(roomCode);
+            if (room != undefined) {
+                io.sockets.in(roomCode).emit('action', {
+                    type: 'NEW_PLAYER_ADDED',
+                    users: room.users
+                });
+            }
+            else {
+                console.error(`Could not get key ${roomCode} from cache`);
+            }
         }
     }
 

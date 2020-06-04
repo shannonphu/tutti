@@ -20,12 +20,6 @@ class RoomPageContainer extends Component {
         if (!props.match.params.roomId || (props.match.params.roomId && props.room.roomCode == null)) {
             props.getRoom(props.match.params.roomId);
         }
-
-        // Join client socket to room if it exists in server
-        if (isRoomCodeSet(props)) {
-            let roomCode = props.room.roomCode || props.match.params.roomId;
-            props.joinRoom(roomCode);
-        }
     }
     
 

@@ -31,29 +31,25 @@ export function getRoom(roomCode, cb) {
 
 export function addRoom(bpm, numBars, numLoops, user, cb) {
     return (dispatch, prevState) => {
-        api.addRoom(bpm, numBars, numLoops)
+        api.addRoom(bpm, numBars, numLoops, user)
             .then((response) => {
                 dispatch({ 
                     type: 'LOAD_ROOM',
                     roomCode: response.data,
                     bpm, 
                     numBars, 
-                    numLoops
+                    numLoops,
+                    users: { [user.playerName]: {} }
                 });
                 dispatch({
                     type: 'ADD_USER',
                     playerName: user.playerName
                 });
+                dispatch({ type: 'socket/JOIN_ROOM', roomCode: response.data });
                 return response;
             })
             .then((response) => { if (cb) cb(response); })
             .catch(error => console.error('Error in addRoom: ' + error));
-    };
-}
-
-export function joinRoom(roomCode) {
-    return (dispatch, prevState) => {
-        dispatch({ type: 'socket/JOIN_ROOM', roomCode });
     };
 }
 
@@ -101,6 +97,7 @@ export function addUserToRoom(user, cb) {
                     type: 'ADD_USER',
                     playerName: user.playerName
                 });
+                dispatch({ type: 'socket/JOIN_ROOM', roomCode });
                 return response;
             })
             .then((response) => { if (cb) cb(response); })
