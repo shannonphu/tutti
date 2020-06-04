@@ -42,6 +42,9 @@ const SocketRouter = function (server, cache) {
             // Emits ROOM_NUMLOOPS_UPDATED
             onEditRoomProperties(action, 'numLoops');
             break;
+        case 'socket/ADVANCE_GAME_NEXT_STAGE':
+            onAdvanceGameNextStage(action);
+            break;
         default:
             break;
         }
@@ -91,6 +94,12 @@ const SocketRouter = function (server, cache) {
                 [property]: action[property]
             });
         }
+    }
+
+    function onAdvanceGameNextStage(action) {
+        io.sockets.in(action.roomCode).emit('action', {
+            type: 'ADVANCE_NEXT_STAGE',
+        });
     }
 };
 
