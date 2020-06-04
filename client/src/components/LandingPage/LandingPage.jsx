@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-// import Typography from '@material-ui/core/Typography';
 import theLick from '../../assets/transparent_lick.png';
 import { TextField } from '@material-ui/core';
-import { isUserCreated, isRoomCodeSet } from'../../utils/roomUtils.js';
+import { isRoomCodeSet } from'../../utils/roomUtils.js';
 
 const styles = {
     root: {
@@ -48,27 +46,21 @@ class LandingPage extends Component {
 
     handleJoinRoom(event) {
         event.preventDefault(); 
-
         if (this.state.playerName.length < 1) {
             this.setState({
-                ...this.state, 
                 isError: true
             });
             return;
         }
 
         let user = { playerName: this.state.playerName }
-
-        this.props.addUser(user.playerName);
-        this.props.addUserToRoom(user, this.props.room.roomCode);
+        this.props.addUserToRoom(user);
     }
 
     handleCreateRoom(event) {
         event.preventDefault();
-
         if (this.state.playerName.length < 1) {
             this.setState({
-                ...this.state, 
                 isError: true
             });
             return;
@@ -77,14 +69,13 @@ class LandingPage extends Component {
         let user = { playerName: this.state.playerName }
         let defaultRoom = this.props.room;
 
-        this.props.addUser(user.playerName);
-        this.props.addRoom(defaultRoom.bpm, defaultRoom.numBars, defaultRoom.numLoops, user);
-
+        this.props.addRoom(defaultRoom.bpm, defaultRoom.numBars, defaultRoom.numLoops, user, (room) => {
+            this.props.history.push(`/room/${room.data}`)
+        })
     }
 
     handleTextChange(event) {
         this.setState({
-            ...this.state,
             playerName: event.target.value,
             isError   : false
         });
@@ -103,8 +94,8 @@ class LandingPage extends Component {
         }
         else {
             button =
-                <Button 
-                    onClick = {this.handleCreateRoom} 
+                <Button
+                    onClick = {this.handleCreateRoom}
                     variant = "contained"
                 >
                     Create Room
@@ -116,64 +107,57 @@ class LandingPage extends Component {
     render() {
         const { classes } = this.props; // paradigm for styling
 
-        // once the user is created, and we got a room, hop on to the sroom page
-        if (isUserCreated(this.props) && isRoomCodeSet(this.props)) {
-            return <Redirect to= {`/room/${this.props.room.roomCode}`} />;
-        }
-        else {
-            return (
-                <Grid container 
-                    component = "main"
-                    className = {classes.root}
-                    
-                > 
-                    <CssBaseline/>
+        return (
+            <Grid container
+                component = "main"
+                className = {classes.root}
+            > 
+                <CssBaseline/>
 
-                    <Grid item 
-                        xs        = {12}
-                        sm        = {8}
-                        md        = {5}
-                        component = {Paper}
-                        variant   = "outlined"
-                        square
+                <Grid item 
+                    xs        = {12}
+                    sm        = {8}
+                    md        = {5}
+                    component = {Paper}
+                    variant   = "outlined"
+                    square
+                >
+                    <Grid container
+                        spacing    = {2}
+                        direction  = "column"
+                        alignItems = "center"
+                        justify    = "center"
+                        className  = {classes.container}
                     >
-                        <Grid container
-                            spacing    = {2}
-                            direction  = "column"
-                            alignItems = "center"
-                            justify    = "center"
-                            className  = {classes.container}
-                        >
-                            <Grid item>
-                                <form noValidate>    
-                                    <TextField
-                                        onChange     = {this.handleTextChange}
-                                        variant      = "outlined"
-                                        margin       = "normal"
-                                        id           = "name"
-                                        label        = "Name"
-                                        autoComplete = "off"
-                                        error        = {this.state.isError}
-                                        helperText   = {this.state.isError ? 'pls' : ''}
-                                        fullWidth
-                                        autoFocus
-                                    />
-                                </form>
-                            </Grid>
-                            <Grid item>
-                                {this.buttonGenerator()}
-                            </Grid>
+                        <Grid item>
+                            <form noValidate>    
+                                <TextField
+                                    onChange     = {this.handleTextChange}
+                                    variant      = "outlined"
+                                    margin       = "normal"
+                                    id           = "name"
+                                    label        = "Name"
+                                    autoComplete = "off"
+                                    error        = {this.state.isError}
+                                    helperText   = {this.state.isError ? 'pls' : ''}
+                                    fullWidth
+                                    autoFocus
+                                />
+                            </form>
+                        </Grid>
+                        <Grid item>
+                            {this.buttonGenerator()}
                         </Grid>
                     </Grid>
-                    <Grid item 
-                        xs = {false} 
-                        sm = {4} 
-                        md = {7} 
-                        className = {classes.image} 
-                    />
-                </Grid> // Grid container main
-            ) // return    
-        } // if
+                </Grid>
+                <Grid item 
+                    xs = {false} 
+                    sm = {4} 
+                    md = {7} 
+                    className = {classes.image} 
+                />
+            </Grid> // Grid container main
+        ) // return    
     } // render
 }
 

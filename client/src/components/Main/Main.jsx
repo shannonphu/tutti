@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Nav, Container, LandingPage, RoomPageContainer, GamePortalContainer } from '..';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { GAME_STAGE, ROOM_STATE } from '../../utils/stateEnums';
 
 class Main extends Component {
@@ -20,9 +20,9 @@ class Main extends Component {
                             } else {
                                 return <GamePortalContainer {...this.props} {...props} />
                             }
-                        } else if (this.props.room.roomState == ROOM_STATE.INVALID) {
-                            // Mainly handled within RoomPageContainer
-                            return <LandingPage {...this.props} />
+                        } 
+                        else if (this.props.room.roomState == ROOM_STATE.INVALID) {
+                            return <Redirect to = '/' />
                         }
                     }}
                     />
