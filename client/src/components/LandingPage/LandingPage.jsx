@@ -27,6 +27,7 @@ const styles = {
     },
     container: {
         minHeight: '100vh',
+
     },
 };
 
@@ -34,17 +35,28 @@ class LandingPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            playerName : this.props.playerName,
+            playerName : '',
+            isError    : false
         };
 
         this.handleJoinRoom   = this.handleJoinRoom.bind(this);
         this.handleCreateRoom = this.handleCreateRoom.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
         this.buttonGenerator  = this.buttonGenerator.bind(this);
+
     }
 
     handleJoinRoom(event) {
         event.preventDefault(); 
+
+        if (this.state.playerName.length < 1) {
+            this.setState({
+                ...this.state, 
+                isError: true
+            });
+            return;
+        }
+
         let user = { playerName: this.state.playerName }
 
         this.props.addUser(user.playerName);
@@ -53,6 +65,15 @@ class LandingPage extends Component {
 
     handleCreateRoom(event) {
         event.preventDefault();
+
+        if (this.state.playerName.length < 1) {
+            this.setState({
+                ...this.state, 
+                isError: true
+            });
+            return;
+        }
+
         let user = { playerName: this.state.playerName }
         let defaultRoom = this.props.room;
 
@@ -64,7 +85,8 @@ class LandingPage extends Component {
     handleTextChange(event) {
         this.setState({
             ...this.state,
-            playerName: event.target.value
+            playerName: event.target.value,
+            isError   : false
         });
     }
 
@@ -94,7 +116,7 @@ class LandingPage extends Component {
     render() {
         const { classes } = this.props; // paradigm for styling
 
-        // once the user is created, and we got a room, hop on to theroom page
+        // once the user is created, and we got a room, hop on to the sroom page
         if (isUserCreated(this.props) && isRoomCodeSet(this.props)) {
             return <Redirect to= {`/room/${this.props.room.roomCode}`} />;
         }
@@ -103,10 +125,14 @@ class LandingPage extends Component {
                 <Grid container 
                     component = "main"
                     className = {classes.root}
+                    
                 > 
                     <CssBaseline/>
 
-                    <Grid item xs   = {12} sm = {8} md = {5}
+                    <Grid item 
+                        xs        = {12}
+                        sm        = {8}
+                        md        = {5}
                         component = {Paper}
                         variant   = "outlined"
                         square
@@ -125,9 +151,10 @@ class LandingPage extends Component {
                                         variant      = "outlined"
                                         margin       = "normal"
                                         id           = "name"
-                                        value        = {this.playerName}
                                         label        = "Name"
                                         autoComplete = "off"
+                                        error        = {this.state.isError}
+                                        helperText   = {this.state.isError ? 'pls' : ''}
                                         fullWidth
                                         autoFocus
                                     />
@@ -144,7 +171,7 @@ class LandingPage extends Component {
                         md = {7} 
                         className = {classes.image} 
                     />
-                /</Grid> // Grid container main
+                </Grid> // Grid container main
             ) // return    
         } // if
     } // render

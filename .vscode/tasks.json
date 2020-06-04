@@ -4,10 +4,24 @@
         {
             "label": "start all",
             "dependsOn": [
+                "kill api",
                 "npm: dev - api",
                 "npm: start - client"
             ],
             "problemMatcher": []
+        },
+        {
+            "label": "kill api",
+            "type":"shell",
+            "command": "kill -9 $(lsof -t -i:8080)",
+            "presentation":{
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            }
         },
         {
             "type": "npm",

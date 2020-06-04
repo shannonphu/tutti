@@ -61,11 +61,12 @@ class RoomController {
             let roomCode = req.params.roomCode;
             let user = req.body;
             let room = _getRoomFromCache(roomCode);
-            if (room) { // add user to room
-                let usersInRoom = room.users;
-                room.users = { ...usersInRoom, user };
-                _addRoomToCache(...room);
-            }
+
+            // add user to room
+            let usersInRoom = room.users;
+            room.users = { ...usersInRoom, user };
+            _addRoomToCache(roomCode, room.bpm, room.numBars, room.numLoops, room.users);
+            
             console.log(`Added user: ${user.playerName}`);
             res.json({data: _getRoomFromCache(roomCode)})
         };

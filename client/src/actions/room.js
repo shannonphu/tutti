@@ -9,7 +9,7 @@ export function getRoom(roomCode, cb) {
                     console.error('Room code does not exist.');
                     dispatch({
                         type: 'SET_INVALID_ROOM',
-                        roomCode
+                        roomCode: null
                     });
                     return null;
                 } else {

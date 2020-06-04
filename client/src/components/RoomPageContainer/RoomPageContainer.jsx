@@ -17,16 +17,17 @@ class RoomPageContainer extends Component {
         // If someone new is trying to join the room, get the roomcode 
         // from the URL and fetch the room data from the API and load 
         // the data into the Redux store
-        if (props.match.params.roomId && props.room.roomCode == null) {
-            props.getRoom(props.match.params.roomId);
-        }
+            if (props.match.params.roomId && props.room.roomCode == null) {
+                props.getRoom(props.match.params.roomId);
+            }
 
-        // Join client socket to room if it exists in server
-        if (isRoomCodeSet(props)) {
-            let roomCode = props.room.roomCode || props.match.params.roomId;
-            props.joinRoom(roomCode);
+            // Join client socket to room if it exists in server
+            if (isRoomCodeSet(props)) {
+                let roomCode = props.room.roomCode || props.match.params.roomId;
+                props.joinRoom(roomCode);
+            }
         }
-    }
+    
 
     render() {
         return (
@@ -50,7 +51,12 @@ class RoomPageContainer extends Component {
                             } // fallthrough
                         case ROOM_STATE.INVALID:
                         default:
-                            return <LandingPage {...this.props}/>;
+                            if (isRoomCodeSet(this.props)) {
+                                return <LandingPage {...this.props}/>;
+                            }
+                            else {
+                                return <Redirect to = '/' />
+                            }
                     }
                 })()}
                 </Container>
