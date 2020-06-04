@@ -31,16 +31,31 @@ function RoomReducer(state = {
                 lastUpdatedField: 'bpm',
                 bpm: action.bpm
             };
+        case 'ROOM_BPM_UPDATED':
+            return {
+                ...state,
+                bpm: action.bpm
+            };
         case 'EDIT_ROOM_NUM_BARS':
             return {
                 ...state,
                 lastUpdatedField: 'numBars',
                 numBars: action.numBars
             };
+        case 'ROOM_NUMBARS_UPDATED':
+            return {
+                ...state,
+                numBars: action.numBars
+            };
         case 'EDIT_ROOM_NUM_LOOPS':
             return {
                 ...state,
                 lastUpdatedField: 'numLoops',
+                numLoops: action.numLoops
+            };
+        case 'ROOM_NUMLOOPS_UPDATED':
+            return {
+                ...state,
                 numLoops: action.numLoops
             };
         case 'CHAT_MESSAGE_SENT':
