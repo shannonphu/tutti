@@ -67,6 +67,9 @@ const SocketRouter = function (server, cache) {
         case 'socket/ADVANCE_GAME_NEXT_STAGE':
             onAdvanceGameNextStage(action);
             break;
+        case 'socket/UPLOAD_AUDIO':
+            onUploadAudio(action);
+            break;
         default:
             break;
         }
@@ -136,6 +139,30 @@ const SocketRouter = function (server, cache) {
         io.sockets.in(action.roomCode).emit('action', {
             type: 'ADVANCE_NEXT_STAGE',
         });
+    }
+
+    function onUploadAudio(action) {
+        let { playerName, roomCode, audioData } = action;
+
+        let room = cache.get(roomCode);
+        if (room != undefined) {
+            room.users[playerName]['audioData'] = audioData;
+            if (cache.set(roomCode, {
+                ...room,
+                users: room.users
+            })) {
+                console.log(`User ${playerName} in room ${roomCode} uploaded their recording`)
+                io.sockets.in(roomCode).emit('action', {
+                    type: 'RECEIVED_AUDIO',
+                    playerName,
+                    audioData
+                });
+            }
+        }
+        else {
+            console.error(`Could not get key ${roomCode} from cache`);
+            return null;
+        }
     }
 };
 

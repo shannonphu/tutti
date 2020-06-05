@@ -98,3 +98,10 @@ export function addUserToRoom(user, cb) {
             .catch(error => console.error('Error in addUserToRoom: ' + error));
     };
 }
+
+export function uploadAudio(audioData) {
+    return (dispatch, prevState) => {
+        const { user: { playerName }, room: { roomCode } } = prevState();
+        dispatch({ type: 'socket/UPLOAD_AUDIO', playerName, roomCode, audioData });
+    };
+}
