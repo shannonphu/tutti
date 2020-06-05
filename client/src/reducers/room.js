@@ -23,7 +23,8 @@ function RoomReducer(state = {
                 roomState: ROOM_STATE.VALID,
                 bpm: action.bpm,
                 numBars: action.numBars,
-                numLoops: action.numLoops
+                numLoops: action.numLoops,
+                users: action.users
             };
         case 'EDIT_ROOM_BPM':
             return {
@@ -62,6 +63,11 @@ function RoomReducer(state = {
             return {
                 ...state,
                 lastUpdatedField: 'chat'
+            };
+        case 'ROOM_PLAYERS_UPDATED':
+            return {
+                ...state,
+                users: { ...action.users }
             };
         default:
             return state;

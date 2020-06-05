@@ -20,3 +20,18 @@ export function editUsername(name, cb) {
             .catch(error => console.error('Error in addUsername: ' + error));
     };
 }
+
+export function sentMessageToRoom(message) {
+    return (dispatch, prevState) => {
+        const { user: { playerName }, room: { roomCode } } = prevState();
+
+        dispatch({ type: 'CHAT_MESSAGE_SENT' });
+        dispatch({ type: 'socket/MESSAGE', playerName, message, roomCode });
+    };
+}
+
+export function pingHello(text) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'socket/HELLO', data: text });
+    };
+}

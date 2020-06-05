@@ -24,9 +24,7 @@ class ChatMessageBox extends Component {
     submitHandler(event) {
         event.preventDefault();
         if (this.state.currMessage.length > 0) {
-            let playerName = this.props.user.playerName;
-            this.props.addMessage(playerName, this.state.currMessage, this.props.room.roomCode);
-            this.props.sentMessageToRoom();
+            this.props.sentMessageToRoom(this.state.currMessage);
         }
     }
 
@@ -35,7 +33,7 @@ class ChatMessageBox extends Component {
             <div>
                 <div>
                     <ChatFeed
-                        messages={this.props.chat.messages}
+                        messages={this.props.user.messages}
                         isTyping={false}
                         hasInputField={false}
                         showSenderName

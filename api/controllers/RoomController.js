@@ -1,6 +1,7 @@
 class RoomController {
     constructor(cache) {
         const randomize = require('randomatic');
+
         let _generateRandomCode = function (numChar = 8, namespace = 'ABCDEFG') {
             return randomize('?', numChar, { chars: namespace });
         };
@@ -14,7 +15,7 @@ class RoomController {
                 totalBars: numBars * numLoops
             })) {
                 console.log('Added room to cache');
-                console.log(cache.data);
+                console.log(JSON.stringify(cache.data));
             }
             else {
                 console.error('Could not add to cache');
@@ -30,8 +31,11 @@ class RoomController {
                 return null;
             }
         };
-        _addRoomToCache('ABC', 120, 3, 4);
-        _addRoomToCache('AAA', 60, 4, 6);
+
+        // Initial state
+        _addRoomToCache('ABC', 120, 3, 4, {});
+        _addRoomToCache('AAA', 60, 4, 6, {});
+
         this.getRoom = function (req, res) {
             let roomCode = req.params.roomCode;
             let room = _getRoomFromCache(roomCode);
@@ -52,7 +56,9 @@ class RoomController {
             let _numBars = parseInt(numBars);
             let _numLoops = parseInt(numLoops);
             let roomCode = _generateRandomCode(8, 'ABCDEFG');
-            let users = {user}
+            let users = {
+                [user.playerName]: {}
+            }
             _addRoomToCache(roomCode, _bpm, _numBars, _numLoops, users);
             res.json({ data: roomCode });
         };
@@ -63,11 +69,11 @@ class RoomController {
             let room = _getRoomFromCache(roomCode);
 
             // add user to room
-            let usersInRoom = room.users;
-            room.users = { ...usersInRoom, user };
+            room.users[user.playerName] = {};
             _addRoomToCache(roomCode, room.bpm, room.numBars, room.numLoops, room.users);
             
             console.log(`Added user: ${user.playerName}`);
+            console.log(JSON.stringify(cache.data));
             res.json({data: _getRoomFromCache(roomCode)})
         };
     }

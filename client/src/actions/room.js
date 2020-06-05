@@ -18,7 +18,8 @@ export function getRoom(roomCode, cb) {
                         roomCode: response.data.roomCode,
                         bpm: response.data.bpm,
                         numBars: response.data.numBars,
-                        numLoops: response.data.numLoops
+                        numLoops: response.data.numLoops,
+                        users: response.data.users
                     });
                     return response;
                 }
@@ -30,29 +31,25 @@ export function getRoom(roomCode, cb) {
 
 export function addRoom(bpm, numBars, numLoops, user, cb) {
     return (dispatch, prevState) => {
-        api.addRoom(bpm, numBars, numLoops)
+        api.addRoom(bpm, numBars, numLoops, user)
             .then((response) => {
                 dispatch({ 
                     type: 'LOAD_ROOM',
                     roomCode: response.data,
                     bpm, 
                     numBars, 
-                    numLoops
+                    numLoops,
+                    users: { [user.playerName]: {} }
                 });
                 dispatch({
                     type: 'ADD_USER',
                     playerName: user.playerName
                 });
+                dispatch({ type: 'socket/JOIN_ROOM', user, roomCode: response.data });
                 return response;
             })
             .then((response) => { if (cb) cb(response); })
             .catch(error => console.error('Error in addRoom: ' + error));
-    };
-}
-
-export function joinRoom(roomCode) {
-    return (dispatch, prevState) => {
-        dispatch({ type: 'socket/JOIN_ROOM', roomCode });
     };
 }
 
@@ -84,12 +81,6 @@ export function updateRoomNumLoopsSettings(numLoops) {
     };
 }
 
-export function sentMessageToRoom() {
-    return (dispatch, prevState) => {
-        dispatch({ type: 'CHAT_MESSAGE_SENT' });
-    };
-}
-
 export function addUserToRoom(user, cb) {
     return (dispatch, prevState) => {
         const { room: { roomCode } } = prevState();
@@ -100,6 +91,7 @@ export function addUserToRoom(user, cb) {
                     type: 'ADD_USER',
                     playerName: user.playerName
                 });
+                dispatch({ type: 'socket/JOIN_ROOM', user, roomCode });
                 return response;
             })
             .then((response) => { if (cb) cb(response); })
