@@ -76,6 +76,7 @@ class Microphone extends Component {
     saveAudio() {
         const blob = new Blob(this.chunks, { type: 'audio/webm;codecs=opus' });
         const audioURL = URL.createObjectURL(blob);
+        this.props.uploadAudio(blob);        
         this.setState({
             blobData: blob,
             blobUri: audioURL
