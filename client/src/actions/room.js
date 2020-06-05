@@ -45,7 +45,7 @@ export function addRoom(bpm, numBars, numLoops, user, cb) {
                     type: 'ADD_USER',
                     playerName: user.playerName
                 });
-                dispatch({ type: 'socket/JOIN_ROOM', roomCode: response.data });
+                dispatch({ type: 'socket/JOIN_ROOM', user, roomCode: response.data });
                 return response;
             })
             .then((response) => { if (cb) cb(response); })

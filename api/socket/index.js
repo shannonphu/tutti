@@ -11,12 +11,34 @@ const SocketRouter = function (server, cache) {
     // Set up main handlers for each client that connects
     function onSocketConnection(client) {
         console.log('A user connected');
-        client.on('disconnect', onClientDisconnect);
+        client.on('disconnect', () => onClientDisconnect(client));
         client.on('action', (action) => onAction(action, client));
     }
 
     function onClientDisconnect(client) {
-        console.log('A user disconnected');
+        if (client.user) {
+            let { playerName } = client.user;
+            let roomCode = client.roomCode;
+
+            let room = cache.get(roomCode);
+            if (room != undefined) {
+                delete room.users[playerName]
+                if (cache.set(roomCode, {
+                    ...room,
+                    users: room.users
+                })) {
+                    io.sockets.in(roomCode).emit('action', {
+                        type: 'ROOM_PLAYERS_UPDATED',
+                        users: room.users
+                    });
+                    console.log(`User ${playerName} left room ${roomCode}`);
+                    console.log(JSON.stringify(cache.data));
+                }
+            }
+            else {
+                console.error(`Could not get key ${roomCode} from cache`);
+            }
+        }
     }
 
     function onAction(action, client) {
@@ -58,12 +80,15 @@ const SocketRouter = function (server, cache) {
         if (isValidRoomCode(action.roomCode)) {
             let roomCode = action.roomCode;
             client.join(roomCode);
-            console.log(`User is in room: ${roomCode}`);
+            client.user = action.user;
+            client.roomCode = roomCode;
+            console.log(`User ${action.user.playerName} is in room: ${roomCode}`);
 
             let room = cache.get(roomCode);
             if (room != undefined) {
+                room[action.user.playerName] = action.user;
                 io.sockets.in(roomCode).emit('action', {
-                    type: 'NEW_PLAYER_ADDED',
+                    type: 'ROOM_PLAYERS_UPDATED',
                     users: room.users
                 });
             }
