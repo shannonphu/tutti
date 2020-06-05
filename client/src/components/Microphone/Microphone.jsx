@@ -21,6 +21,7 @@ class Microphone extends Component {
         this.mediaRecorder = null;
 
         this.handleClick = this.handleClick.bind(this);
+        this.handlePlayClick = this.handlePlayClick.bind(this);
         this.startMicrophonePermissions = this.startMicrophonePermissions.bind(this);
         this.stopMicrophoneAccess = this.stopMicrophoneAccess.bind(this);
         this.startRecording = this.startRecording.bind(this);
@@ -76,7 +77,7 @@ class Microphone extends Component {
     saveAudio() {
         const blob = new Blob(this.chunks, { type: 'audio/webm;codecs=opus' });
         const audioURL = URL.createObjectURL(blob);
-        this.props.uploadAudio(blob);        
+        this.props.uploadAudio(blob);
         this.setState({
             blobData: blob,
             blobUri: audioURL
@@ -92,13 +93,23 @@ class Microphone extends Component {
         }
     }
 
-    render() {
-        if (this.state.blobUri) {
-            new Audio(this.state.blobUri).play();
-        }
+    handlePlayClick(playerName) {
+        new Audio(this.props.room.users[playerName].audioUrl).play();
+    }
 
+    render() {
         return (
             <div>
+                {Object.keys(this.props.room.users).map((playerName) => {
+                    let playerData = this.props.room.users[playerName];
+                    if (playerData.audioUrl != null) {
+                        return (<IconButton
+                            onClick={() => this.handlePlayClick(playerName)}>
+                            <MicIcon />
+                            {playerName}
+                        </IconButton>)
+                    }
+                })}
                 <IconButton
                     type='submit'
                     name='action'
