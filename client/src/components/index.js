@@ -13,3 +13,4 @@ export { default as GameInfoTable } from './GameInfoTable/GameInfoTable';
 export { default as Metronome } from './Metronome/Metronome';
 export { default as Microphone } from './Microphone/Microphone';
 export { default as AudioDisplayTable } from './AudioDisplayTable/AudioDisplayTable';
+export { default as Looper } from './Looper/Looper';

@@ -53,7 +53,7 @@ class LandingPage extends Component {
             return;
         }
 
-        let user = { playerName: this.state.playerName }
+        let user = { playerName: this.state.playerName };
         this.props.addUserToRoom(user);
     }
 
@@ -66,12 +66,12 @@ class LandingPage extends Component {
             return;
         }
 
-        let user = { playerName: this.state.playerName }
+        let user = { playerName: this.state.playerName };
         let defaultRoom = this.props.room;
 
         this.props.addRoom(defaultRoom.bpm, defaultRoom.numBars, defaultRoom.numLoops, user, (room) => {
-            this.props.history.push(`/room/${room.data}`)
-        })
+            this.props.history.push(`/room/${room.data}`);
+        });
     }
 
     handleTextChange(event) {
@@ -82,15 +82,15 @@ class LandingPage extends Component {
     }
 
     buttonGenerator() {
-        var button
+        var button;
         if (isRoomCodeSet(this.props)) {
             button = 
                 <Button
                     onClick = {this.handleJoinRoom}
                     variant = "contained"
                 >
-                Join Room
-            </Button>
+                    Join Room
+                </Button>;
         }
         else {
             button =
@@ -99,9 +99,9 @@ class LandingPage extends Component {
                     variant = "contained"
                 >
                     Create Room
-                </Button>
+                </Button>;
         }
-        return button
+        return button;
     }
 
     render() {
@@ -157,7 +157,7 @@ class LandingPage extends Component {
                     className = {classes.image} 
                 />
             </Grid> // Grid container main
-        ) // return    
+        ); // return    
     } // render
 }
 
