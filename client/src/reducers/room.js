@@ -69,6 +69,19 @@ function RoomReducer(state = {
                 ...state,
                 users: { ...action.users }
             };
+        case 'RECEIVED_AUDIO':
+            var blob = new Blob([action.audioData], { type: 'audio/webm;codecs=opus' });
+            const audioUrl = URL.createObjectURL(blob);
+            return {
+                ...state,
+                users: { 
+                    ...state.users, 
+                    [action.playerName]: {
+                        ...state.users[action.playerName],
+                        audioUrl
+                    } 
+                }
+            };
         default:
             return state;
     }
