@@ -32,7 +32,7 @@ const SocketRouter = function (server, cache) {
                         users: room.users
                     });
                     console.log(`User ${playerName} left room ${roomCode}`);
-                    console.log(JSON.stringify(cache.data));
+                    console.log(cache.data);
                 }
             }
             else {

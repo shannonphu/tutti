@@ -15,7 +15,7 @@ class RoomController {
                 totalBars: numBars * numLoops
             })) {
                 console.log('Added room to cache');
-                console.log(JSON.stringify(cache.data));
+                console.log(cache.data);
             }
             else {
                 console.error('Could not add to cache');
@@ -73,7 +73,7 @@ class RoomController {
             _addRoomToCache(roomCode, room.bpm, room.numBars, room.numLoops, room.users);
             
             console.log(`Added user: ${user.playerName}`);
-            console.log(JSON.stringify(cache.data));
+            console.log(cache.data);
             res.json({data: _getRoomFromCache(roomCode)})
         };
     }
