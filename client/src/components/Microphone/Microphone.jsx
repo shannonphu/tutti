@@ -21,7 +21,6 @@ class Microphone extends Component {
         this.mediaRecorder = null;
 
         this.handleClick = this.handleClick.bind(this);
-        this.handlePlayClick = this.handlePlayClick.bind(this);
         this.startMicrophonePermissions = this.startMicrophonePermissions.bind(this);
         this.stopMicrophoneAccess = this.stopMicrophoneAccess.bind(this);
         this.startRecording = this.startRecording.bind(this);
@@ -93,23 +92,9 @@ class Microphone extends Component {
         }
     }
 
-    handlePlayClick(playerName) {
-        new Audio(this.props.room.users[playerName].audioUrl).play();
-    }
-
     render() {
         return (
             <div>
-                {Object.keys(this.props.room.users).map((playerName) => {
-                    let playerData = this.props.room.users[playerName];
-                    if (playerData.audioUrl != null) {
-                        return (<IconButton
-                            onClick={() => this.handlePlayClick(playerName)}>
-                            <MicIcon />
-                            {playerName}
-                        </IconButton>)
-                    }
-                })}
                 <IconButton
                     type='submit'
                     name='action'
