@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Tone from 'tone';
 import Peaks from 'peaks.js';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,7 +6,7 @@ import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StopIcon from '@material-ui/icons/Stop';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import { Player } from '../Tone/Player/Player';
+import { Player } from './Player';
 import SAMPLE_MP3 from '../../assets/kevin_bossa.mp3';
 
 class AudioWaveform extends Component {
