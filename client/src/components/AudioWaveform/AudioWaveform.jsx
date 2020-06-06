@@ -1,103 +1,51 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
 import Peaks from 'peaks.js';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MicIcon from '@material-ui/icons/Mic';
-import MicOffIcon from '@material-ui/icons/MicOff';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import StopIcon from '@material-ui/icons/Stop';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import { Player } from '../Tone/Player/Player';
 import SAMPLE_MP3 from '../../assets/kevin_bossa.mp3';
 
 class AudioWaveform extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = { 
+            peaks: null, 
+            isPlaying: false 
+        };
+
+        this.togglePlay = this.togglePlay.bind(this);
+        this.zoomIn = this.zoomIn.bind(this);
+        this.zoomOut = this.zoomOut.bind(this);
+        this.seek = this.seek.bind(this);
+        this.playSegment = this.playSegment.bind(this);
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.audioContext = new AudioContext();
     }
 
     async componentDidMount() {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioContext = new AudioContext();
+        let _component = this;
 
         await fetch(SAMPLE_MP3)
-            .then(function (response) {
+            .then((response) => {
                 return response.arrayBuffer();
             })
-            .then(function (buffer) {
-                return audioContext.decodeAudioData(buffer);
+            .then((buffer) => {
+                return this.audioContext.decodeAudioData(buffer);
             })
-            .then(function (audioBuffer) {
-                const player = {
-                    externalPlayer: new Tone.Player(audioBuffer),
-                    eventEmitter: null,
-
-                    init: function (eventEmitter) {
-                        this.eventEmitter = eventEmitter;
-
-                        this.externalPlayer.sync();
-                        this.externalPlayer.start();
-
-                        Tone.connectSeries(this.externalPlayer, Tone.Master);
-
-                        eventEmitter.emit('player.canplay');
-
-                        Tone.Transport.scheduleRepeat(() => {
-                            var time = this.getCurrentTime();
-                            eventEmitter.emit('player.timeupdate', time);
-
-                            if (time >= this.getDuration()) {
-                                Tone.Transport.stop();
-                            }
-                        }, 0.25);
-                    },
-
-                    destroy: function () {
-                        Tone.context.dispose();
-                        this.externalPlayer = null;
-                        this.eventEmitter = null;
-                    },
-
-                    play: function () {
-                        Tone.Transport.start(
-                            Tone.now(),
-                            this.getCurrentTime()
-                        );
-
-                        this.eventEmitter.emit('player.play', this.getCurrentTime());
-                    },
-
-                    pause: function () {
-                        Tone.Transport.pause();
-                        this.eventEmitter.emit('player.pause', this.getCurrentTime());
-                    },
-
-                    isPlaying: function () {
-                        return Tone.Transport.state === "started";
-                    },
-
-                    seek: function (time) {
-                        Tone.Transport.seconds = time;
-
-                        this.eventEmitter.emit('player.seeked', this.getCurrentTime());
-                        this.eventEmitter.emit('player.timeupdate', this.getCurrentTime());
-                    },
-
-                    isSeeking: function () {
-                        return false;
-                    },
-
-                    getCurrentTime: function () {
-                        return this.externalPlayer.buffer.toSeconds(Tone.Transport.position);
-                    },
-
-                    getDuration: function () {
-                        return this.externalPlayer.buffer.duration;
-                    }
-                };
+            .then((audioBuffer) => {
                 var options = {
                     containers: {
-                        zoomview: document.getElementById('zoomview'),
-                        overview: document.getElementById('overview')
+                        zoomview: this.refs.zoomView,
+                        overview: this.refs.overView
                     },
                     height: 150,
-                    player: player,
+                    player: new Player(audioBuffer),
                     webAudio: {
                         audioBuffer: audioBuffer,
                         scale: 128,
@@ -114,64 +62,70 @@ class AudioWaveform extends Component {
                         return;
                     }
 
-                    console.log('Peaks instance ready');
-
-                    document.querySelector('[data-action="play"]').addEventListener('click', function () {
-                        peaksInstance.player.play();
-                    });
-
-                    document.querySelector('[data-action="pause"]').addEventListener('click', function () {
-                        peaksInstance.player.pause();
-                    });
-
-                    document.querySelector('button[data-action="seek"]').addEventListener('click', function (event) {
-                        var time = document.getElementById('seek-time').value;
-                        var seconds = parseFloat(time);
-
-                        if (!Number.isNaN(seconds)) {
-                            peaksInstance.player.seek(seconds);
-                        }
-                    });
-
-                    document.querySelector('[data-action="zoom-in"]').addEventListener('click', function () {
-                        peaksInstance.zoom.zoomIn();
-                    });
-
-                    document.querySelector('[data-action="zoom-out"]').addEventListener('click', function () {
-                        peaksInstance.zoom.zoomOut();
-                    });
-
-                    document.querySelector('[data-action="play-segment"]').addEventListener('click', function () {
-                        var start = document.getElementById('segment-start').value;
-                        var startInSeconds = parseFloat(start);
-
-                        var end = document.getElementById('segment-end').value;
-                        var endInSeconds = parseFloat(end);
-
-                        peaksInstance.player.playSegment({ startTime: startInSeconds, endTime: endInSeconds, editable: true });
-                    });
+                    _component.setState({ peaks: peaksInstance });
                 });
             });
+    }
+
+    togglePlay() {
+        if (this.state.isPlaying) {
+            this.state.peaks.player.pause();
+        } else {
+            this.state.peaks.player.play();
+        }
+
+        this.setState({ isPlaying: !this.state.isPlaying });
+    }
+
+    zoomIn() {
+        this.state.peaks.zoom.zoomIn();
+    }
+
+    zoomOut() {
+        this.state.peaks.zoom.zoomOut();
+    }
+
+    // Demo implementation. Might remove.
+    seek() {
+        var time = this.refs.seekTime.value;
+        var seconds = parseFloat(time);
+        if (!Number.isNaN(seconds)) {
+            this.state.peaks.player.seek(seconds);
+        }
+    }
+
+    // Demo implementation. Might remove.
+    playSegment() {
+        var start = this.refs.segmentStartTime.value;
+        var startInSeconds = parseFloat(start);
+        var end = this.refs.segmentEndTime.value;
+        var endInSeconds = parseFloat(end);
+        this.state.peaks.player.playSegment({ startTime: startInSeconds, endTime: endInSeconds, editable: true });
     }
 
     render() {
         return (
             <div>
-                <div id='zoomview' style={{ backgroundColor: 'white', borderColor: 'grey' }}></div>
-                <div id='overview' style={{ backgroundColor: 'white', borderColor: 'grey' }}></div>
-                <div id="demo-controls">
-                    <div id="controls">
-                        <button data-action="play">Play</button>
-                        <button data-action="pause">Pause</button>
-                        <input type="text" id="seek-time" value="0.0" />
-                        <button data-action="seek">Seek</button>
-                        <button data-action="zoom-in">Zoom in</button>
-                        <button data-action="zoom-out">Zoom out</button>
-                        <input type="text" id="segment-start" value="2.0" />
-                        <input type="text" id="segment-end" value="5.0" />
-                        <button data-action="play-segment">Play segment</button>
-                    </div>
-                </div>
+                <div id='zoomview' ref='zoomView' style={{ backgroundColor: 'white', borderColor: 'grey' }}></div>
+                <div id='overview' ref='overView' style={{ backgroundColor: 'white', borderColor: 'grey' }}></div>
+                {this.state.peaks ? 
+                    <div>
+                        <IconButton onClick={this.togglePlay}>
+                            {this.state.isPlaying ? <StopIcon /> : <PlayCircleFilledIcon />}
+                        </IconButton>
+                        <IconButton onClick={this.zoomIn}>
+                            <ZoomInIcon />
+                        </IconButton>
+                        <IconButton onClick={this.zoomOut}>
+                            <ZoomOutIcon />
+                        </IconButton>
+                        <input type='text' defaultValue='0.0' ref='seekTime' />
+                        <Button onClick={this.seek}>Seek</Button>
+                        <input type='text' defaultValue='2.0' ref='segmentStartTime' />
+                        <input type='text' defaultValue='5.0' ref='segmentEndTime' />
+                        <Button onClick={this.playSegment}>Play segment</Button>
+                    </div> 
+                : null}
             </div>
         )
     }
