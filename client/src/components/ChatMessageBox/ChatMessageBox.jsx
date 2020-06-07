@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
+import PropTypes from 'prop-types';
+import { Grid, Paper, TextField, IconButton } from '@material-ui/core';
+import { withStyles, withTheme } from '@material-ui/core/styles';
 import SendIcon from '@material-ui/icons/Send';
-import { ChatFeed, Message } from 'react-chat-ui';
+import { ChatFeed } from 'react-chat-ui';
+import styles from './ChatMessageBoxStyles';
+import './ChatMessageBoxStyles.css'
 
 class ChatMessageBox extends Component {
     constructor(props) {
@@ -29,24 +31,29 @@ class ChatMessageBox extends Component {
     }
 
     render() {
+        const { classes, theme } = this.props;
+
         return (
-            <div>
-                <div>
+            <Paper>
+                <div className={classes.chatContainer}>
                     <ChatFeed
                         messages={this.props.user.messages}
                         isTyping={false}
                         hasInputField={false}
                         showSenderName
                         bubblesCentered={false}
-                        maxHeight={400}
+                        maxHeight={300}
+                        className={classes.chatFeed}
+                        InputProps
                         bubbleStyles={
                             {
                                 text: {
                                     fontSize: 16
                                 },
                                 chatbubble: {
+                                    backgroundColor: theme.palette.primary.light,
                                     borderRadius: 30,
-                                    padding: 10
+                                    padding: '12px 15px' 
                                 }
                             }
                         }
@@ -64,9 +71,13 @@ class ChatMessageBox extends Component {
                         </Grid>
                     </form>
                 </div>
-            </div>
+            </Paper>
         )
     }
 }
 
-export default ChatMessageBox;
+ChatMessageBox.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withTheme(withStyles(styles)(ChatMessageBox));

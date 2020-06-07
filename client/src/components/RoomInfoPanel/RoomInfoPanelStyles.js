@@ -1,8 +1,16 @@
 export default (theme) => ({
-    root: {
-        padding: '16px'
+    root: {},
+    roomRoot: {
+        padding: 16,
+        minHeight: 350
     },
     link: {
-        padding: '16px 0 0 0'
+        color: theme.palette.primary.dark
+    },
+    playerGrid: {
+        marginTop: 20
+    },
+    gridListTile: {
+        textAlign: 'center'
     }
 });

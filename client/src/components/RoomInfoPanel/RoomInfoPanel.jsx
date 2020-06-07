@@ -2,22 +2,23 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import Typography from '@material-ui/core/Typography';
 
 import config from '../../config';
-import { PlayerAvatar } from '..';
 import styles from './RoomInfoPanelStyles';
 
 class RoomInfoPanel extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            players: ['Allen', 'Shannon', 'Al', 'Sam', 'Y', 'W', 'F', 'G', 'Qu', 'Jo'] // temporary dummy data; replace with this.props.room.players
-        };
+        this.state = {};
         this.getExternalRoomUrl = this.getExternalRoomUrl.bind(this);
     }
 
@@ -29,28 +30,33 @@ class RoomInfoPanel extends Component {
         const { classes } = this.props;
 
         return (
-            <div className={classes.root}>
-                <h3>Your room:</h3>
-                <Grid container>
-                    <Grid item xs={6}>
-                        <div className={classes.link}>
-                            <Link to={`/room/${this.props.room.roomCode}`}>{this.getExternalRoomUrl()}</Link>
-                        </div>
+            <Paper className={classes.roomRoot}>
+                <Typography variant='h5' gutterBottom>
+                    Your room:
+                </Typography>
+                <Grid container alignItems='center'>
+                    <Grid item xs={10}>
+                        <Link to={`/room/${this.props.room.roomCode}`} className={classes.link}>{this.getExternalRoomUrl()}</Link>
                     </Grid>
-                    <Grid item xs={6}>
-                        <IconButton aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>
+                    <Grid item xs={2} justify='right' alignItems='right'>
+                        <IconButton color='primary' aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>
                             <FileCopyIcon />
                         </IconButton>
                     </Grid>
                 </Grid>
-                <GridList cellHeight={70} cols={5}>
-                    {Object.entries(this.props.room.users).map(([player, data]) => 
-                        <GridListTile key={player} cols={1}>
-                            <PlayerAvatar name={player} />
-                        </GridListTile>    
-                    )}
-                </GridList>
-            </div>
+                <div className={classes.playerGrid}>
+                    <Typography variant='h5' gutterBottom>
+                        Players:
+                </Typography>
+                    <GridList cellHeight={40} cols={3}>
+                        {Object.entries(this.props.room.users).map(([player, data]) =>
+                            <GridListTile key={player} cols={1} className={classes.gridListTile}>
+                                <Chip color='primary' variant='outlined' avatar={<Avatar>{player.charAt(0).toUpperCase()}</Avatar>} label={player} />
+                            </GridListTile>
+                        )}
+                    </GridList>
+                </div>
+            </Paper>
         )
     }
 }

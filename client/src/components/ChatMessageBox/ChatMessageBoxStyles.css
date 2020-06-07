@@ -1,0 +1,4 @@
+/* This is a hack because the lib is missing a internal style we can't reach in React */
+.chat-history {
+    min-height: 300px;
+}
