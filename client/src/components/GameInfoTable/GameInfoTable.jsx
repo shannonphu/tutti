@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Table from '@material-ui/core/Table';
@@ -61,6 +61,11 @@ class GameInfoTable extends Component {
                 <TableContainer component={Paper}>
                     <Table aria-label='simple table'>
                         <TableBody>
+                            <TableRow>
+                                <TableCell colSpan={2}>
+                                    <Typography variant='h6'>Game Settings</Typography>
+                                </TableCell>
+                            </TableRow>
                             {data.map((row, index) => (
                                 <TableRow key={index}>
                                     <TableCell component='th' scope='row'>

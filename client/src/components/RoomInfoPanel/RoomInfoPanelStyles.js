@@ -1,17 +1,12 @@
 export default (theme) => ({
     root: {
-        padding: 0
+        padding: 16,
+        minHeight: 350
+    },
+    playerGrid: {
+        marginTop: 20
     },
     gridListTile: {
         textAlign: 'center'
-    },
-    navyChip: {
-        borderColor: 'navy',
-        color: 'navy',
-
-        '& .MuiChip-avatar': {
-            backgroundColor: 'navy',
-            color: 'white'
-        }
-    },
+    }
 });

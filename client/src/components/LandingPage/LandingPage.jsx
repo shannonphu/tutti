@@ -67,7 +67,7 @@ class LandingPage extends Component {
             button = 
                 <Button
                     onClick = {this.handleJoinRoom}
-                    variant = "contained"
+                    variant = 'outlined'
                 >
                     Join Room
                 </Button>;
@@ -76,7 +76,7 @@ class LandingPage extends Component {
             button =
                 <Button
                     onClick = {this.handleCreateRoom}
-                    variant = "contained"
+                    variant = 'outlined'
                 >
                     Create Room
                 </Button>;

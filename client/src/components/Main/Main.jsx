@@ -1,37 +1,48 @@
 import React, { Component } from 'react';
-import { Nav, Container, LandingPage, RoomPageContainer, GamePortalContainer } from '..';
+import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import { withStyles, ThemeProvider } from '@material-ui/core/styles';
+import { Nav, Container, LandingPage, RoomPageContainer, GamePortalContainer } from '..';
 import { GAME_STAGE, ROOM_STATE } from '../../utils/stateEnums';
+import styles from './MainStyles';
+import theme from './MainTheme';
 
 class Main extends Component {
     render() {
+        const { classes } = this.props;
         return (
-            <div>
-                <Nav />
+            <ThemeProvider theme={theme}>
+                <div>
+                    <Nav />
 
-                {/*Alternate pages beneath navbar, based on current route*/}
-                <Switch>
-                    <Route path="/room/:roomId?" component={(props) => {
-                        if (this.props.room.roomState == ROOM_STATE.EMPTY) {
-                            return <RoomPageContainer {...this.props} {...props} />
-                        } else if (this.props.room.roomState == ROOM_STATE.VALID) {
-                            if (this.props.game.stage == GAME_STAGE.WAITING_FOR_PLAYERS) {
+                    {/*Alternate pages beneath navbar, based on current route*/}
+                    <Switch>
+                        <Route path="/room/:roomId?" component={(props) => {
+                            if (this.props.room.roomState == ROOM_STATE.EMPTY) {
                                 return <RoomPageContainer {...this.props} {...props} />
-                            } else {
-                                return <GamePortalContainer {...this.props} {...props} />
+                            } else if (this.props.room.roomState == ROOM_STATE.VALID) {
+                                if (this.props.game.stage == GAME_STAGE.WAITING_FOR_PLAYERS) {
+                                    return <RoomPageContainer {...this.props} {...props} />
+                                } else {
+                                    return <GamePortalContainer {...this.props} {...props} />
+                                }
                             }
-                        } 
-                        else if (this.props.room.roomState == ROOM_STATE.INVALID) {
-                            return <Redirect to = '/' />
-                        }
-                    }}
-                    />
-                    <Route path='/test' render={() => <Container {...this.props} />} />                    
-                    <Route path='/' render={() => <LandingPage {...this.props} />} />                    
-                </Switch>
-            </div>
+                            else if (this.props.room.roomState == ROOM_STATE.INVALID) {
+                                return <Redirect to = '/' />
+                            }
+                        }}
+                        />
+                        <Route path='/test' render={() => <Container {...this.props} />} />                    
+                        <Route path='/' render={() => <LandingPage {...this.props} />} />                    
+                    </Switch>
+                </div>
+            </ThemeProvider>
         );
     }
 }
 
-export default Main;
+Main.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Main);
