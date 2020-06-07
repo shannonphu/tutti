@@ -13,7 +13,7 @@ class Main extends Component {
         return (
             <ThemeProvider theme={theme}>
                 <Nav />
-                <div className={classes.container}>
+                <div className={classes.root}>
                     {/*Alternate pages beneath navbar, based on current route*/}
                     <Switch>
                         <Route path="/room/:roomId?" component={(props) => {

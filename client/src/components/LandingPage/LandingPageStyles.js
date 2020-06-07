@@ -3,7 +3,7 @@ import theLick from '../../assets/transparent_lick.png';
 export default (theme) => ({
     root: {
         flexGrow: 1,
-        marginTop: -35
+        marginTop: -60
     },
     image: {
         backgroundImage: `url(${theLick})`,
@@ -17,7 +17,7 @@ export default (theme) => ({
         alignItems: 'center',
     },
     container: {
-        minHeight: '100vh',
+        minHeight: '95vh',
 
     }
 });

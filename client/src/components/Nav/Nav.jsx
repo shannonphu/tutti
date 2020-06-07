@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,13 +13,13 @@ class Nav extends Component {
     render() {
         const { classes } = this.props;
         return (
-            <AppBar position='sticky' color='primary'>
+            <AppBar position='sticky' className={classes.root}>
                 <Toolbar variant='dense'>
                     <IconButton edge='start' color='inherit' aria-label='menu'>
                         <MusicNoteIcon />
                     </IconButton>
                     <Typography variant='h6' color='inherit'>
-                        <div className={classes.title}>tut.ti</div>
+                        <Link to='/' className={classes.title}>tut.ti</Link>
                     </Typography>
                 </Toolbar>
             </AppBar>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import MaterialLink from '@material-ui/core/Link';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -31,13 +30,13 @@ class RoomInfoPanel extends Component {
         const { classes } = this.props;
 
         return (
-            <Paper className={classes.root}>
+            <Paper className={classes.roomRoot}>
                 <Typography variant='h5' gutterBottom>
                     Your room:
                 </Typography>
                 <Grid container direction='row' justify='center' alignItems='center'>
                     <Grid item xs={9}>
-                        <Link to={`/room/${this.props.room.roomCode}`}><MaterialLink color='primary'>{this.getExternalRoomUrl()}</MaterialLink></Link>
+                        <Link to={`/room/${this.props.room.roomCode}`} className={classes.link}>{this.getExternalRoomUrl()}</Link>
                     </Grid>
                     <Grid item xs={3}>
                         <IconButton color='primary' aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>

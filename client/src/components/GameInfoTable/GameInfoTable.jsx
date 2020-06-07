@@ -59,7 +59,7 @@ class GameInfoTable extends Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <TableContainer component={Paper}>
-                    <Table aria-label='simple table'>
+                    <Table size='small' aria-label='simple table'>
                         <TableBody>
                             <TableRow>
                                 <TableCell colSpan={2}>

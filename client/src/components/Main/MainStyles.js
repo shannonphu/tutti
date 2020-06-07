@@ -1,5 +1,7 @@
 export default (theme) => ({
-    container: {
-        marginTop: 35
+    root: {
+        paddingTop: 30,
+        minHeight: '95vh',
+        backgroundColor: theme.palette.grey['50']
     }
 });
