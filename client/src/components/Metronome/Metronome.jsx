@@ -10,7 +10,7 @@ class Metronome extends Component {
         this.state = { isOn: false };
         this.handleClick = this.handleClick.bind(this);
 
-        let volume = new Tone.Volume(10);
+        let volume = new Tone.Volume(5);
         let synth = new Tone.MembraneSynth().chain(volume, Tone.Master);
         this.loop = new Tone.Loop((time) => {
             synth.triggerAttackRelease('C1', '4n', time);
@@ -21,12 +21,13 @@ class Metronome extends Component {
         e.preventDefault();
         if (this.state.isOn) {
             this.loop.stop();
-            Tone.Transport.stop();
         } else {
-            Tone.Transport.start();
             this.loop.start();
         }
 
+        if (Tone.Transport.state == 'stopped') {
+            Tone.Transport.start();
+        }
         this.setState({ isOn: !this.state.isOn })
     }
 
