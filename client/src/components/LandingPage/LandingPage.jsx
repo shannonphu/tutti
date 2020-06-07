@@ -110,8 +110,9 @@ class LandingPage extends Component {
                         className  = {classes.container}
                     >
                         <Grid item>
-                            <form onSubmit={this.handleCreateRoom}>    
+                            <form onSubmit={isRoomCodeSet(this.props) ? this.handleJoinRoom : this.handleCreateRoom}>    
                                 <TextField
+                                    autoFocus
                                     onChange     = {this.handleTextChange}
                                     variant      = "outlined"
                                     margin       = "normal"
