@@ -3,7 +3,7 @@ import Tone from 'tone';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { ChatMessageBox, GameInfoTable, Microphone, AudioDisplayTable, SampleLooper, Looper } from '..';
-import Game from './GameModel';
+import Game from '../../utils/GameModel';
 
 class GamePortalContainer extends Component {
     constructor(props) {
