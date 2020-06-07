@@ -2,77 +2,185 @@ import React, { Component } from 'react';
 // import { withStyles } from '@material-ui/core/styles';
 import Tone from 'tone';
 import LoopIcon from '@material-ui/icons/Loop';
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import Button from '@material-ui/core/Button';
-import SAMPLE_MP3 from '../../assets/kevin_bossa.mp3';
+import Grid from '@material-ui/core/Grid';
 
 class Looper extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoaded: false,
+            isRecording: false,
+            isPlaying: false
         };
-        Tone.Transport.bpm.value = this.props.room.bpm;
+
+        this.chunks = [];
+
+        this.mic = new Tone.UserMedia().toMaster(); // recording feedback for testing
+        // Tone.Transport.bpm.value = this.props.room.bpm;
         Tone.context.latencyHint = 'playback';
 
-        this.player = new Tone.Player(SAMPLE_MP3).toMaster();
-        this.player.retrigger = true;
+        this.player = new Tone.Player().toMaster(); // eventually use Tone.Player to get audio from server
+        this.mediaRecorder = null;
 
-        Tone.Buffer.on('load', 
-            () => {this.setState({...this.state, isLoaded: true});}
+        // metronome
+        let metronomeSynth = new Tone.MembraneSynth({volume: 5}).toMaster();
+        this.metronome = new Tone.Loop(
+            (time) => {metronomeSynth.triggerAttackRelease('C1', '4n', time);},
+            '4n'
         );
-        
-        this.handleOnClick = this.handleOnClick.bind(this);
-        this.playAudioCallback = this.playAudioCallback.bind(this);
 
+        this.handleRecordLoop = this.handleRecordLoop.bind(this);
+        this.handlePlaybackLoop = this.handlePlaybackLoop.bind(this);
+        this.playAudioCallback = this.playAudioCallback.bind(this);
+        this.startMicrophonePermissions = this.startMicrophonePermissions.bind(this);
+        this.stopMicrophoneAccess = this.stopMicrophoneAccess.bind(this);
+        this.startRecording = this.startRecording.bind(this);
+        this.stopRecording = this.stopRecording.bind(this);
+        this.saveAudio = this.saveAudio.bind(this);
+
+        // declare Tone.Time objects
         this.toneNumBars = Tone.Time(this.props.room.numBars, 'm');
         this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm')
+        
+        // looper initialization
         this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars);
         this.looper.loop = this.props.room.numLoops;
-        this.looper.loopStart = '1n';
-        this.looper.loopEnd = this.toneNumBars + Tone.Time('1n');
+        this.looper.loopStart = '4n';
+        this.looper.loopEnd = this.toneNumBars + Tone.Time('4n');
 
+        // start and stop recording events
+        this.startRecordEvent = new Tone.Event(this.startRecording);
+        this.stopRecordEvent = new Tone.Event(this.stopRecording);
+    }
+
+    startMicrophonePermissions() {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            window.streamReference = stream;
+
+            this.setState({ hasAccessToMicrophone: true });
+
+            this.mediaRecorder = new MediaRecorder(stream);
+            this.mediaRecorder.ondataavailable = e => {
+                if (e.data && e.data.size > 0) {
+                    this.chunks.push(e.data);
+                }
+            };
+        });
     }
     
+    stopMicrophoneAccess() {
+        window.streamReference.getAudioTracks().forEach((track) => {
+            track.stop();
+        });
+        this.setState({ hasAccessToMicrophone: false });
+    }
+
+    startRecording() {
+        console.log("record triggered")
+        this.chunks = [];
+
+        this.mic.open().then(() => {
+            this.mediaRecorder.start(5);
+            this.setState({ isRecording: true });
+        });
+    }
+
+    stopRecording() {
+
+        this.stopMicrophoneAccess();
+        this.mediaRecorder.stop();
+        this.mic.close();
+        this.setState({ isRecording: false });
+        this.saveAudio();
+    }
+
+    saveAudio() {
+        const blob = new Blob(this.chunks, { type: 'audio/webm;codecs=opus' });
+        const audioURL = URL.createObjectURL(blob);
+        this.props.uploadAudio(blob);
+        this.setState({
+            blobData: blob,
+            blobUri: audioURL
+        });
+    }
+
     playAudioCallback(time, duration) {
         this.player.start(time, 0, duration); 
     }
 
-    handleOnClick(event) {
+    handleRecordLoop(event) {
         event.preventDefault();
-        console.log(this.looper)
-        if (this.looper.state == 'stopped') {
 
-            this.looper.start('1n'); 
-            this.looper.stop(this.toneTotalBars + Tone.Time('1n'));
-            Tone.Transport.seconds = 0; // restart
-            
+        // Ask the user to activate their mic
+        if (!this.state.hasAccessToMicrophone) {
+            this.startMicrophonePermissions();
         }
-        else if (this.looper.state == 'started') {
-            this.looper.stop();
-            this.player.stop();
-        }
-        else {
-            console.log('state is busted');
-        }
+
+        Tone.Transport.stop(); // Restart the Transport (probably unnecessary later)
+        Tone.Transport.cancel(); 
+
+        // schedule the events
+        this.metronome.start(0).stop('1:0:0');
+        this.startRecordEvent.start('1:1:0');
+        this.stopRecordEvent.start(Tone.Time('1:1:0') + this.toneNumBars);
+        console.log(this.toneNumBars);
+
+        Tone.Transport.start();
+
+    }
+    handlePlaybackLoop(event) {
+
+        event.preventDefault();
+
+        // Grab the audio data and load to the buffer.
+        let playerName = this.props.user.playerName;
+        let playerData = this.props.room.users[playerName];
+        let audioUrl = playerData.audioUrl;
+        this.player.buffer = new Tone.Buffer(audioUrl);
+
+        // cancel recording related events and restart
+        Tone.Transport.cancel();
+        Tone.Transport.seconds = 0; // restart
+
+        this.looper.start(0); 
+        this.looper.stop(this.toneTotalBars);
+
         if (Tone.Transport.state == 'stopped') {
             Tone.Transport.start();
         }
     }
 
     render() {
-        const isLoaded = this.state.isLoaded;
         return (
-            <div>
-                <Button
-                    onClick   = {this.handleOnClick}
-                    disabled  = {!isLoaded}
-                    variant   = "contained"
-                    color     = "default"
-                    startIcon = {<LoopIcon/>}
-                >
-                    Loop Sample mp3
-                </Button>
-            </div>
+            <Grid container
+                direction  = "column"
+                justify    = "center"
+                alignItems = "center"
+            >
+                <Grid item>
+                    <Button
+                        onClick   = {this.handleRecordLoop}
+                        disabled  = {this.state.isRecording || this.state.isPlaying}
+                        variant   = "contained"
+                        color     = "primary"
+                        startIcon = {<LoopIcon/>}
+                    >
+                        Record a Loop
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button
+                        onClick   = {this.handlePlaybackLoop}
+                        disabled  = {this.state.isRecording || this.state.isPlaying}
+                        variant   = "contained"
+                        color     = "secondary"
+                        startIcon = {<PlayCircleOutlineIcon/>}
+                    > Play back my Loop
+                    </Button>
+                </Grid>
+            </Grid>
         );
     }
 }
