@@ -84,12 +84,14 @@ class Microphone extends Component {
     }
 
     handleClick() {
-        if (this.state.isRecording) {
+        let recordingLength = Tone.Time(`${this.props.room.numBars}m`).toSeconds() * 1000;
+        recordingLength = 3000;
+
+        this.startRecording();
+        setTimeout(() => {
             this.stopRecording();
             this.saveAudio();
-        } else {
-            this.startRecording();
-        }
+        }, recordingLength);
     }
 
     render() {

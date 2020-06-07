@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import StopIcon from '@material-ui/icons/Stop';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import { AudioWaveform, PlayerAvatar } from '..';
 
 class AudioDisplayTable extends Component {
     constructor(props) {
@@ -16,9 +16,8 @@ class AudioDisplayTable extends Component {
             isPlayingSingle: false
         };
         this.playSelectedAudio = this.playSelectedAudio.bind(this);
+        this.stopSelectedAudio = this.stopSelectedAudio.bind(this);
         this.playMergedAudio = this.playMergedAudio.bind(this);
-
-        this.waveform = new Tone.Waveform();
 
         let availableAudio = {};
         Object.keys(this.props.room.users).map((playerName, i) => {
@@ -42,15 +41,15 @@ class AudioDisplayTable extends Component {
     }
 
     playSelectedAudio(playerName) {
-        if (this.state.isPlayingSingle) {
-            this.player.get(playerName).stop();
-            Tone.Transport.stop();
-        } else {
-            Tone.Transport.start();
-            this.player.get(playerName).start();
-        }
-        
-        this.setState({ isPlayingSingle: !this.state.isPlayingSingle });
+        Tone.Transport.start();
+        this.player.get(playerName).start();
+        this.setState({ isPlayingSingle: true });
+    }
+
+    stopSelectedAudio(playerName) {
+        this.player.get(playerName).stop();
+        Tone.Transport.stop();
+        this.setState({ isPlayingSingle: false });
     }
 
     playMergedAudio() {
@@ -67,34 +66,33 @@ class AudioDisplayTable extends Component {
 
     render() {
         return (
-            <div>
-                <IconButton
-                    onClick={this.playMergedAudio}>
-                    <PlayCircleFilledIcon /> Merged
-                </IconButton>
-                <List>
-                    {Object.keys(this.props.room.users).map((playerName, i) => {
-                        let playerData = this.props.room.users[playerName];
-                        if (playerData.audioUrl != null) {
-                            return (
-                                <div key={i}>
-                                    <ListItem>
-                                        <ListItemIcon>
-                                            <IconButton
-                                                onClick={() => this.playSelectedAudio(playerName)}>
-                                                <PlayCircleFilledIcon />
-                                            </IconButton>
-                                        </ListItemIcon>
-                                        <ListItemText primary={playerName} />
-                                    </ListItem>
-                                    <Divider />
-                                </div>
-                            )
-                        }
-                    })}
-                </List>
-            </div>
-        )
+            <Grid container spacing={10}>
+                {Object.keys(this.props.room.users).map((playerName, i) => {
+                    let playerData = this.props.room.users[playerName];
+                    if (playerData.audioUrl != null) {
+                        return (
+                            <Grid container 
+                                direction="row"
+                                justify="center"
+                                alignItems="center" 
+                                key={i}>
+                                <Grid item xs={1}>
+                                    <div><PlayerAvatar name={playerName} /></div>
+                                    <IconButton onClick={() => this.playSelectedAudio(playerName)}>
+                                        <PlayCircleFilledIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => this.stopSelectedAudio(playerName)}>
+                                        <StopIcon />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={11}>
+                                    <Paper><AudioWaveform audioName={playerName} audioUrl={playerData.audioUrl} height={100} shouldShowControls={false} /></Paper>
+                                </Grid>
+                            </Grid>)
+                    }
+                })}
+                <Button color='primary' onClick={this.playMergedAudio} endIcon={<PlayCircleFilledIcon fontSize='small' />}>Merged</Button>
+            </Grid>)
     }
 }
 
