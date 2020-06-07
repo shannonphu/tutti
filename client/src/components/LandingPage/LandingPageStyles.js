@@ -9,7 +9,7 @@ export default (theme) => ({
         backgroundImage: `url(${theLick})`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: '90%',
-        backgroundColor: '#434343ff',
+        backgroundColor: theme.palette.primary.landing,
         backgroundPosition: 'center center',
     },
     paper: {

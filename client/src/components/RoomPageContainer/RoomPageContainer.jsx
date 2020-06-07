@@ -37,10 +37,10 @@ class RoomPageContainer extends Component {
                             if (isUserCreated(this.props)) {
                                 return(
                                     <Container fixed>
-                                        <Grid container spacing={5}>
-                                            <Grid item xs><GameInfoTable {...this.props} /></Grid>
-                                            <Grid item xs><RoomInfoPanel {...this.props} /></Grid>
-                                            <Grid item xs><ChatMessageBox {...this.props} /></Grid>
+                                        <Grid container spacing={3}>
+                                            <Grid item xs={12} md={4}><GameInfoTable {...this.props} /></Grid>
+                                            <Grid item xs={12} md={4}><RoomInfoPanel {...this.props} /></Grid>
+                                            <Grid item xs={12} md={4}><ChatMessageBox {...this.props} /></Grid>
                                         </Grid>
                                     </Container>
                                     );

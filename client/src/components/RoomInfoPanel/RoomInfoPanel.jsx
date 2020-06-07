@@ -34,11 +34,11 @@ class RoomInfoPanel extends Component {
                 <Typography variant='h5' gutterBottom>
                     Your room:
                 </Typography>
-                <Grid container direction='row' justify='center' alignItems='center'>
-                    <Grid item xs={9}>
+                <Grid container alignItems='center'>
+                    <Grid item xs={10}>
                         <Link to={`/room/${this.props.room.roomCode}`} className={classes.link}>{this.getExternalRoomUrl()}</Link>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={2} justify='right' alignItems='right'>
                         <IconButton color='primary' aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>
                             <FileCopyIcon />
                         </IconButton>

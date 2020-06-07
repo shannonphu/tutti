@@ -5,7 +5,7 @@ export default (theme) => ({
         minHeight: 350
     },
     link: {
-        color: theme.palette.primary.main
+        color: theme.palette.primary.dark
     },
     playerGrid: {
         marginTop: 20
