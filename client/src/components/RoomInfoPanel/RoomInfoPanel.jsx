@@ -38,7 +38,7 @@ class RoomInfoPanel extends Component {
                     <Grid item xs={10}>
                         <Link to={`/room/${this.props.room.roomCode}`} className={classes.link}>{this.getExternalRoomUrl()}</Link>
                     </Grid>
-                    <Grid item xs={2} justify='right' alignItems='right'>
+                    <Grid item xs={2}>
                         <IconButton color='primary' aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>
                             <FileCopyIcon />
                         </IconButton>
