@@ -25,7 +25,7 @@ class RoomPageContainer extends Component {
 
     render() {
         return (
-            <Container fixed>
+            <div>
                 {(() => {
                     switch (this.props.room.roomState) {
                         case ROOM_STATE.EMPTY:
@@ -36,11 +36,13 @@ class RoomPageContainer extends Component {
                         case ROOM_STATE.VALID:
                             if (isUserCreated(this.props)) {
                                 return(
-                                    <Grid container direction="row" justify="center" alignItems="center">
-                                        <Grid item xs><GameInfoTable {...this.props} /></Grid>
-                                        <Grid item xs><RoomInfoPanel {...this.props} /></Grid>
-                                        <Grid item xs><ChatMessageBox {...this.props} /></Grid>
-                                    </Grid>
+                                    <Container fixed>
+                                        <Grid container direction="row" justify="center" alignItems="center" spacing={5}>
+                                            <Grid item xs><GameInfoTable {...this.props} /></Grid>
+                                            <Grid item xs><RoomInfoPanel {...this.props} /></Grid>
+                                            <Grid item xs><ChatMessageBox {...this.props} /></Grid>
+                                        </Grid>
+                                    </Container>
                                     );
                             } else {
                                 return <LandingPage {...this.props} />
@@ -50,7 +52,7 @@ class RoomPageContainer extends Component {
                             return <Redirect to = '/' />
                     }
                 })()}
-            </Container>
+            </div>
         )
     }
 }
