@@ -1,33 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import theLick from '../../assets/transparent_lick.png';
 import { TextField } from '@material-ui/core';
 import { isRoomCodeSet } from'../../utils/roomUtils.js';
-
-const styles = {
-    root: {
-        flexGrow: 1,
-    },
-    image: {
-        backgroundImage   : `url(${theLick})`,
-        backgroundRepeat  : 'no-repeat',
-        backgroundSize    : '90%',
-        backgroundColor   : '#434343ff',
-        backgroundPosition: 'center center',
-    },
-    paper: {
-        flexDirection: 'column',
-        alignItems   : 'center',
-    },
-    container: {
-        minHeight: '100vh',
-
-    },
-};
+import styles from './LandingPageStyles';
 
 class LandingPage extends Component {
     constructor(props) {
@@ -130,7 +110,7 @@ class LandingPage extends Component {
                         className  = {classes.container}
                     >
                         <Grid item>
-                            <form noValidate>    
+                            <form onSubmit={this.handleCreateRoom}>    
                                 <TextField
                                     onChange     = {this.handleTextChange}
                                     variant      = "outlined"
@@ -160,5 +140,9 @@ class LandingPage extends Component {
         ); // return    
     } // render
 }
+
+LandingPage.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles)(LandingPage);
