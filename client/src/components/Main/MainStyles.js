@@ -1,5 +1,5 @@
 export default (theme) => ({
-    root: {
-        backgroundColor: 'white'
+    container: {
+        marginTop: 35
     }
 });

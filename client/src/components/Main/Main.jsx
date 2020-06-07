@@ -12,9 +12,8 @@ class Main extends Component {
         const { classes } = this.props;
         return (
             <ThemeProvider theme={theme}>
-                <div>
-                    <Nav />
-
+                <Nav />
+                <div className={classes.container}>
                     {/*Alternate pages beneath navbar, based on current route*/}
                     <Switch>
                         <Route path="/room/:roomId?" component={(props) => {
