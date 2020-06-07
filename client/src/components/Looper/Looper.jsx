@@ -12,6 +12,8 @@ class Looper extends Component {
             isLoaded: false,
         };
         Tone.Transport.bpm.value = this.props.room.bpm;
+        Tone.context.latencyHint = 'playback';
+
         this.player = new Tone.Player(SAMPLE_MP3).toMaster();
         this.player.retrigger = true;
 
@@ -26,25 +28,27 @@ class Looper extends Component {
         this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm')
         this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars);
         this.looper.loop = this.props.room.numLoops;
-        this.looper.loopEnd = this.toneNumBars;
+        this.looper.loopStart = '1n';
+        this.looper.loopEnd = this.toneNumBars + Tone.Time('1n');
 
     }
     
     playAudioCallback(time, duration) {
-        this.player.start(time).stop(time+duration);
+        this.player.start(time, 0, duration); 
     }
-
 
     handleOnClick(event) {
         event.preventDefault();
-        console.log(this.looper.state)
+        console.log(this.looper)
         if (this.looper.state == 'stopped') {
-            this.looper.start(0); 
-            this.looper.stop(this.toneTotalBars);
+
+            this.looper.start('1n'); 
+            this.looper.stop(this.toneTotalBars + Tone.Time('1n'));
             Tone.Transport.seconds = 0; // restart
+            
         }
         else if (this.looper.state == 'started') {
-            this.looper.cancel();
+            this.looper.stop();
             this.player.stop();
         }
         else {
