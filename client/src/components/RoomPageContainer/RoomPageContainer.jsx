@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { RoomInfoPanel, ChatMessageBox, GameInfoTable, LandingPage } from '..';
+import { RoomInfoPanel, ChatMessageBox, GameInfoTable, LandingPage, GameStageDisplay } from '..';
 import { isUserCreated, isRoomCodeSet } from '../../utils/roomUtils.js';
 import { ROOM_STATE } from '../../utils/stateEnums';
 
@@ -37,6 +37,7 @@ class RoomPageContainer extends Component {
                             if (isUserCreated(this.props)) {
                                 return(
                                     <Container fixed>
+                                        <GameStageDisplay {...this.props} />
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} md={4}><GameInfoTable {...this.props} /></Grid>
                                             <Grid item xs={12} md={4}><RoomInfoPanel {...this.props} /></Grid>
