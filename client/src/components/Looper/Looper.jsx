@@ -78,7 +78,6 @@ class Looper extends Component {
     }
 
     startRecording() {
-        console.log("record triggered")
         this.chunks = [];
 
         this.mic.open().then(() => {
@@ -99,7 +98,7 @@ class Looper extends Component {
     saveAudio() {
         const blob = new Blob(this.chunks, { type: 'audio/webm;codecs=opus' });
         const audioURL = URL.createObjectURL(blob);
-        this.props.uploadAudio(blob);
+        this.props.uploadLoopedAudio(blob);
         this.setState({
             blobData: blob,
             blobUri: audioURL
@@ -137,8 +136,9 @@ class Looper extends Component {
         // Grab the audio data and load to the buffer.
         let playerName = this.props.user.playerName;
         let playerData = this.props.room.users[playerName];
-        let audioUrl = playerData.audioUrl;
-        this.player.buffer = new Tone.Buffer(audioUrl);
+
+        let loopUrl = playerData.loopUrl;
+        this.player.buffer = new Tone.Buffer(loopUrl);
 
         // cancel recording related events and restart
         Tone.Transport.cancel();

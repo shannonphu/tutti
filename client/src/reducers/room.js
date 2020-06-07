@@ -82,6 +82,19 @@ function RoomReducer(state = {
                     } 
                 }
             };
+        case 'RECEIVED_LOOPED_AUDIO':
+            var blob = new Blob([action.audioData], {type: 'audio/webm;codecs=opus' });
+            const loopUrl = URL.createObjectURL(blob);
+            return {
+                ...state,
+                users: { 
+                    ...state.users, 
+                    [action.playerName]: {
+                        ...state.users[action.playerName],
+                        loopUrl
+                    } 
+                }
+            };
         default:
             return state;
     }
