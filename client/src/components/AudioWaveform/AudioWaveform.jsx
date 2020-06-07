@@ -4,7 +4,6 @@ import IconButton from '@material-ui/core/IconButton';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StopIcon from '@material-ui/icons/Stop';
 import { Player } from './Player';
-import SAMPLE_MP3 from '../../assets/kevin_bossa.mp3';
 
 class AudioWaveform extends Component {
     constructor(props) {

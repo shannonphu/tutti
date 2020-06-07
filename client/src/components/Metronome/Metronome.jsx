@@ -10,8 +10,6 @@ class Metronome extends Component {
         this.state = { isOn: false };
         this.handleClick = this.handleClick.bind(this);
 
-        Tone.Transport.bpm.value = this.props.room.bpm;
-
         let volume = new Tone.Volume(10);
         let synth = new Tone.MembraneSynth().chain(volume, Tone.Master);
         this.loop = new Tone.Loop((time) => {

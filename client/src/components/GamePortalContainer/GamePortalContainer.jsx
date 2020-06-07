@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Tone from 'tone';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { ChatMessageBox, GameInfoTable, Microphone, AudioDisplayTable, Looper } from '..';
@@ -10,6 +11,8 @@ class GamePortalContainer extends Component {
         this.state = {
             game: new Game()
         };
+
+        Tone.Transport.bpm.value = this.props.room.bpm;
     }
 
     render() {

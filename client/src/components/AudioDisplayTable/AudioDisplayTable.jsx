@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StopIcon from '@material-ui/icons/Stop';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-
-
 import { AudioWaveform, PlayerAvatar } from '..';
 
 class AudioDisplayTable extends Component {
@@ -92,10 +91,7 @@ class AudioDisplayTable extends Component {
                             </Grid>)
                     }
                 })}
-                <IconButton
-                    onClick={this.playMergedAudio}>
-                    <PlayCircleFilledIcon /> Merged
-                </IconButton>
+                <Button color='primary' onClick={this.playMergedAudio} endIcon={<PlayCircleFilledIcon fontSize='small' />}>Merged</Button>
             </Grid>)
     }
 }

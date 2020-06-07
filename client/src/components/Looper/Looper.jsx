@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Tone from 'tone';
 import LoopIcon from '@material-ui/icons/Loop';
 import Button from '@material-ui/core/Button';
 import SAMPLE_MP3 from '../../assets/kevin_bossa.mp3';
-
 
 class Looper extends Component {
     constructor(props) {
