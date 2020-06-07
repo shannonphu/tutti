@@ -1,8 +1,17 @@
 export default (theme) => ({
     root: {
-        padding: '16px'
+        padding: 0
     },
-    link: {
-        padding: '16px 0 0 0'
-    }
+    gridListTile: {
+        textAlign: 'center'
+    },
+    navyChip: {
+        borderColor: 'navy',
+        color: 'navy',
+
+        '& .MuiChip-avatar': {
+            backgroundColor: 'navy',
+            color: 'white'
+        }
+    },
 });
