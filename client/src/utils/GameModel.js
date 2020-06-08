@@ -11,10 +11,6 @@ class Game {
             name: 'Start game'
         },
         {
-            id: GAME_STAGE.SELECTING_BASELINE_PLAYER,
-            name: 'Select first player'
-        },
-        {
             id: GAME_STAGE.BASELINE_PLAYER_RECORDING,
             name: 'First player playing'
         },
@@ -33,12 +29,12 @@ class Game {
     ]
 
     constructor() {
-        this.state = GAME_STAGE.SELECTING_BASELINE_PLAYER;
+        this.state = GAME_STAGE.WAITING_TO_START;
     }
 
     next() {
         switch (this.state) {
-        case GAME_STAGE.SELECTING_BASELINE_PLAYER:
+        case GAME_STAGE.WAITING_TO_START:
             this.state = GAME_STAGE.BASELINE_PLAYER_RECORDING;
             break;
         case GAME_STAGE.BASELINE_PLAYER_RECORDING:
