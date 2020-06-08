@@ -70,6 +70,9 @@ const SocketRouter = function (server, cache) {
         case 'socket/UPLOAD_AUDIO':
             onUploadAudio(action);
             break;
+        case 'socket/SET_BASELINE_PLAYER':
+            onSetBaselinePlayer(action);
+            break;
         default:
             break;
         }
@@ -163,6 +166,13 @@ const SocketRouter = function (server, cache) {
             console.error(`Could not get key ${roomCode} from cache`);
             return null;
         }
+    }
+
+    function onSetBaselinePlayer(action) {
+        io.sockets.in(action.roomCode).emit('action', {
+            type: 'SET_BASELINE_PLAYER',
+            user: action.user
+        });
     }
 };
 

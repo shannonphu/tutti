@@ -51,6 +51,11 @@ class GameInfoTable extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+
+        if (this.props.game.stage == GAME_STAGE.WAITING_TO_START) {
+            this.props.setBaselinePlayer();
+        }
+
         this.props.advanceToNextGameStage();
     }
 
@@ -104,7 +109,7 @@ class GameInfoTable extends Component {
                                             return <Button type='submit' name='start' color='primary' onClick={this.handleSubmit} endIcon={<MusicNoteIcon fontSize='small' />}>Enter Room</Button>
                                         case GAME_STAGE.WAITING_TO_START:
                                             return(
-                                                <Button type='submit' name='start' color='primary' endIcon={<MusicNoteIcon fontSize='small' />}>I'll start!</Button>
+                                                <Button type='submit' name='start' color='primary' endIcon={<MusicNoteIcon fontSize='small' />}>I'll start first!</Button>
                                             );
                                         default:
                                             return null;
