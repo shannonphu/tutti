@@ -15,6 +15,7 @@ export { default as Microphone } from './Microphone/Microphone';
 export { default as AudioDisplayTable } from './AudioDisplayTable/AudioDisplayTable';
 export { default as SampleLooper } from './Looper/SampleLooper';
 export { default as Looper } from './Looper/Looper';
+export { default as UserRecorder } from './Looper/UserRecorder';
 export { default as AudioWaveform } from './AudioWaveform/AudioWaveform';
 export { default as GameStageDisplay } from './GameStageDisplay/GameStageDisplay';
 export { default as TuttiContainer } from './TuttiContainer/TuttiContainer';
