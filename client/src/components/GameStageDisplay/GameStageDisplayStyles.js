@@ -1,4 +1,6 @@
 export default (theme) => ({
-    root: {
+    stageRoot: {
+        border: 'none',
+        backgroundColor: theme.palette.grey['50']
     }
 });

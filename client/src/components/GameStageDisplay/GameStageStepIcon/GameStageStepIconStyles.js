@@ -5,14 +5,11 @@ export default (theme) => ({
         height: 22,
         alignItems: 'center',
     },
-    active: {
-        color: theme.palette.primary.light,
-    },
     circle: {
         width: 8,
         height: 8,
         borderRadius: '50%',
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: '#eaeaf0',
     },
     completed: {
         color: theme.palette.primary.dark,
