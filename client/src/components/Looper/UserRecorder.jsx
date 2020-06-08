@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
+import woodBlockUrl from '../../assets/woodblock.wav';
 import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import MicIcon from '@material-ui/icons/Mic';
+import TimerIcon from '@material-ui/icons/Timer';
+import TimerOffIcon from '@material-ui/icons/TimerOff';
 
 // play back the looped recording while recording
 class UserRecorder extends Component {
@@ -11,24 +14,36 @@ class UserRecorder extends Component {
         super(props);
         this.state = {
             isLoaded: false,
-            isUserPlayerSet: false
+            isUserPlayerSet: false,
+            isClickTrack: true
         };
+        Tone.context.latencyHint = 'fastest';
 
         let playerName = this.props.user.playerName;
         let playerData = this.props.room.users[playerName];
         let loopUrl = playerData.loopUrl;
 
         this.loopPlayer = new Tone.Player(loopUrl).toMaster();
-        this.userPlayer = null;
+        this.loopPlayer.fadeOut = '4n';
+        this.userPlayer = new Tone.Player().toMaster();
+        this.userPlayer.sync();
 
         Tone.Buffer.on('load', 
             () => {this.setState({isLoaded: true});}
         );
 
         // metronome
-        let metronomeSynth = new Tone.MembraneSynth({volume: 5}).toMaster();
+        let metronomeSynth = new Tone.MembraneSynth().toMaster();
+        metronomeSynth.volume.value = 5;
         this.metronome = new Tone.Loop(
             (time) => {metronomeSynth.triggerAttackRelease('C1', '4n', time);},
+            '4n'
+        );
+        // click track
+        this.woodBlock = new Tone.Player(woodBlockUrl).toMaster();
+        this.woodBlock.volume.value = 1;
+        this.clickTrack = new Tone.Loop(
+            (time) => {this.woodBlock.start(time, 0, '4n');},
             '4n'
         );
 
@@ -41,13 +56,14 @@ class UserRecorder extends Component {
         this.stopRecording = this.stopRecording.bind(this);
         this.saveAudio = this.saveAudio.bind(this);
         this.setUserPlayer = this.setUserPlayer.bind(this);
+        this.handleToggleClickTrack = this.handleToggleClickTrack.bind(this);
 
         // declare Tone.Time objects
         this.toneNumBars = Tone.Time(this.props.room.numBars, 'm');
         this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm')
 
         // looper initialization
-        this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars);
+        this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars + Tone.Time('4n'));
         this.looper.loop = this.props.room.numLoops;
         this.looper.loopStart = 0;
         this.looper.loopEnd = this.toneNumBars;
@@ -113,22 +129,26 @@ class UserRecorder extends Component {
         if (!this.state.hasAccessToMicrophone) {
             this.startMicrophonePermissions();
         }
-
         Tone.Transport.stop(); // Restart the Transport (probably unnecessary later)
         Tone.Transport.cancel(); 
-        console.log(this.looper)
 
         // schedule the events
-
         // metronome for one measure
-        this.metronome.start(0).stop('1:0:0');
+        this.metronome.start(0).stop('1m');
+
+        // click track
+        if(this.state.isClickTrack) {
+            this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
+        }
 
         // play back loop and start recording
-        this.looper.start('1:0:0').stop(Tone.Time('1:1:0') + this.toneTotalBars);
-        this.startRecordEvent.start('1:1:0');
-        this.stopRecordEvent.start(Tone.Time('1:1:0') + this.toneTotalBars);
+        this.looper.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
+
+        this.startRecordEvent.start('1m');
+        this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
 
         Tone.Transport.start();
+
 
     }
     handlePlaybackMerged(event) {
@@ -139,10 +159,10 @@ class UserRecorder extends Component {
         Tone.Transport.cancel();
 
         // schedule playback
-        // this.looper.start(0).stop(this.toneTotalBars);
-        this.userPlayer.start(Tone.now());
+        this.looper.start(0).stop(this.toneTotalBars);
+        this.userPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
         
-        // Tone.Transport.start();
+        Tone.Transport.start();
     }
 
     setUserPlayer() {
@@ -150,12 +170,17 @@ class UserRecorder extends Component {
         let playerData = this.props.room.users[playerName];
         let audioUrl = playerData.audioUrl;
         if (audioUrl != null) {
-            this.userPlayer = new Tone.Player(audioUrl).toMaster();
+            this.userPlayer.buffer = new Tone.Buffer(audioUrl);
             this.setState({isUserPlayerSet : true});
         }
     }
+    
+    handleToggleClickTrack(event) {
+        event.preventDefault();
+        this.setState({isClickTrack: !this.state.isClickTrack});
+    }
+
     render() {
-        console.log(this.state)
         // load audio data into the buffer
         if (!this.state.isUserPlayerSet) { 
             this.setUserPlayer();
@@ -166,8 +191,16 @@ class UserRecorder extends Component {
                 color="primary"
             >
                 <Button
+                    onClick = {this.handleToggleClickTrack}
+                    variant = "contained"
+                    color = "default"
+                    startIcon = {this.state.isClickTrack ? <TimerOffIcon/> : <TimerIcon/>}
+                >
+                    Click Track
+                </Button>
+                <Button
                     onClick   = {this.handleRecordAudio}
-                    disabled  = {this.state.isRecording || this.state.isPlaying}
+                    disabled  = {this.state.isRecording || !this.state.isLoaded }
                     variant   = "contained"
                     color     = "primary"
                     startIcon = {<MicIcon/>}

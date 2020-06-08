@@ -19,7 +19,7 @@ class Looper extends Component {
 
         this.mic = new Tone.UserMedia().toMaster(); // recording feedback for testing
         // Tone.Transport.bpm.value = this.props.room.bpm;
-        Tone.context.latencyHint = 'playback';
+        Tone.context.latencyHint = 'fastest';
 
         this.player = new Tone.Player().toMaster(); // eventually use Tone.Player to get audio from server
         this.mediaRecorder = null;
@@ -45,10 +45,10 @@ class Looper extends Component {
         this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm')
         
         // looper initialization
-        this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars);
+        this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars + Tone.Time('4n'));
         this.looper.loop = this.props.room.numLoops;
-        this.looper.loopStart = '4n';
-        this.looper.loopEnd = this.toneNumBars + Tone.Time('4n');
+        this.looper.loopStart = 0;
+        this.looper.loopEnd = this.toneNumBars;
 
         // start and stop recording events
         this.startRecordEvent = new Tone.Event(this.startRecording);
@@ -121,13 +121,13 @@ class Looper extends Component {
         Tone.Transport.cancel(); 
 
         // schedule the events
-        this.metronome.start(0).stop('1:0:0');
-        this.startRecordEvent.start('1:1:0');
-        this.stopRecordEvent.start(Tone.Time('1:1:0') + this.toneNumBars);
+        this.metronome.start(0).stop('1m');
+        this.startRecordEvent.start('1m');
+        this.stopRecordEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
         console.log(this.toneNumBars);
 
         Tone.Transport.start();
-
+  
     }
     handlePlaybackLoop(event) {
 
