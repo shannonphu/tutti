@@ -15,12 +15,29 @@ class TuttiContainer extends Component {
         super(props);
         this.state = {};
 
+        this.getGameSteps = this.getGameSteps.bind(this);
+
         // If someone new is trying to join the room, get the roomcode 
         // from the URL and fetch the room data from the API and load 
         // the data into the Redux store
         if (!props.match.params.roomId || (props.match.params.roomId && props.room.roomCode == null)) {
             props.getRoom(props.match.params.roomId);
         }
+    }
+
+    getGameSteps() {
+        if (this.props.game.baselinePlayer) {
+            let i = Game.Progression.indexOf(GAME_STAGE.BASELINE_PLAYER_RECORDING);
+            let roomProgression = Game.Progression;
+            roomProgression[i] = `${this.props.game.baselinePlayer.playerName} is recording`;
+            return roomProgression;
+        } else {
+            return Game.Progression;
+        }
+    }
+
+    getCurrentGameStepIndex() {
+        return Game.Progression.indexOf(this.props.game.stage);
     }
 
     render() {
@@ -39,15 +56,15 @@ class TuttiContainer extends Component {
                             if (this.props.game.stage == GAME_STAGE.WAITING_FOR_PLAYERS) {
                                 return(
                                     <div>
-                                        <GameStageDisplay {...this.props} steps={Game.Progression.map((s) => s.name)} activeStep={0} />                                    
+                                        <GameStageDisplay {...this.props} steps={this.getGameSteps()} activeStep={this.getCurrentGameStepIndex()} />                                    
                                         <RoomPageContainer {...this.props} />
                                     </div>
                                 );
                             } else {
                                 return(
                                     <div>
-                                        <GameStageDisplay {...this.props} steps={Game.Progression.map((s) => s.name)} activeStep={0} />
-                                        <GamePortalContainer {...this.props} />;
+                                        <GameStageDisplay {...this.props} steps={this.getGameSteps()} activeStep={this.getCurrentGameStepIndex()} />
+                                        <GamePortalContainer {...this.props} />
                                     </div>
                                 );
                             }
