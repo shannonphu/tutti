@@ -24,7 +24,9 @@ class UserRecorder extends Component {
         let loopUrl = playerData.loopUrl;
 
         this.loopPlayer = new Tone.Player(loopUrl).toMaster();
-        this.userPlayer = null;
+        this.loopPlayer.fadeOut = '4n';
+        this.userPlayer = new Tone.Player().toMaster();
+        this.userPlayer.sync();
 
         Tone.Buffer.on('load', 
             () => {this.setState({isLoaded: true});}
