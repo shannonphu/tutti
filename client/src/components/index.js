@@ -16,3 +16,5 @@ export { default as AudioDisplayTable } from './AudioDisplayTable/AudioDisplayTa
 export { default as SampleLooper } from './Looper/SampleLooper';
 export { default as Looper } from './Looper/Looper';
 export { default as AudioWaveform } from './AudioWaveform/AudioWaveform';
+export { default as GameStageDisplay } from './GameStageDisplay/GameStageDisplay';
+export { default as TuttiContainer } from './TuttiContainer/TuttiContainer';

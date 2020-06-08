@@ -42,7 +42,7 @@ class ChatMessageBox extends Component {
                         hasInputField={false}
                         showSenderName
                         bubblesCentered={false}
-                        maxHeight={300}
+                        maxHeight={250}
                         className={classes.chatFeed}
                         InputProps
                         bubbleStyles={
