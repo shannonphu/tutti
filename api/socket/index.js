@@ -43,38 +43,38 @@ const SocketRouter = function (server, cache) {
 
     function onAction(action, client) {
         switch (action.type) {
-        case 'socket/HELLO':
-            onHello(action);
-            break;
-        case 'socket/MESSAGE':
-            onMessage(action);
-            break;
-        case 'socket/JOIN_ROOM':
-            onJoinRoom(action, client);
-            break;
-        case 'socket/EDIT_ROOM_BPM':
+            case 'socket/HELLO':
+                onHello(action);
+                break;
+            case 'socket/MESSAGE':
+                onMessage(action);
+                break;
+            case 'socket/JOIN_ROOM':
+                onJoinRoom(action, client);
+                break;
+            case 'socket/EDIT_ROOM_BPM':
             // Emits ROOM_BPM_UPDATED
-            onEditRoomProperties(action, 'bpm');
-            break;
-        case 'socket/EDIT_ROOM_NUM_BARS':
+                onEditRoomProperties(action, 'bpm');
+                break;
+            case 'socket/EDIT_ROOM_NUM_BARS':
             // Emits ROOM_NUMBARS_UPDATED
-            onEditRoomProperties(action, 'numBars');
-            break;
-        case 'socket/EDIT_ROOM_NUM_LOOPS':
+                onEditRoomProperties(action, 'numBars');
+                break;
+            case 'socket/EDIT_ROOM_NUM_LOOPS':
             // Emits ROOM_NUMLOOPS_UPDATED
-            onEditRoomProperties(action, 'numLoops');
-            break;
-        case 'socket/ADVANCE_GAME_NEXT_STAGE':
-            onAdvanceGameNextStage(action);
-            break;
-        case 'socket/UPLOAD_AUDIO':
-            onUploadAudio(action);
-            break;
-        case 'socket/SET_BASELINE_PLAYER':
-            onSetBaselinePlayer(action);
-            break;
-        default:
-            break;
+                onEditRoomProperties(action, 'numLoops');
+                break;
+            case 'socket/ADVANCE_GAME_NEXT_STAGE':
+                onAdvanceGameNextStage(action);
+                break;
+            case 'socket/UPLOAD_AUDIO':
+                onUploadAudio(action);
+                break;
+            case 'socket/UPLOAD_LOOPED_AUDIO':
+                onUploadLoopedAudio(action);
+                break;
+            default:
+                break;
         }
     }
     // TODO
@@ -173,6 +173,18 @@ const SocketRouter = function (server, cache) {
             type: 'SET_BASELINE_PLAYER',
             user: action.user
         });
+    }
+
+    function onUploadLoopedAudio(action) {
+        let { playerName, roomCode, audioData } = action;
+        console.log(`User ${playerName} in room ${roomCode} uploaded a looped recording.`)
+        io.sockets.in(roomCode).emit(
+            'action', {
+                type: 'RECEIVED_LOOPED_AUDIO',
+                playerName,
+                audioData
+            }
+        );
     }
 };
 

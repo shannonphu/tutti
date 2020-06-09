@@ -19,7 +19,7 @@ class Looper extends Component {
 
         this.mic = new Tone.UserMedia().toMaster(); // recording feedback for testing
         // Tone.Transport.bpm.value = this.props.room.bpm;
-        Tone.context.latencyHint = 'playback';
+        Tone.context.latencyHint = 'fastest';
 
         this.player = new Tone.Player().toMaster(); // eventually use Tone.Player to get audio from server
         this.mediaRecorder = null;
@@ -45,10 +45,10 @@ class Looper extends Component {
         this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm')
         
         // looper initialization
-        this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars);
+        this.looper = new Tone.Event((this.playAudioCallback), this.toneNumBars + Tone.Time('4n'));
         this.looper.loop = this.props.room.numLoops;
-        this.looper.loopStart = '4n';
-        this.looper.loopEnd = this.toneNumBars + Tone.Time('4n');
+        this.looper.loopStart = 0;
+        this.looper.loopEnd = this.toneNumBars;
 
         // start and stop recording events
         this.startRecordEvent = new Tone.Event(this.startRecording);
@@ -78,7 +78,6 @@ class Looper extends Component {
     }
 
     startRecording() {
-        console.log("record triggered")
         this.chunks = [];
 
         this.mic.open().then(() => {
@@ -99,7 +98,7 @@ class Looper extends Component {
     saveAudio() {
         const blob = new Blob(this.chunks, { type: 'audio/webm;codecs=opus' });
         const audioURL = URL.createObjectURL(blob);
-        this.props.uploadAudio(blob);
+        this.props.uploadLoopedAudio(blob);
         this.setState({
             blobData: blob,
             blobUri: audioURL
@@ -122,13 +121,12 @@ class Looper extends Component {
         Tone.Transport.cancel(); 
 
         // schedule the events
-        this.metronome.start(0).stop('1:0:0');
-        this.startRecordEvent.start('1:1:0');
-        this.stopRecordEvent.start(Tone.Time('1:1:0') + this.toneNumBars);
-        console.log(this.toneNumBars);
+        this.metronome.start(0).stop('1m');
+        this.startRecordEvent.start('1m');
+        this.stopRecordEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
         Tone.Transport.start();
-
+  
     }
     handlePlaybackLoop(event) {
 
@@ -137,8 +135,9 @@ class Looper extends Component {
         // Grab the audio data and load to the buffer.
         let playerName = this.props.user.playerName;
         let playerData = this.props.room.users[playerName];
-        let audioUrl = playerData.audioUrl;
-        this.player.buffer = new Tone.Buffer(audioUrl);
+
+        let loopUrl = playerData.loopUrl;
+        this.player.buffer = new Tone.Buffer(loopUrl);
 
         // cancel recording related events and restart
         Tone.Transport.cancel();

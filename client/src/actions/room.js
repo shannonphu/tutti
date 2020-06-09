@@ -105,3 +105,10 @@ export function uploadAudio(audioData) {
         dispatch({ type: 'socket/UPLOAD_AUDIO', playerName, roomCode, audioData });
     };
 }
+
+export function uploadLoopedAudio(audioData) {
+    return (dispatch, prevState) => {
+        const { user: { playerName }, room: { roomCode } } = prevState();
+        dispatch({ type: 'socket/UPLOAD_LOOPED_AUDIO', playerName, roomCode, audioData });
+    };
+}
