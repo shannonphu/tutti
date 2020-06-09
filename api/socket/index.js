@@ -177,26 +177,14 @@ const SocketRouter = function (server, cache) {
 
     function onUploadLoopedAudio(action) {
         let { playerName, roomCode, audioData } = action;
-
-        let room = cache.get(roomCode);
-        if (room != undefined) {
-            room.users[playerName]['loopedAudio'] = audioData;
-            if (cache.set(roomCode, {
-                ...room,
-                loopedAudio: audioData
-            })) {
-                console.log(`User ${playerName} in room ${roomCode} uploaded a looped recording.`)
-                io.sockets.in(roomCode).emit('action', {
-                    type: 'RECEIVED_LOOPED_AUDIO',
-                    playerName,
-                    audioData
-                });
+        console.log(`User ${playerName} in room ${roomCode} uploaded a looped recording.`)
+        io.sockets.in(roomCode).emit(
+            'action', {
+                type: 'RECEIVED_LOOPED_AUDIO',
+                playerName,
+                audioData
             }
-        }
-        else {
-            console.error(`Could not get key ${roomCode} from cache`);
-            return null;
-        }
+        );
     }
 };
 

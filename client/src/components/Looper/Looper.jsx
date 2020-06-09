@@ -124,7 +124,6 @@ class Looper extends Component {
         this.metronome.start(0).stop('1m');
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
-        console.log(this.toneNumBars);
 
         Tone.Transport.start();
   
