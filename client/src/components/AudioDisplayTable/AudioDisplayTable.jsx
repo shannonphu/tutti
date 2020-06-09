@@ -1,38 +1,45 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
-import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import StopIcon from '@material-ui/icons/Stop';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { AudioWaveform, PlayerAvatar } from '..';
+import { AudioWaveform } from '..';
+import styles from './AudioDisplayTableStyles';
 
 class AudioDisplayTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isPlayingMerged: false,
-            isPlayingSingle: false,
-            panelWidth: 500,
-        };
         this.playSelectedAudio = this.playSelectedAudio.bind(this);
         this.stopSelectedAudio = this.stopSelectedAudio.bind(this);
         this.playMergedAudio = this.playMergedAudio.bind(this);
         this.getPlayerList = this.getPlayerList.bind(this);
+        this.shouldPanelBeFixed = this.shouldPanelBeFixed.bind(this);
+        this.handlePanelChange = this.handlePanelChange.bind(this);
 
         let availableAudio = {};
+        let initExpand = {};
         Object.keys(this.props.room.users).map((playerName, i) => {
             let playerData = this.props.room.users[playerName];
             if (playerData.audioUrl != null) {
                 availableAudio[playerName] = playerData.audioUrl;
             }
+
+            initExpand[playerName] = false;
         });
+
+        this.state = {
+            isPlayingMerged: false,
+            isPlayingSingle: false,
+            panelWidth: 500,
+            isExpanded: initExpand
+        };
 
         this.sequence = null;
         this.player = new Tone.Players(availableAudio, {
@@ -78,6 +85,8 @@ class AudioDisplayTable extends Component {
 
     getPlayerList() {
         let playerList = [];
+        let baselinePlayer = null;
+        let currPlayer = null;
 
         Object.keys(this.props.room.users).forEach((playerName) => {
             const user = {
@@ -85,88 +94,84 @@ class AudioDisplayTable extends Component {
                 playerName
             };
             if (this.props.game.baselinePlayer && playerName == this.props.game.baselinePlayer.playerName) {
-                playerList.unshift(user);
+                baselinePlayer = user;
+            } else if (playerName == this.props.user.playerName) {
+                currPlayer = user;
             } else {
                 playerList.push(user);
             }
         });
-        console.log(playerList)
+
+        if (baselinePlayer) {
+            // Move baseline player to front of list
+            playerList.unshift(baselinePlayer);
+        }
+        
+        if (currPlayer) {
+            // Move curr player to end of list
+            playerList.push(currPlayer);
+        }
+        
         return playerList;
     }
 
+    shouldPanelBeFixed(player) {
+        if (player.audioUrl && (player.playerName == this.props.game.baselinePlayer.playerName 
+            || player.playerName == this.props.user.playerName)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    handlePanelChange(player) {
+        let newIsExpanded = {
+            ...this.state.isExpanded,
+            [player.playerName]: !this.state.isExpanded[player.playerName]
+        }
+        this.setState({
+            isExpanded: newIsExpanded
+        })
+    };
+
     render() {
-        console.log(this.state.panelWidth);
+        const { classes } = this.props;
 
         return(
             <div width={1}>
                 {this.getPlayerList().map((player, i) => {
-                    console.log(player);
                     return(
-                        <ExpansionPanel key={i}>
-                            <ExpansionPanelSummary
-                                expandIcon={<ExpandMoreIcon />}
-                            >
+                        <ExpansionPanel key={i} expanded={this.shouldPanelBeFixed(player) || this.state.isExpanded[player.playerName]}>
+                            <ExpansionPanelSummary 
+                                expandIcon={(player.audioUrl == undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
+                                onClick={() => this.handlePanelChange(player)}>
+                                <IconButton onClick={() => this.playSelectedAudio(player.playerName)} className={classes.playIcon}>
+                                    <PlayCircleFilledIcon />
+                                </IconButton>
+                                <IconButton onClick={() => this.stopSelectedAudio(player.playerName)} className={classes.playIcon}>
+                                    <StopIcon />
+                                </IconButton>
                                 <Typography>{player.playerName}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails ref='expansionPanel'>
-                                {player.audioUrl != null ? <AudioWaveform audioName={player.playerName} audioUrl={player.audioUrl} height={100} width={this.state.panelWidth} shouldShowControls={false} /> : null}
-                                {/* <Typography>
-                                    <Grid container
-                                        direction="row"
-                                        justify="center"
-                                        alignItems="center"
-                                        key={i}>
-                                        <Grid item xs={1}>
-                                            <div><PlayerAvatar name={playerName} /></div>
-                                            <IconButton onClick={() => this.playSelectedAudio(playerName)}>
-                                                <PlayCircleFilledIcon />
-                                            </IconButton>
-                                            <IconButton onClick={() => this.stopSelectedAudio(playerName)}>
-                                                <StopIcon />
-                                            </IconButton>
-                                        </Grid>
-                                        <Grid item xs={11}>
-                                            {player.audioUrl != null ? <Paper><AudioWaveform audioName={player.playerName} audioUrl={player.audioUrl} height={100} shouldShowControls={false} /></Paper> : null}
-                                        </Grid>
-                                    </Grid>
-                                </Typography> */}
+                                {player.audioUrl != null ?
+                                    <AudioWaveform audioName={player.playerName} 
+                                                audioUrl={player.audioUrl} 
+                                                height={100} 
+                                                width={this.state.panelWidth} 
+                                                shouldShowControls={false} /> 
+                                : null}
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
                     );
                 })}
             </div>
         )
-        /*
-        return (
-            <Grid container spacing={10}>
-                {Object.keys(this.props.room.users).map((playerName, i) => {
-                    let playerData = this.props.room.users[playerName];
-                    if (playerData.audioUrl != null) {
-                        return (
-                            <Grid container 
-                                direction="row"
-                                justify="center"
-                                alignItems="center" 
-                                key={i}>
-                                <Grid item xs={1}>
-                                    <div><PlayerAvatar name={playerName} /></div>
-                                    <IconButton onClick={() => this.playSelectedAudio(playerName)}>
-                                        <PlayCircleFilledIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => this.stopSelectedAudio(playerName)}>
-                                        <StopIcon />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item xs={11}>
-                                    <Paper><AudioWaveform audioName={playerName} audioUrl={playerData.audioUrl} height={100} shouldShowControls={false} /></Paper>
-                                </Grid>
-                            </Grid>)
-                    }
-                })}
-                <Button color='primary' onClick={this.playMergedAudio} endIcon={<PlayCircleFilledIcon fontSize='small' />}>Merged</Button>
-            </Grid>)
-            */
     }
 }
 
-export default AudioDisplayTable;
+AudioDisplayTable.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(AudioDisplayTable);
