@@ -25,7 +25,6 @@ class AudioWaveform extends Component {
         let audioUrl = this.props.audioUrl;
         let height = this.props.height;
         let _component = this;
-
         await fetch(audioUrl)
             .then((response) => {
                 return response.blob();
@@ -77,8 +76,8 @@ class AudioWaveform extends Component {
     render() {
         return (
             <div>
-                <div ref={`zoomView-${this.props.audioName}`} style={{ backgroundColor: 'white', borderColor: 'grey' }}></div>
-                <div ref={`overView-${this.props.audioName}`} style={{ backgroundColor: 'white', borderColor: 'grey' }}></div>
+                <div ref={`zoomView-${this.props.audioName}`} style={{ display: 'none' }}></div>
+                <div ref={`overView-${this.props.audioName}`} style={{ backgroundColor: 'white', borderColor: 'grey', height: this.props.height, width: this.props.width }}></div>
 
                 {this.state.peaks && this.props.shouldShowControls ? 
                     <div>
