@@ -19,3 +19,4 @@ export { default as UserRecorder } from './Looper/UserRecorder';
 export { default as AudioWaveform } from './AudioWaveform/AudioWaveform';
 export { default as GameStageDisplay } from './GameStageDisplay/GameStageDisplay';
 export { default as TuttiContainer } from './TuttiContainer/TuttiContainer';
+export { default as VolumeSlider } from './VolumeSlider/VolumeSlider';

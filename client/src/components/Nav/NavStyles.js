@@ -8,5 +8,9 @@ export default (theme) => ({
         fontSize: 28,
         color: theme.palette.primary.contrastText,
         textDecoration: 'none'
+    },
+    slider: {
+        position: 'absolute',
+        right: 0
     }
 });
