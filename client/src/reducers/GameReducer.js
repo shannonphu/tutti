@@ -13,7 +13,9 @@ function GameReducer(state = {
         case 'SET_BASELINE_PLAYER':
             return {
                 ...state,
-                baselinePlayer: action.user
+                baselinePlayer: {
+                    playerName: action.user.playerName
+                }
             };
         default:
             return state;

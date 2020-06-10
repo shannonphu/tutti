@@ -73,6 +73,9 @@ const SocketRouter = function (server, cache) {
             case 'socket/UPLOAD_LOOPED_AUDIO':
                 onUploadLoopedAudio(action);
                 break;
+            case 'socket/SET_BASELINE_PLAYER':
+                onSetBaselinePlayer(action);
+                break;
             default:
                 break;
         }

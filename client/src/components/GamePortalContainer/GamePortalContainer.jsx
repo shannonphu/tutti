@@ -16,10 +16,7 @@ class GamePortalContainer extends Component {
         return (
             <Container fixed>
                 {this.props.room.roomCode ? 
-                    <Grid container
-                        direction="row"
-                        justify="center"
-                        alignItems="center">
+                    <Grid container spacing={5}>
                         <Grid item xs={8}>
                             <AudioDisplayTable {...this.props} />
                         </Grid>
