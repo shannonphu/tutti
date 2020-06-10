@@ -76,6 +76,9 @@ const SocketRouter = function (server, cache) {
             case 'socket/SET_BASELINE_PLAYER':
                 onSetBaselinePlayer(action);
                 break;
+            case 'socket/PLAYER_UPDATED_RECORDING_STATE':
+                onPlayerUpdatedRecordingState(action);
+                break;
             default:
                 break;
         }
@@ -189,6 +192,18 @@ const SocketRouter = function (server, cache) {
             }
         );
     }
+
+    function onPlayerUpdatedRecordingState(action) {
+        let { playerName, roomCode, isRecording } = action;
+        io.sockets.in(roomCode).emit(
+            'action', {
+                type: 'PLAYER_UPDATED_RECORDING_STATE',
+                playerName,
+                isRecording
+            }
+        );
+    }
+
 };
 
 module.exports = SocketRouter;

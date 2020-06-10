@@ -39,7 +39,7 @@ export function addRoom(bpm, numBars, numLoops, user, cb) {
                     bpm, 
                     numBars, 
                     numLoops,
-                    users: { [user.playerName]: {} }
+                    users: { [user.playerName]: { ...user } }
                 });
                 dispatch({
                     type: 'ADD_USER',
@@ -110,5 +110,14 @@ export function uploadLoopedAudio(audioData) {
     return (dispatch, prevState) => {
         const { user: { playerName }, room: { roomCode } } = prevState();
         dispatch({ type: 'socket/UPLOAD_LOOPED_AUDIO', playerName, roomCode, audioData });
+    };
+}
+
+// Example call: this.props.broadcastRecordingState(true)
+export function broadcastRecordingState(isRecording) {
+    return (dispatch, prevState) => {
+        const { user: { playerName }, room: { roomCode } } = prevState();
+        dispatch({ type: 'socket/PLAYER_UPDATED_RECORDING_STATE', playerName, roomCode, isRecording });
+        dispatch({ type: 'UPDATED_RECORDING_STATE', isRecording });
     };
 }

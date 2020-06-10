@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
-import StopIcon from '@material-ui/icons/Stop';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { AudioWaveform } from '..';
+import { AudioWaveform, RecordingSpinIcon } from '..';
 import styles from './AudioDisplayTableStyles';
 
 class AudioDisplayTable extends Component {
@@ -145,12 +142,7 @@ class AudioDisplayTable extends Component {
                             <ExpansionPanelSummary 
                                 expandIcon={(player.audioUrl == undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
                                 onClick={() => this.handlePanelChange(player)}>
-                                <IconButton onClick={() => this.playSelectedAudio(player.playerName)} className={classes.playIcon}>
-                                    <PlayCircleFilledIcon />
-                                </IconButton>
-                                <IconButton onClick={() => this.stopSelectedAudio(player.playerName)} className={classes.playIcon}>
-                                    <StopIcon />
-                                </IconButton>
+                                {player.isRecording ? <RecordingSpinIcon /> : null}
                                 <Typography>{player.playerName}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails ref='expansionPanel'>
