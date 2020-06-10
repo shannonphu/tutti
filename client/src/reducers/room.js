@@ -95,6 +95,17 @@ function RoomReducer(state = {
                     } 
                 }
             };
+        case 'PLAYER_UPDATED_RECORDING_STATE':
+            return {
+                ...state,
+                users: { 
+                    ...state.users, 
+                    [action.playerName]: {
+                        ...state.users[action.playerName],
+                        isRecording: action.isRecording
+                    } 
+                }
+            };
         default:
             return state;
     }

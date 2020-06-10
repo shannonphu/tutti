@@ -142,7 +142,7 @@ class AudioDisplayTable extends Component {
                             <ExpansionPanelSummary 
                                 expandIcon={(player.audioUrl == undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
                                 onClick={() => this.handlePanelChange(player)}>
-                                <RecordingSpinIcon />
+                                {player.isRecording ? <RecordingSpinIcon /> : null}
                                 <Typography>{player.playerName}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails ref='expansionPanel'>
