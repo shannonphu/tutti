@@ -75,6 +75,7 @@ const SocketRouter = function (server, cache) {
                 break;
             case 'socket/SET_BASELINE_PLAYER':
                 onSetBaselinePlayer(action);
+                break;
             default:
                 break;
         }
