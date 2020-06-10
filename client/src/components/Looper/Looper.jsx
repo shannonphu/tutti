@@ -4,6 +4,7 @@ import Tone from 'tone';
 import LoopIcon from '@material-ui/icons/Loop';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import Button from '@material-ui/core/Button';
+import woodBlockUrl from '../../assets/woodblock.wav';
 import Grid from '@material-ui/core/Grid';
 
 class Looper extends Component {
@@ -12,7 +13,7 @@ class Looper extends Component {
         this.state = {
             isLoaded: false,
             isRecording: false,
-            isPlaying: false
+            isPlaying: false,
         };
 
         this.chunks = [];
@@ -31,6 +32,14 @@ class Looper extends Component {
             '4n'
         );
 
+        // click track
+        this.woodBlock = new Tone.Player(woodBlockUrl).toMaster();
+        this.woodBlock.volume.value = 1;
+        this.clickTrack = new Tone.Loop(
+            (time) => {this.woodBlock.start(time, 0, '4n');},
+            '4n'
+        );
+
         this.handleRecordLoop = this.handleRecordLoop.bind(this);
         this.handlePlaybackLoop = this.handlePlaybackLoop.bind(this);
         this.playAudioCallback = this.playAudioCallback.bind(this);
@@ -39,6 +48,7 @@ class Looper extends Component {
         this.startRecording = this.startRecording.bind(this);
         this.stopRecording = this.stopRecording.bind(this);
         this.saveAudio = this.saveAudio.bind(this);
+        // this.handleToggleClickTrack = this.handleToggleClickTrack.bind(this);
 
         // declare Tone.Time objects
         this.toneNumBars = Tone.Time(this.props.room.numBars, 'm');
@@ -116,12 +126,16 @@ class Looper extends Component {
         if (!this.state.hasAccessToMicrophone) {
             this.startMicrophonePermissions();
         }
-
+        
         Tone.Transport.stop(); // Restart the Transport (probably unnecessary later)
         Tone.Transport.cancel(); 
 
         // schedule the events
         this.metronome.start(0).stop('1m');
+
+        // click track
+        this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneNumBars);
+        
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
