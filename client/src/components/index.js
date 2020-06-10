@@ -20,3 +20,4 @@ export { default as AudioWaveform } from './AudioWaveform/AudioWaveform';
 export { default as GameStageDisplay } from './GameStageDisplay/GameStageDisplay';
 export { default as TuttiContainer } from './TuttiContainer/TuttiContainer';
 export { default as VolumeSlider } from './VolumeSlider/VolumeSlider';
+export { default as RecordingSpinIcon } from './RecordingSpinIcon/RecordingSpinIcon';

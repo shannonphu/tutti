@@ -10,7 +10,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { AudioWaveform } from '..';
+import { AudioWaveform, RecordingSpinIcon } from '..';
 import styles from './AudioDisplayTableStyles';
 
 class AudioDisplayTable extends Component {
@@ -145,6 +145,7 @@ class AudioDisplayTable extends Component {
                             <ExpansionPanelSummary 
                                 expandIcon={(player.audioUrl == undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
                                 onClick={() => this.handlePanelChange(player)}>
+                                <RecordingSpinIcon />
                                 <IconButton onClick={() => this.playSelectedAudio(player.playerName)} className={classes.playIcon}>
                                     <PlayCircleFilledIcon />
                                 </IconButton>
