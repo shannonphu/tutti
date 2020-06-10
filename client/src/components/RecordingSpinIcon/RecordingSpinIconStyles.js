@@ -1,5 +1,7 @@
 export default (theme) => ({
-    root: {},
+    root: {
+        paddingRight: 5
+    },
     progress: {
         position: 'absolute',
         top: 12,
