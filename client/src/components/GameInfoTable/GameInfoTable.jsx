@@ -35,7 +35,7 @@ class GameInfoTable extends Component {
         let value = parseInt(e.target.value) || 0;
 
         switch (key) {
-        case 'bpm':
+        case 'bpm': 
             this.props.updateRoomBpmSettings(value);
             break;
         case 'numBars':

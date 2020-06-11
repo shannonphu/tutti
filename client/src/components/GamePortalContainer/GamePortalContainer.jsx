@@ -44,7 +44,7 @@ class GamePortalContainer extends Component {
         this.saveLoopedAudio = this.saveLoopedAudio.bind(this);
         
         // singleton settings    
-        Tone.context.latencyHint = 'fastest'; // least latency but could glitch
+        Tone.context.latencyHint = 'interactive';
         Tone.Transport.bpm.value = this.props.room.bpm; // does this update??
         Tone.Buffer.on('load', 
             () => {this.setState({isLoaded: true});}
@@ -66,8 +66,8 @@ class GamePortalContainer extends Component {
         this.stopRecordEvent = new Tone.Event(this.stopRecording);
         this.stopRecordLoopEvent = new Tone.Event(this.stopRecordingLoop);
 
-        this.createLoopPlayer();
-        this.createAllUserPlayer();
+        if (!this.state.isLoopPlayerSet) this.createLoopPlayer();
+        if (!this.state.isAllUserPlayerSet) this.createAllUserPlayer();
         this.createClickTrack();
         this.createMetronome();
 
@@ -95,7 +95,6 @@ class GamePortalContainer extends Component {
 
     createLoopPlayer() {
         // check for loop audio
-        let loopUrl = null;
         if (this.props.game.baselinePlayer != null) {
             var baselinePlayerName = this.props.game.baselinePlayer.playerName;
         }
@@ -105,51 +104,49 @@ class GamePortalContainer extends Component {
         let playerData = this.props.room.users[baselinePlayerName];
 
         if (playerData.loopUrl != null) {
-            loopUrl = playerData.loopUrl;
+            let loopUrl = playerData.loopUrl;
         
             let player = new Tone.Player(loopUrl).toMaster();
             player.fadeOut = '4n';
             
             this.loopPlayer = new Tone.Event(
-                (time, duration) => {this.player.start(time, 0, duration);},
-                this.toneNumBars + Tone.Time('4n')
+                (time, duration) => {player.start(time, 0, duration);},
+                this.toneNumBars + Tone.Time('8n')
             );
 
             this.loopPlayer.loop = this.props.room.numLoops;
             this.loopPlayer.loopStart = 0;
             this.loopPlayer.loopEnd = this.toneNumBars;
 
-            this.setState({isLoopPlayerSet: true});
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = { ...this.state, isLoopPlayerSet: true };
         } 
-        else {
-            this.setState({isLoopPlayerSet: false});
-        }
     }
 
     createAllUserPlayer() {
         // get available audio
-        let availableAudio = {};
+        var availableAudio = {};
+        var events = {};
         Object.keys(this.props.room.users).map((playerName, i) => {
             let playerData = this.props.room.users[playerName];
             if (playerData.audioUrl != null) {
                 availableAudio[playerName] = playerData.audioUrl;
+                events[playerName] = [0, playerName];
             }
         });
         // if any at least one exists, put together the Sequence
         if (Object.entries(availableAudio).length > 0) {
 
             this.userPlayers = new Tone.Players(availableAudio).toMaster();
-            this.allUserPlayer = new Tone.Sequence(
-                (time, audioUrl) => {
-                    let p = this.userPlayers.get(audioUrl);
-                    p.start(time);
+            this.allUserPlayer = new Tone.Part(
+                (time, playerName) => {
+                    let p = this.userPlayers.get(playerName);
+                    p.start(time, 0, this.toneTotalBars + Tone.Time('4n'));
                 }, 
-                Object.keys(availableAudio), 
+                Object.values(events)
             );
-            this.setState({isAllUserPlayerSet: true});
-        } 
-        else {
-            this.setState({isAllUserPlayerSet: false});
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = {...this.state, isAllUserPlayerSet: true};
         }
     }
 
@@ -179,23 +176,29 @@ class GamePortalContainer extends Component {
     }
 
     startRecording() {
-        this.chunks = [];
-        this.mediaRecorder.start(5);
-        this.setState({ isRecording: true });
+        if (this.mediaRecorder.state == 'inactive') {
+            this.chunks = [];
+            this.mediaRecorder.start(5);
+            this.setState({ isRecording: true });
+        }
     }
     // TODO #55 Combine with stop Recording
     stopRecordingLoop() {
-        this.mediaRecorder.stop();
-        this.setState({ isRecording: false });
-        this.stopMicrophoneAccess();
-        this.saveLoopedAudio();
+        if (this.mediaRecorder.state == 'recording') {
+            this.mediaRecorder.stop();
+            this.setState({ isRecording: false });
+            this.stopMicrophoneAccess();
+            this.saveLoopedAudio();
+        }
     }
     
     stopRecording() {
-        this.mediaRecorder.stop();
-        this.setState({ isRecording: false });
-        this.stopMicrophoneAccess();
-        this.saveAudio();
+        if (this.mediaRecorder.state == 'recording') {
+            this.mediaRecorder.stop();
+            this.setState({ isRecording: false });
+            this.stopMicrophoneAccess();
+            this.saveAudio();
+        }
     }
     // TODO: #55 Combine with SaveAudio
     saveLoopedAudio() {
@@ -246,7 +249,7 @@ class GamePortalContainer extends Component {
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
-        Tone.Transport.start();
+        Tone.Transport.start().stop(Tone.Time('1m') + this.toneNumBars);
     }
 
     handleRecordOverLoop(event) {
@@ -271,7 +274,7 @@ class GamePortalContainer extends Component {
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
 
-        Tone.Transport.start();
+        Tone.Transport.start().stop(Tone.Time('1m') + this.toneTotalBars);
     }
 
     handlePlaybackMerged(event) {
@@ -285,11 +288,12 @@ class GamePortalContainer extends Component {
         this.loopPlayer.start(0).stop(this.toneTotalBars);
         this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
         
-        Tone.Transport.start();
+        Tone.Transport.start().stop(Tone.Time('1m') + this.toneTotalBars);
     }
     // -------------------------------------------------------------------------------------
 
     render() {
+        console.log(this.state)
         return (
             <Container fixed>
                 {this.props.room.roomCode ? 
