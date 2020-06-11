@@ -1,10 +1,11 @@
 FROM node:alpine
 
-ADD package.json /app/package.json
-RUN cd /app && npm install
-RUN mkdir -p /opt/app && cp -a /app/node_modules /opt/app/
+RUN mkdir -p /opt/app/client
+WORKDIR /opt/app/client
 
-WORKDIR /opt/app
-ADD . /opt/app
+COPY package.json /opt/app/client
+RUN npm install
 
-CMD npm start
+COPY . /opt/app/client
+
+CMD ["npm", "start"]

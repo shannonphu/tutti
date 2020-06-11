@@ -6,8 +6,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const NodeCache = require('node-cache');
 
-const config = require('./config');
-
 const app = express();
 const cache = new NodeCache();
 
@@ -31,6 +29,6 @@ const RoomRouter = require('./routes/room');
 const roomRouter = new RoomRouter(cache);
 app.use('/room', roomRouter);
 
-server.listen(config.server.port, () => {
-    console.log('Listening on port ' + config.server.port);
+server.listen(process.env.API_SERVER_PORT, () => {
+    console.log('Listening on port ' + process.env.API_SERVER_PORT);
 });

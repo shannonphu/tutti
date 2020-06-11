@@ -1,15 +1,30 @@
 version: '3'
 services:
   api:
+    restart: always
     build: ./api
+    container_name: api
+    expose:
+      - ${API_SERVER_PORT}
+    environment:
+      API_SERVER_PORT: ${API_SERVER_PORT}
     ports:
-      - "8080:8080"
+      - ${API_SERVER_PORT}:${API_SERVER_PORT}
+    volumes:
+      - ./api:/opt/app/api
+    command: npm run dev
   web_client:
+    stdin_open: true
+    restart: always
     build: ./client
     expose:
-      - 3000
+      - ${REACT_APP_PORT}
+    environment:
+      REACT_APP_PORT: ${REACT_APP_PORT}
+      REACT_APP_API_URI: http://api:${API_SERVER_PORT}
     ports:
-      - "3000:3000"
-    stdin_open: true
-    links:
-      - api
+      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+    volumes:
+      - ./client/src:/opt/app/client/src
+      - ./client/public:/opt/app/client/public
+    command: npm start

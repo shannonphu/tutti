@@ -9,9 +9,7 @@ import rootReducer from './reducers/index';
 // Setup socket.io store
 import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
-const config = require('./config');
-const serverBaseURL = `http://${config.server.host}:${config.server.port}`;
-const socket = io(serverBaseURL);
+const socket = io('/');
 const socketIoMiddleware = createSocketIoMiddleware(socket, 'socket/');
 
 let store = createStore(rootReducer, applyMiddleware(thunk, socketIoMiddleware));

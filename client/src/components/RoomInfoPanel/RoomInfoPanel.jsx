@@ -11,8 +11,6 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Typography from '@material-ui/core/Typography';
-
-import config from '../../config';
 import styles from './RoomInfoPanelStyles';
 
 class RoomInfoPanel extends Component {
@@ -23,7 +21,7 @@ class RoomInfoPanel extends Component {
     }
 
     getExternalRoomUrl() {
-        return `https://${config.client.externalHost}/room/${this.props.room.roomCode}`;
+        return `https://tut.ti/room/${this.props.room.roomCode}`;
     }
 
     render() {
