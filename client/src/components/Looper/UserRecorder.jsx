@@ -14,17 +14,14 @@ class UserRecorder extends Component {
         super(props);
         this.state = {
             isLoaded: false,
-            isUserPlayerSet: false,
+            isAudioPlayerSet: false,
             isClickTrack: true
         };
         Tone.context.latencyHint = 'fastest';
 
-        let playerName = this.props.user.playerName;
-        let playerData = this.props.room.users[playerName];
-        let loopUrl = playerData.loopUrl;
-
-        this.loopPlayer = new Tone.Player(loopUrl).toMaster();
-        this.userPlayer = null;
+        this.loopPlayer = null;
+        this.userPlayers = null;
+        this.allUserPlayer = null;
 
         Tone.Buffer.on('load', 
             () => {this.setState({isLoaded: true});}
@@ -53,7 +50,7 @@ class UserRecorder extends Component {
         this.startRecording = this.startRecording.bind(this);
         this.stopRecording = this.stopRecording.bind(this);
         this.saveAudio = this.saveAudio.bind(this);
-        this.setUserPlayer = this.setUserPlayer.bind(this);
+        this.setAudioPlayer = this.setAudioPlayer.bind(this);
         this.handleToggleClickTrack = this.handleToggleClickTrack.bind(this);
 
         // declare Tone.Time objects
@@ -104,6 +101,7 @@ class UserRecorder extends Component {
         this.setState({ isRecording: false });
         this.stopMicrophoneAccess();
         this.saveAudio();
+        this.setState({isAudioPlayerSet : false});
     }
 
     saveAudio() {
@@ -135,9 +133,7 @@ class UserRecorder extends Component {
         this.metronome.start(0).stop('1m');
 
         // click track
-        if(this.state.isClickTrack) {
-            this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
-        }
+        this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
 
         // play back loop and start recording
         this.looper.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
@@ -146,7 +142,6 @@ class UserRecorder extends Component {
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
 
         Tone.Transport.start();
-
 
     }
     handlePlaybackMerged(event) {
@@ -158,30 +153,56 @@ class UserRecorder extends Component {
 
         // schedule playback
         this.looper.start(0).stop(this.toneTotalBars);
-        this.userPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
+        this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
         
         Tone.Transport.start();
     }
 
-    setUserPlayer() {
-        let playerName = this.props.user.playerName;
-        let playerData = this.props.room.users[playerName];
-        let audioUrl = playerData.audioUrl;
-        if (audioUrl != null) {
-            this.userPlayer.buffer = new Tone.Buffer(audioUrl);
-            this.setState({isUserPlayerSet : true});
+    setAudioPlayer() {
+        let availableAudio = {};
+        let loopUrl = {};
+        Object.keys(this.props.room.users).map((playerName, i) => {
+            let playerData = this.props.room.users[playerName];
+            if (playerData.audioUrl != null) {
+                availableAudio[playerName] = playerData.audioUrl;
+            }
+            if (playerData.loopUrl != null) {
+                loopUrl = playerData.loopUrl;
+            }
+        });
+
+        if (loopUrl != null) {
+            this.loopPlayer = new Tone.Player(loopUrl).toMaster();
+            this.loopPlayer.fadeOut = '4n';
+            this.setState({isAudioPlayerSet : true});
         }
+
+        if (Object.entries(availableAudio).length > 0) {
+
+            this.userPlayers = new Tone.Players(availableAudio).toMaster();
+            this.allUserPlayer = new Tone.Sequence(
+                (time, audioUrl) => {
+                    let p = this.userPlayers.get(audioUrl);
+                    p.start(time);
+                }, 
+                Object.keys(availableAudio), 
+            );
+
+            this.setState({isAudioPlayerSet : true});
+        }
+        
     }
     
     handleToggleClickTrack(event) {
         event.preventDefault();
         this.setState({isClickTrack: !this.state.isClickTrack});
+        this.clickTrack.mute = this.state.isClickTrack;
     }
 
     render() {
         // load audio data into the buffer
-        if (!this.state.isUserPlayerSet) { 
-            this.setUserPlayer();
+        if (!this.state.isAudioPlayerSet) { 
+            this.setAudioPlayer();
         }
         return (
             <ButtonGroup 
@@ -198,7 +219,7 @@ class UserRecorder extends Component {
                 </Button>
                 <Button
                     onClick   = {this.handleRecordAudio}
-                    disabled  = {this.state.isRecording || !this.state.isLoaded }
+                    disabled  = {this.state.isRecording || !this.state.isLoaded || !this.state.isAudioPlayerSet }
                     variant   = "contained"
                     color     = "primary"
                     startIcon = {<MicIcon/>}
@@ -207,7 +228,7 @@ class UserRecorder extends Component {
                 </Button>
                 <Button
                     onClick   = {this.handlePlaybackMerged}
-                    disabled  = {this.state.isRecording || !this.state.isLoaded || !this.state.isUserPlayerSet}
+                    disabled  = {this.state.isRecording || !this.state.isLoaded || !this.state.isAudioPlayerSet}
                     variant   = "contained"
                     color     = "secondary"
                     startIcon = {<LibraryMusicIcon/>}
