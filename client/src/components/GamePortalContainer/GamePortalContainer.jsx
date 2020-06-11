@@ -293,7 +293,6 @@ class GamePortalContainer extends Component {
     // -------------------------------------------------------------------------------------
 
     render() {
-        console.log(this.state)
         return (
             <Container fixed>
                 {this.props.room.roomCode ? 
