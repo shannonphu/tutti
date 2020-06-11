@@ -2,3 +2,6 @@ build:
   docker:
     client: client/Dockerfile
     api: api/Dockerfile
+run:
+  api: npm run dev
+  client: npm start
