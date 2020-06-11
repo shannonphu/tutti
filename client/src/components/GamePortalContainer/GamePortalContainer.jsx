@@ -5,7 +5,6 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { ChatMessageBox, GameInfoTable, Microphone, AudioDisplayTable } from '..';
-// import Game from '../../utils/GameModel';
 import woodBlockUrl from '../../assets/woodblock.wav';
 import MicIcon from '@material-ui/icons/Mic';
 import TimerIcon from '@material-ui/icons/Timer';
@@ -77,7 +76,6 @@ class GamePortalContainer extends Component {
 
     createMetronome() {
         let metronomeSynth = new Tone.MembraneSynth().toMaster();
-        metronomeSynth.volume.value = 5;
         this.metronome = new Tone.Loop(
             (time) => {metronomeSynth.triggerAttackRelease('C1', '4n', time);},
             '4n'
@@ -249,7 +247,7 @@ class GamePortalContainer extends Component {
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
-        Tone.Transport.start().stop(Tone.Time('1m') + this.toneNumBars);
+        Tone.Transport.start();
     }
 
     handleRecordOverLoop(event) {
@@ -274,7 +272,7 @@ class GamePortalContainer extends Component {
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
 
-        Tone.Transport.start().stop(Tone.Time('1m') + this.toneTotalBars);
+        Tone.Transport.start();
     }
 
     handlePlaybackMerged(event) {
@@ -351,6 +349,9 @@ class GamePortalContainer extends Component {
                     : <div>Join the room first!</div>}
             </Container>
         );
+    }
+    componentWillUnmount() {
+        Tone.Transport.cancel();
     }
 }
 

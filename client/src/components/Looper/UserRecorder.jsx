@@ -160,15 +160,12 @@ class UserRecorder extends Component {
 
     setAudioPlayer() {
         let availableAudio = {};
+        let loopUrl = {};
         Object.keys(this.props.room.users).map((playerName, i) => {
             let playerData = this.props.room.users[playerName];
             if (playerData.audioUrl != null) {
                 availableAudio[playerName] = playerData.audioUrl;
             }
-        });
-        let loopUrl = null;
-        Object.keys(this.props.room.users).map((playerName, i) => {
-            let playerData = this.props.room.users[playerName];
             if (playerData.loopUrl != null) {
                 loopUrl = playerData.loopUrl;
             }
