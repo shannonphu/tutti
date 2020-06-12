@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "description": "tutti",
     "main": "",
+    "engines": {
+        "node": "12.13.x"
+    },
     "devDependencies": {
         "eslint": "^6.6.0",
         "eslint-plugin-react": "^7.20.0"

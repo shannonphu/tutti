@@ -11,8 +11,6 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Typography from '@material-ui/core/Typography';
-
-import config from '../../config';
 import styles from './RoomInfoPanelStyles';
 
 class RoomInfoPanel extends Component {
@@ -23,7 +21,7 @@ class RoomInfoPanel extends Component {
     }
 
     getExternalRoomUrl() {
-        return `https://${config.client.externalHost}/room/${this.props.room.roomCode}`;
+        return `https://tut-ti.herokuapp.com/room/${this.props.room.roomCode}`;
     }
 
     render() {
@@ -39,7 +37,7 @@ class RoomInfoPanel extends Component {
                         <Link to={`/room/${this.props.room.roomCode}`} className={classes.link}>{this.getExternalRoomUrl()}</Link>
                     </Grid>
                     <Grid item xs={2}>
-                        <IconButton color='primary' aria-label='copy' onClick={() => { navigator.clipboard.writeText(`http://localhost:3000/room/${this.props.room.roomCode}`) }}>
+                        <IconButton color='primary' aria-label='copy' onClick={() => { navigator.clipboard.writeText(`https://tut-ti.herokuapp.com/room/${this.props.room.roomCode}`) }}>
                             <FileCopyIcon />
                         </IconButton>
                     </Grid>
