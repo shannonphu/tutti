@@ -35,24 +35,24 @@ class GameInfoTable extends Component {
         let value = parseInt(e.target.value) || 0;
 
         switch (key) {
-        case 'bpm': 
-            this.props.updateRoomBpmSettings(value);
-            break;
-        case 'numBars':
-            this.props.updateRoomNumBarsSettings(value);
-            break;
-        case 'numLoops':
-            this.props.updateRoomNumLoopsSettings(value);
-            break;
-        default:
-            break;
+            case 'bpm': 
+                this.props.updateRoomBpmSettings(value);
+                break;
+            case 'numBars':
+                this.props.updateRoomNumBarsSettings(value);
+                break;
+            case 'numLoops':
+                this.props.updateRoomNumLoopsSettings(value);
+                break;
+            default:
+                break;
         }
     }
 
     handleSubmit(e) {
         e.preventDefault();
 
-        if (this.props.game.stage == GAME_STAGE.WAITING_TO_START) {
+        if (this.props.game.stage === GAME_STAGE.WAITING_TO_START) {
             this.props.setBaselinePlayer();
         }
 
@@ -75,12 +75,12 @@ class GameInfoTable extends Component {
                                 <TableRow key={index}>
                                     <TableCell component='th' scope='row'>
                                         {row.label}
-                                        {row.name == 'bpm' ? <Metronome {...this.props} /> : null}
+                                        {row.name === 'bpm' ? <Metronome {...this.props} /> : null}
                                     </TableCell>
                                     <TableCell align='left' colSpan={2}>
-                                        {this.props.game.stage == GAME_STAGE.WAITING_FOR_PLAYERS || this.props.game.stage == GAME_STAGE.WAITING_TO_START ? 
+                                        {this.props.game.stage === GAME_STAGE.WAITING_FOR_PLAYERS || this.props.game.stage === GAME_STAGE.WAITING_TO_START ? 
                                             <TextField
-                                                autoFocus={this.props.room.lastUpdatedField == row.name}
+                                                autoFocus={this.props.room.lastUpdatedField === row.name}
                                                 value={row.value}
                                                 name={row.name}
                                                 type='number'
@@ -105,14 +105,14 @@ class GameInfoTable extends Component {
                                 <TableCell align='right' style={{ padding: '0 16px 0 0' }}>
                                     {(() => {
                                         switch (this.props.game.stage) {
-                                        case GAME_STAGE.WAITING_FOR_PLAYERS:
-                                            return <Button type='submit' name='start' color='primary' onClick={this.handleSubmit} endIcon={<MusicNoteIcon fontSize='small' />}>Enter Room</Button>
-                                        case GAME_STAGE.WAITING_TO_START:
-                                            return(
-                                                <Button type='submit' name='start' color='primary' endIcon={<MusicNoteIcon fontSize='small' />}>I'll start first!</Button>
-                                            );
-                                        default:
-                                            return null;
+                                            case GAME_STAGE.WAITING_FOR_PLAYERS:
+                                                return <Button type='submit' name='start' color='primary' onClick={this.handleSubmit} endIcon={<MusicNoteIcon fontSize='small' />}>Enter Room</Button>;
+                                            case GAME_STAGE.WAITING_TO_START:
+                                                return(
+                                                    <Button type='submit' name='start' color='primary' endIcon={<MusicNoteIcon fontSize='small' />}>I'll start first!</Button>
+                                                );
+                                            default:
+                                                return null;
                                         }
                                     })()}
                                 </TableCell>

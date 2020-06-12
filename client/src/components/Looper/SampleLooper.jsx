@@ -40,21 +40,21 @@ class Looper extends Component {
     handleOnClick(event) {
         event.preventDefault();
         console.log(this.looper)
-        if (this.looper.state == 'stopped') {
+        if (this.looper.state === 'stopped') {
 
             this.looper.start('1n'); 
             this.looper.stop(this.toneTotalBars + Tone.Time('1n'));
             Tone.Transport.seconds = 0; // restart
             
         }
-        else if (this.looper.state == 'started') {
+        else if (this.looper.state === 'started') {
             this.looper.stop();
             this.player.stop();
         }
         else {
             console.log('state is busted');
         }
-        if (Tone.Transport.state == 'stopped') {
+        if (Tone.Transport.state === 'stopped') {
             Tone.Transport.start();
         }
     }

@@ -92,7 +92,7 @@ class AudioDisplayTable extends Component {
             };
             if (this.props.game.baselinePlayer && playerName === this.props.game.baselinePlayer.playerName) {
                 baselinePlayer = user;
-            } else if (playerName == this.props.user.playerName) {
+            } else if (playerName === this.props.user.playerName) {
                 currPlayer = user;
             } else {
                 playerList.push(user);
