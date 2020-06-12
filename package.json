@@ -4,7 +4,7 @@
     "description": "tutti",
     "main": "",
     "engines": {
-        "node": "6.9.1"
+        "node": "12.13.x"
     },
     "devDependencies": {
         "eslint": "^6.6.0",
