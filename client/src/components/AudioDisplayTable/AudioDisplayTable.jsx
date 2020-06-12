@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { AudioWaveform, RecordingSpinIcon } from '..';
 import styles from './AudioDisplayTableStyles';
+import SILENCE_MP3 from '../../assets/silence.mp3';
 
 class AudioDisplayTable extends Component {
     constructor(props) {
@@ -35,7 +36,8 @@ class AudioDisplayTable extends Component {
             isPlayingMerged: false,
             isPlayingSingle: false,
             panelWidth: 500,
-            isExpanded: initExpand
+            isExpanded: initExpand,
+            baselinePlayerSet: (this.props.game.baselinePlayer !== null) 
         };
 
         this.sequence = null;
@@ -125,17 +127,35 @@ class AudioDisplayTable extends Component {
         let newIsExpanded = {
             ...this.state.isExpanded,
             [player.playerName]: !this.state.isExpanded[player.playerName]
-        }
+        };
         this.setState({
             isExpanded: newIsExpanded
-        })
-    };
+        });
+    }
 
     render() {
         const { classes } = this.props;
-
+        let baselinePlayer = this.state.baselinePlayerSet ? this.props.game.baselinePlayer : null;
+        let loopUrl = this.state.baselinePlayerSet ? this.props.room.users[baselinePlayer.playerName].loopUrl : null;
         return(
             <div width={1}>
+                <ExpansionPanel expanded = {true}>
+                    <ExpansionPanelSummary>
+                        {this.state.baselinePlayerSet ? (baselinePlayer.isRecording ? <RecordingSpinIcon /> : null) : null}
+                        {this.state.baselinePlayerSet ? (<Typography>{baselinePlayer.playerName}'s Loop</Typography>) 
+                            :  <Typography>Ready to Record Loop~</Typography>}
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <AudioWaveform 
+                            audioName = 'Loop'
+                            audioUrl={this.state.baselinePlayerSet ? (loopUrl) : SILENCE_MP3}
+                            height={100}
+                            width={this.state.panelWidth}
+                            shouldShowControls={false}
+                        />
+                    </ExpansionPanelDetails>
+
+                </ExpansionPanel>
                 {this.getPlayerList().map((player, i) => {
                     return(
                         <ExpansionPanel key={i} expanded={this.shouldPanelBeFixed(player) || this.state.isExpanded[player.playerName]}>
@@ -148,17 +168,17 @@ class AudioDisplayTable extends Component {
                             <ExpansionPanelDetails ref='expansionPanel'>
                                 {player.audioUrl != null ?
                                     <AudioWaveform audioName={player.playerName} 
-                                                audioUrl={player.audioUrl} 
-                                                height={100} 
-                                                width={this.state.panelWidth} 
-                                                shouldShowControls={false} /> 
-                                : null}
+                                        audioUrl={player.audioUrl} 
+                                        height={100} 
+                                        width={this.state.panelWidth} 
+                                        shouldShowControls={false} /> 
+                                    : null}
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
                     );
                 })}
             </div>
-        )
+        );
     }
 }
 
