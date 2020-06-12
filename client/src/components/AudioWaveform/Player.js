@@ -15,14 +15,14 @@ export function Player(audioBuffer) {
 
             eventEmitter.emit('player.canplay');
 
-            Tone.Transport.scheduleRepeat(() => {
-                var time = this.getCurrentTime();
-                eventEmitter.emit('player.timeupdate', time);
+            // Tone.Transport.scheduleRepeat(() => {
+            //     var time = this.getCurrentTime();
+            //     eventEmitter.emit('player.timeupdate', time);
 
-                if (time >= this.getDuration()) {
-                    Tone.Transport.stop();
-                }
-            }, 0.25);
+                // if (time >= this.getDuration()) {
+                //     Tone.Transport.stop();
+                // }
+            // }, 0.25);
         },
 
         destroy: function() {
@@ -50,7 +50,7 @@ export function Player(audioBuffer) {
         },
 
         seek: function(time) {
-            Tone.Transport.seconds = time;
+            // Tone.Transport.seconds = time;
 
             this.eventEmitter.emit('player.seeked', this.getCurrentTime());
             this.eventEmitter.emit('player.timeupdate', this.getCurrentTime());
