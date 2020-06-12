@@ -7,34 +7,28 @@ import StopIcon from '@material-ui/icons/Stop';
 class Metronome extends Component {
     constructor(props) {
         super(props);
-        Tone.Transport.bpm.value = this.props.room.bpm;
-        Tone.Transport.cancel();
-        this.state = { metronomeState: (this.metronome === undefined) ? 'stopped' : this.metronome.state};
-
+        this.state = { isOn: false };
         this.handleClick = this.handleClick.bind(this);
 
-
-        let synth = new Tone.MembraneSynth().toMaster();
-        this.metronome = new Tone.Event((time) => {
+        let volume = new Tone.Volume(5);
+        let synth = new Tone.MembraneSynth().chain(volume, Tone.Master);
+        this.loop = new Tone.Loop((time) => {
             synth.triggerAttackRelease('C1', '4n', time);
-        });
-        this.metronome.loop = true;
-        this.metronome.loopEnd = '4n';
+        }, '4n');
     }
 
     handleClick(e) {
         e.preventDefault();
-
-        if (this.state.metronomeState == 'started') {
-            this.metronome.stop();
+        if (this.state.isOn) {
+            this.loop.stop();
         } else {
-            this.metronome.start();
+            this.loop.start();
         }
 
         if (Tone.Transport.state == 'stopped') {
             Tone.Transport.start();
         }
-        this.setState({ metronomeState: this.metronome.state });
+        this.setState({ isOn: !this.state.isOn })
     }
 
     render() {
@@ -45,7 +39,7 @@ class Metronome extends Component {
                 name='action' 
                 onClick={this.handleClick}
                 style={{ margin: '0 0 0 10px', padding: 0 }}>
-                {this.state.metronomeState === 'started' ? <StopIcon /> : <PlayArrowIcon />}
+                {this.state.isOn ? <StopIcon /> : <PlayArrowIcon />}
             </IconButton>
         )
     }
