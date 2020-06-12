@@ -29,7 +29,9 @@ class TuttiContainer extends Component {
         if (this.props.game.baselinePlayer) {
             let i = Game.Progression.indexOf(GAME_STAGE.BASELINE_PLAYER_RECORDING);
             let roomProgression = Game.Progression;
-            roomProgression[i] = `${this.props.game.baselinePlayer.playerName} is recording`;
+            const newLabel = `${this.props.game.baselinePlayer.playerName} is recording`;
+            roomProgression[i] = newLabel
+            GAME_STAGE.BASELINE_PLAYER_RECORDING = newLabel;
             return roomProgression;
         } else {
             return Game.Progression;
