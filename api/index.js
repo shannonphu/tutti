@@ -29,7 +29,7 @@ app.use('/api/room', roomRouter);
 
 app.use('/*', staticFiles)
 
-app.set('port', (process.env.PORT || 3001))
-server.listen(process.env.PORT || 3001, () => {
+app.set('port', (process.env.PORT || 8080))
+server.listen(process.env.PORT || 8080, () => {
     console.log(`Listening on ${app.get('port')}`)
 });
