@@ -1,44 +1,21 @@
-# React-Node-Docker Starter Boilerplate
+# Tutti
 
 ## Setting up environment for the first time
 
 * For Mac users:
   1. Install [Homebrew](https://brew.sh/) if you haven't already.
-  2. `brew install docker`
-  3. `brew install docker-compose`
-  4. `brew install node`
-  5. Navigate to the root of this project directory and run `./scripts/setup.sh`
+  2. `brew install node`
 * For windows users:
-  1. Go to <https://docs.docker.com/docker-for-windows/install/> to install Docker.
-  2. Go to <https://docs.docker.com/compose/install/#install-compose> to install Docker Compose.
-  3. Go to <https://nodejs.org/en/download/> to install node.js
-  4. Navigate to the root of this project directory and run `./scripts/setup.sh`.
+  1. Go to <https://nodejs.org/en/download/> to install node.js
 
 ### Preferred IDE: [VS Code](https://code.visualstudio.com/)
 
-## Overall Development Workflow
+## Development Workflow
 
-This workflow is for if you want to run the entire application using Docker.
-
-1. Navigate to the project directory
-2. Make sure your Docker Daemon is running. For Mac, you'll see the whale icon on the top right corner which is the daemon, so make sure that is running.
-3. Run `docker-compose up --build` when you've made changes to the code. Or omit the `--build` flag if you have made no changes.
-4. Go to <http://localhost:3000/>
-
-## Local Development Workflow
-
-It is often slow to do front-end/back-end development in a Docker container and wait for code to build.
-
-### Steps
-
-1. `cd client`
-2. `npm install` (do this only the first time or if you change `client/package.json`)
+1. `npm install`
+2. `npm run install`
 3. `npm start`
-4. Start a new terminal window
-5. `cd api`
-6. `npm install` (do this only the first time or if you change `api/package.json`)
-7. `npm run dev`
-8. Both the client and server hot-reloads so you don't need to restart either when making code changes.
+4. Go to <http://localhost:3000/>
 
 ## Git Workflow
 
@@ -111,7 +88,3 @@ It is often slow to do front-end/back-end development in a Docker container and 
     ```
 
     **Do _NOT_ force push to other people's branches or shared branches**
-
-## Documentation
-
-* We are using [documentation.js](https://github.com/documentationjs/documentation) to document code.
