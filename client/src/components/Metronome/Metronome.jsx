@@ -19,13 +19,14 @@ class Metronome extends Component {
 
     handleClick(e) {
         e.preventDefault();
-        if (this.state.isOn) {
-            this.loop.stop();
+
+        if (this.state.metronomeState === 'started') {
+            this.metronome.stop();
         } else {
             this.loop.start();
         }
 
-        if (Tone.Transport.state == 'stopped') {
+        if (Tone.Transport.state === 'stopped') {
             Tone.Transport.start();
         }
         this.setState({ isOn: !this.state.isOn })

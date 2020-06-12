@@ -24,7 +24,7 @@ class AudioDisplayTable extends Component {
         let initExpand = {};
         Object.keys(this.props.room.users).map((playerName, i) => {
             let playerData = this.props.room.users[playerName];
-            if (playerData.audioUrl != null) {
+            if (playerData.audioUrl !== null) {
                 availableAudio[playerName] = playerData.audioUrl;
             }
 
@@ -90,7 +90,7 @@ class AudioDisplayTable extends Component {
                 ...this.props.room.users[playerName],
                 playerName
             };
-            if (this.props.game.baselinePlayer && playerName == this.props.game.baselinePlayer.playerName) {
+            if (this.props.game.baselinePlayer && playerName === this.props.game.baselinePlayer.playerName) {
                 baselinePlayer = user;
             } else if (playerName == this.props.user.playerName) {
                 currPlayer = user;
@@ -113,8 +113,8 @@ class AudioDisplayTable extends Component {
     }
 
     shouldPanelBeFixed(player) {
-        if (player.audioUrl && (player.playerName == this.props.game.baselinePlayer.playerName 
-            || player.playerName == this.props.user.playerName)) {
+        if (player.audioUrl && (player.playerName === this.props.game.baselinePlayer.playerName 
+            || player.playerName === this.props.user.playerName)) {
             return true;
         } else {
             return false;
@@ -140,7 +140,7 @@ class AudioDisplayTable extends Component {
                     return(
                         <ExpansionPanel key={i} expanded={this.shouldPanelBeFixed(player) || this.state.isExpanded[player.playerName]}>
                             <ExpansionPanelSummary 
-                                expandIcon={(player.audioUrl == undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
+                                expandIcon={(player.audioUrl === undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
                                 onClick={() => this.handlePanelChange(player)}>
                                 {player.isRecording ? <RecordingSpinIcon /> : null}
                                 <Typography>{player.playerName}</Typography>

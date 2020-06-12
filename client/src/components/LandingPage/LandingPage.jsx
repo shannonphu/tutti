@@ -122,7 +122,6 @@ class LandingPage extends Component {
                                     error        = {this.state.isError}
                                     helperText   = {this.state.isError ? 'pls' : ''}
                                     fullWidth
-                                    autoFocus
                                 />
                             </form>
                         </Grid>
