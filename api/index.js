@@ -2,20 +2,16 @@
 
 const express = require('express');
 const http = require('http');
-const cors = require('cors');
+const path = require('path');
 const bodyParser = require('body-parser');
 const NodeCache = require('node-cache');
-
-const config = require('./config');
 
 const app = express();
 const cache = new NodeCache();
 
 app.use(bodyParser.json());
-app.use(cors({
-    credentials: true,
-    origin: true
-}));
+const staticFiles = express.static(path.join(__dirname, '../../client/build'))
+app.use(staticFiles)
 
 const server = http.createServer(app);
 
@@ -25,12 +21,15 @@ const socketRouter = new SocketRouter(server, cache);
 // Set up router endpoints
 const UserRouter = require('./routes/user');
 const userRouter = new UserRouter(cache);
-app.use('/user', userRouter);
+app.use('/api/user', userRouter);
 
 const RoomRouter = require('./routes/room');
 const roomRouter = new RoomRouter(cache);
-app.use('/room', roomRouter);
+app.use('/api/room', roomRouter);
 
-server.listen(config.server.port, () => {
-    console.log('Listening on port ' + config.server.port);
+app.use('/*', staticFiles)
+
+app.set('port', (process.env.PORT || 3001))
+server.listen(process.env.PORT || 3001, () => {
+    console.log(`Listening on ${app.get('port')}`)
 });
