@@ -303,7 +303,7 @@ class GamePortalContainer extends Component {
         this.loopPlayer.start(0).stop(this.toneTotalBars);
         this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
         
-        Tone.Transport.start().stop(Tone.Time('1m') + this.toneTotalBars);
+        Tone.Transport.start();
     }
 
     performAudioActionsOnGameStage() {
