@@ -134,7 +134,7 @@ class AudioDisplayTable extends Component {
 
     render() {
         const { classes } = this.props;
-        let baselinePlayer = this.state.baselinePlayerSet ? this.props.game.baselinePlayer : null;
+        let baselinePlayer = this.props.game.baselinePlayer;
         let loopUrl = this.state.baselinePlayerSet ? this.props.room.users[baselinePlayer.playerName].loopUrl : null;
         return(
             <div width={1}>
