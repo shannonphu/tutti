@@ -7,6 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import { VolumeSlider } from '..';
 import styles from './NavStyles';
 
@@ -22,7 +23,20 @@ class Nav extends Component {
                     <Typography variant='h6' color='inherit'>
                         <Link to='/' className={classes.title}>tut.ti</Link>
                     </Typography>
-                    <div className={classes.slider}><VolumeSlider {...this.props} /></div>
+                    <div className={classes.rightRail}>
+                        <div className={classes.slider}><VolumeSlider {...this.props} /></div>
+                        <div className={classes.aboutButton}>
+                            <Link to='/about' className={classes.title}>
+                                <IconButton
+                                    style={{ top: -6 }}
+                                    edge='end'
+                                    color="inherit"
+                                >
+                                    <PermIdentityIcon />
+                                </IconButton>
+                            </Link>
+                        </div>
+                    </div>
                 </Toolbar>
             </AppBar>
         )
