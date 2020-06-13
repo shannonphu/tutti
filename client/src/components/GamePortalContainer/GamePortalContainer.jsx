@@ -54,7 +54,10 @@ class GamePortalContainer extends Component {
         Tone.context.latencyHint = 'interactive';
         Tone.Transport.bpm.value = this.props.room.bpm; // does this update??
         Tone.Buffer.on('load', 
-            () => {this.setState({isLoaded: true});}
+            () => {
+                this.setState({isLoaded: true});
+                this.performAudioActionsOnGameStage();
+            }
         );
 
         // useful Tone.Time objects (DO THESE UPDATE?)
@@ -81,7 +84,7 @@ class GamePortalContainer extends Component {
     }
 
     componentDidMount() {
-        this.performAudioActionsOnGameStage()
+        // this.performAudioActionsOnGameStage()
     }
 
     // -------------------------------------------------------------------------------------
