@@ -31,15 +31,11 @@ class GamePortalContainer extends Component {
 
         // get bindings out of the way:
         this.createMetronome = this.createMetronome.bind(this);
-        this.createClickTrack = this.createClickTrack.bind(this);
         this.createLoopPlayer = this.createLoopPlayer.bind(this);
         this.createAllUserPlayer = this.createAllUserPlayer.bind(this);
-
         this.handleRecordLoop = this.handleRecordLoop.bind(this);
         this.handleRecordOverLoop = this.handleRecordOverLoop.bind(this);
         this.handlePlaybackMerged = this.handlePlaybackMerged.bind(this);
-        this.handleToggleClickTrack = this.handleToggleClickTrack.bind(this);
-
         this.startMicrophonePermissions = this.startMicrophonePermissions.bind(this);
         this.stopMicrophoneAccess = this.stopMicrophoneAccess.bind(this);
         this.startRecording = this.startRecording.bind(this);
@@ -79,13 +75,8 @@ class GamePortalContainer extends Component {
 
         if (!this.state.isLoopPlayerSet) this.createLoopPlayer();
         if (!this.state.isAllUserPlayerSet) this.createAllUserPlayer();
-        this.createClickTrack();
         this.createMetronome();
 
-    }
-
-    componentDidMount() {
-        // this.performAudioActionsOnGameStage()
     }
 
     // -------------------------------------------------------------------------------------
@@ -97,15 +88,6 @@ class GamePortalContainer extends Component {
             (time) => {metronomeSynth.triggerAttackRelease('C1', '4n', time);},
             '4n'
         );
-    }
-
-    createClickTrack() {
-        // let woodBlock = new Tone.Player(woodBlockUrl).toMaster();
-        // woodBlock.volume.value = 1;
-        // this.clickTrack = new Tone.Loop(
-        //     (time) => {woodBlock.start(time, 0, '4n');},
-        //     '4n'
-        // );
     }
 
     createLoopPlayer() {
@@ -252,12 +234,6 @@ class GamePortalContainer extends Component {
         Tone.Transport.start('+0.05');
     }
 
-    handleToggleClickTrack(event) {
-        event.preventDefault();
-        this.setState({isClickTrack: !this.state.isClickTrack});
-        this.clickTrack.mute = this.state.isClickTrack;
-    }
-
     handleRecordLoop() {
         // Ask the user to activate their mic
         if (!this.state.hasAccessToMicrophone) {
@@ -267,15 +243,11 @@ class GamePortalContainer extends Component {
         Tone.Transport.stop(); // Restart the Transport (probably unnecessary later)
         Tone.Transport.cancel(); 
 
-        // click track
-        // this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneNumBars);
-        this.props.clickTrackStart('1m');
-        this.props.clickTrackStop(Tone.Time('1m') + this.toneNumBars);
-
         // schedule the events
         this.metronome.start(0).stop('1m');
 
-
+        this.props.clickTrackStart('1m');
+        this.props.clickTrackStop(Tone.Time('1m') + this.toneNumBars);
 
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
@@ -294,8 +266,6 @@ class GamePortalContainer extends Component {
         // schedule the events
         this.metronome.start(0).stop('1m');
 
-        // click track
-        // this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
         this.props.clickTrackStart('1m');
         this.props.clickTrackStop(Tone.Time('1m') + this.toneTotalBars);
 
@@ -310,7 +280,7 @@ class GamePortalContainer extends Component {
     }
 
     handlePlaybackMerged() {
-        // cancel recording related events and restart
+
         Tone.Transport.stop();
         Tone.Transport.cancel();
 
@@ -388,48 +358,6 @@ class GamePortalContainer extends Component {
                     <Grid item xs={4}>
                         <GameInfoTable {...this.props} isLoopPlayerSet={this.state.isLoopPlayerSet}/>
                         <ChatMessageBox {...this.props} />
-                    </Grid>
-                    <Grid item>
-                        <ButtonGroup
-                            orientation="vertical"
-                            color="primary"
-                        >
-                            <Button
-                                onClick = {this.handleToggleClickTrack}
-                                variant = "contained"
-                                color = "default"
-                                startIcon = {this.state.isClickTrack ? <TimerOffIcon/> : <TimerIcon/>}
-                            >
-                                Click Track
-                            </Button>
-                            <Button
-                                onClick   = {this.handleRecordLoop}
-                                disabled  = {this.state.isRecording}
-                                variant   = "contained"
-                                color     = "primary"
-                                startIcon = {<LoopIcon/>}
-                            >
-                                Record a Loop
-                            </Button>
-                            <Button
-                                onClick   = {this.handleRecordOverLoop}
-                                disabled  = {this.state.isRecording || !this.state.isLoaded || !this.state.isLoopPlayerSet }
-                                variant   = "contained"
-                                color     = "primary"
-                                startIcon = {<MicIcon/>}
-                            >
-                                Record over the Loop
-                            </Button>
-                            <Button
-                                onClick   = {this.handlePlaybackMerged}
-                                disabled  = {this.state.isRecording || !this.state.isLoaded || !this.state.isAllUserPlayerSet}
-                                variant   = "contained"
-                                color     = "secondary"
-                                startIcon = {<LibraryMusicIcon/>}
-                            > 
-                                Play back merged Loop and Recording
-                            </Button>
-                        </ButtonGroup>
                     </Grid>
                 </Grid>
             </Container>
