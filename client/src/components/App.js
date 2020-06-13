@@ -16,7 +16,8 @@ function mapStateToProps(state) {
         user      : state.user,
         chat      : state.chat,
         room      : state.room,
-        game      : state.game
+        game      : state.game,
+        clickTrack: state.clickTrack
     };
 }
 

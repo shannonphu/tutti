@@ -22,3 +22,4 @@ export { default as TuttiContainer } from './TuttiContainer/TuttiContainer';
 export { default as VolumeSlider } from './VolumeSlider/VolumeSlider';
 export { default as RecordingSpinIcon } from './RecordingSpinIcon/RecordingSpinIcon';
 export { default as AboutPage } from './AboutPage/AboutPage';
+export { default as ClickTrack } from './ClickTrack/ClickTrack';

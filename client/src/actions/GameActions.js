@@ -12,3 +12,9 @@ export function setBaselinePlayer() {
         dispatch({ type: 'socket/SET_BASELINE_PLAYER', roomCode, user });
     };
 }
+
+export function toggleClickTrack(isClickTrack) {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'TOGGLE_CLICK_TRACK', isClickTrack });
+    };
+}

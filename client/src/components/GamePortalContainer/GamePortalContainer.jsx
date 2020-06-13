@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { ChatMessageBox, GameInfoTable, Microphone, AudioDisplayTable } from '..';
+import { ChatMessageBox, GameInfoTable, AudioDisplayTable } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
 import woodBlockUrl from '../../assets/woodblock.wav';
 import MicIcon from '@material-ui/icons/Mic';
@@ -22,6 +22,7 @@ class GamePortalContainer extends Component {
         super(props);
         this.state = {
             isLoaded: false,
+            isRecording: false,
             isUserPlayerSet: false,
             isClickTrack: true,
             isLoopPlayerSet: false,
@@ -30,15 +31,11 @@ class GamePortalContainer extends Component {
 
         // get bindings out of the way:
         this.createMetronome = this.createMetronome.bind(this);
-        this.createClickTrack = this.createClickTrack.bind(this);
         this.createLoopPlayer = this.createLoopPlayer.bind(this);
         this.createAllUserPlayer = this.createAllUserPlayer.bind(this);
-
         this.handleRecordLoop = this.handleRecordLoop.bind(this);
         this.handleRecordOverLoop = this.handleRecordOverLoop.bind(this);
         this.handlePlaybackMerged = this.handlePlaybackMerged.bind(this);
-        this.handleToggleClickTrack = this.handleToggleClickTrack.bind(this);
-
         this.startMicrophonePermissions = this.startMicrophonePermissions.bind(this);
         this.stopMicrophoneAccess = this.stopMicrophoneAccess.bind(this);
         this.startRecording = this.startRecording.bind(this);
@@ -54,19 +51,23 @@ class GamePortalContainer extends Component {
         Tone.context.latencyHint = 'interactive';
         Tone.Transport.bpm.value = this.props.room.bpm; // does this update??
         Tone.Buffer.on('load', 
-            () => {this.setState({isLoaded: true});}
+            () => {
+                this.setState({isLoaded: true});
+                this.performAudioActionsOnGameStage();
+            }
         );
 
-        // useful Tone.Time objects (DO THESE UPDATE?)
+        this.eventEmitter = new Tone.Emitter();
+
         this.toneNumBars = Tone.Time(this.props.room.numBars, 'm');
-        this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm')
+        this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm');
     
         // declare the players
         this.loopPlayer = null;
         this.userPlayers = null;
         this.allUserPlayer = null;
         this.metronome = null;
-        this.clickTrack = null;
+        this.clcikTrack = null;
 
         // start and stop recording events
         this.startRecordEvent = new Tone.Event(this.startRecording);
@@ -80,8 +81,10 @@ class GamePortalContainer extends Component {
 
     }
 
-    componentDidMount() {
-        this.performAudioActionsOnGameStage()
+    componentDidUpdate() {
+        if (this.clickTrack !== null) {
+            this.clickTrack.mute = !this.props.game.isClickTrack;
+        }
     }
 
     // -------------------------------------------------------------------------------------
@@ -110,6 +113,8 @@ class GamePortalContainer extends Component {
             var baselinePlayerName = this.props.game.baselinePlayer.playerName;
         }
         else {
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = { ...this.state, isLoopPlayerSet: false };
             return;
         }
         let playerData = this.props.room.users[baselinePlayerName];
@@ -131,7 +136,11 @@ class GamePortalContainer extends Component {
 
             // eslint-disable-next-line react/no-direct-mutation-state
             this.state = { ...this.state, isLoopPlayerSet: true };
-        } 
+        }
+        else {
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = { ...this.state, isLoopPlayerSet: false };
+        }
     }
 
     createAllUserPlayer() {
@@ -200,9 +209,6 @@ class GamePortalContainer extends Component {
             this.setState({ isRecording: false });
             this.stopMicrophoneAccess();
             this.saveLoopedAudio();
-
-            // After baseline player finishes recording, move onto next game stage
-            this.props.advanceToNextGameStage()
         }
     }
     
@@ -240,14 +246,9 @@ class GamePortalContainer extends Component {
     playLoop() {
         Tone.Transport.stop();
         Tone.Transport.cancel();
-        this.loopPlayer.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
-        Tone.Transport.start();
-    }
-
-    handleToggleClickTrack(event) {
-        event.preventDefault();
-        this.setState({isClickTrack: !this.state.isClickTrack});
-        this.clickTrack.mute = this.state.isClickTrack;
+        this.loopPlayer.start().stop(this.toneTotalBars);
+        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start(this.toneTotalBars);
+        Tone.Transport.start('+0.05');
     }
 
     handleRecordLoop() {
@@ -262,13 +263,12 @@ class GamePortalContainer extends Component {
         // schedule the events
         this.metronome.start(0).stop('1m');
 
-        // click track
         this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneNumBars);
-        
+
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
-        Tone.Transport.start();
+        Tone.Transport.start('+0.1');
     }
 
     handleRecordOverLoop() {
@@ -282,20 +282,18 @@ class GamePortalContainer extends Component {
         // schedule the events
         this.metronome.start(0).stop('1m');
 
-        // click track
         this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
-
-        // playback loop and start recording
         this.loopPlayer.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
 
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
+        new Tone.Event(() => this.eventEmitter.emit('AUDIO_RECORDED')).start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
 
-        Tone.Transport.start();
+        Tone.Transport.start('+0.05');
     }
 
     handlePlaybackMerged() {
-        // cancel recording related events and restart
+
         Tone.Transport.stop();
         Tone.Transport.cancel();
 
@@ -303,26 +301,29 @@ class GamePortalContainer extends Component {
         this.loopPlayer.start(0).stop(this.toneTotalBars);
         this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
         
-        Tone.Transport.start();
+        Tone.Transport.start('+0.05');
     }
 
     performAudioActionsOnGameStage() {
         switch (this.props.game.stage) {
             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
-                this.handleRecordLoop();
+                Tone.Transport.stop();
+                Tone.Transport.cancel();
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
                 this.playLoop();
-                new Tone.Event(this.props.advanceToNextGameStage).start(Tone.Time('1m') + this.toneTotalBars);
+                this.eventEmitter.once('LOOP_PLAYED', this.props.advanceToNextGameStage);
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
                 this.handleRecordOverLoop();
-                new Tone.Event(this.props.advanceToNextGameStage).start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
+                this.eventEmitter.once('AUDIO_RECORDED', this.props.advanceToNextGameStage);
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();
                 break;
             default:
+                Tone.Transport.stop();
+                Tone.Transport.cancel();
                 break;
         }
     }
@@ -357,62 +358,23 @@ class GamePortalContainer extends Component {
             <Container fixed>
                 <Grid container spacing={5}>
                     <Grid item xs={8}>
-                        <AudioDisplayTable {...this.props} />
+                        <AudioDisplayTable 
+                            {...this.props} 
+                            recordLoopFunction = {this.handleRecordLoop} 
+                            playLoopFunction = {this.playLoop}
+                            isLoopPlayerSet={this.state.isLoopPlayerSet}
+                            isAllUserPlayerSet={this.state.isAllUserPlayerSet}
+                            isRecording = {this.state.isRecording}
+                        />
                         {this.createSnackbar(this.props.game.stage)}
                     </Grid>
                     <Grid item xs={4}>
-                        <GameInfoTable {...this.props} />
+                        <GameInfoTable {...this.props} isLoopPlayerSet={this.state.isLoopPlayerSet}/>
                         <ChatMessageBox {...this.props} />
-                        <Microphone {...this.props} />
-                    </Grid>
-                    <Grid item>
-                        <ButtonGroup
-                            orientation="vertical"
-                            color="primary"
-                        >
-                            <Button
-                                onClick = {this.handleToggleClickTrack}
-                                variant = "contained"
-                                color = "default"
-                                startIcon = {this.state.isClickTrack ? <TimerOffIcon/> : <TimerIcon/>}
-                            >
-                                Click Track
-                            </Button>
-                            <Button
-                                onClick   = {this.handleRecordLoop}
-                                disabled  = {this.state.isRecording}
-                                variant   = "contained"
-                                color     = "primary"
-                                startIcon = {<LoopIcon/>}
-                            >
-                                Record a Loop
-                            </Button>
-                            <Button
-                                onClick   = {this.handleRecordOverLoop}
-                                disabled  = {this.state.isRecording || !this.state.isLoaded || !this.state.isLoopPlayerSet }
-                                variant   = "contained"
-                                color     = "primary"
-                                startIcon = {<MicIcon/>}
-                            >
-                                Record over the Loop
-                            </Button>
-                            <Button
-                                onClick   = {this.handlePlaybackMerged}
-                                disabled  = {this.state.isRecording || !this.state.isLoaded || !this.state.isAllUserPlayerSet}
-                                variant   = "contained"
-                                color     = "secondary"
-                                startIcon = {<LibraryMusicIcon/>}
-                            > 
-                                Play back merged Loop and Recording
-                            </Button>
-                        </ButtonGroup>
                     </Grid>
                 </Grid>
             </Container>
         );
-    }
-    componentWillUnmount() {
-        Tone.Transport.cancel();
     }
 }
 

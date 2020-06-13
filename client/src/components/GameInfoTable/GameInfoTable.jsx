@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { Metronome } from '..';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import SettingsInputAntennaIcon from '@material-ui/icons/SettingsInputAntenna';
+import ReplayIcon from '@material-ui/icons/Replay';
+import React, { Component } from 'react';
+import Tone from 'tone';
+import { Metronome } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
 
 class GameInfoTable extends Component {
@@ -25,8 +28,8 @@ class GameInfoTable extends Component {
         let { room: { bpm, numBars, numLoops } } = this.props;
         return [
             { label: 'BPM', name: 'bpm', value: bpm },
-            { label: '# Bars', name: 'numBars', value: numBars },
-            { label: '# Loops', name: 'numLoops', value: numLoops }
+            { label: 'Bars per Loop', name: 'numBars', value: numBars },
+            { label: 'Loops', name: 'numLoops', value: numLoops }
         ];
     }
 
@@ -55,7 +58,6 @@ class GameInfoTable extends Component {
         if (this.props.game.stage === GAME_STAGE.WAITING_TO_START) {
             this.props.setBaselinePlayer();
         }
-
         this.props.advanceToNextGameStage();
     }
 
@@ -75,7 +77,7 @@ class GameInfoTable extends Component {
                                 <TableRow key={index}>
                                     <TableCell component='th' scope='row'>
                                         {row.label}
-                                        {row.name === 'bpm' ? <Metronome {...this.props} /> : null}
+                                        {row.name === 'bpm' ? <Metronome {...this.props} isLoaded = {this.state.isLoaded} /> : null}
                                     </TableCell>
                                     <TableCell align='left' colSpan={2}>
                                         {this.props.game.stage === GAME_STAGE.WAITING_FOR_PLAYERS || this.props.game.stage === GAME_STAGE.WAITING_TO_START ? 
@@ -107,10 +109,38 @@ class GameInfoTable extends Component {
                                         switch (this.props.game.stage) {
                                             case GAME_STAGE.WAITING_FOR_PLAYERS:
                                                 return <Button type='submit' name='start' color='primary' onClick={this.handleSubmit} endIcon={<MusicNoteIcon fontSize='small' />}>Enter Room</Button>;
+      
                                             case GAME_STAGE.WAITING_TO_START:
                                                 return(
                                                     <Button type='submit' name='start' color='primary' endIcon={<MusicNoteIcon fontSize='small' />}>I'll start first!</Button>
                                                 );
+
+                                            case GAME_STAGE.BASELINE_PLAYER_RECORDING:
+                                                return(
+                                                    <Button 
+                                                        onClick={this.props.advanceToNextGameStage} 
+                                                        disabled={!this.props.isLoopPlayerSet}
+                                                        name='start' 
+                                                        color='primary'
+                                                        endIcon={<SettingsInputAntennaIcon fontSize='small' />}
+                                                    >
+                                                        Broadcast Loop!
+                                                    </Button>
+                                                );
+
+                                            case GAME_STAGE.FINAL_RECORDING_DONE:
+                                                return(
+                                                    <Button 
+                                                        onClick={this.props.advanceToNextGameStage} 
+                                                        disabled={!this.props.isLoopPlayerSet}
+                                                        name='start' 
+                                                        color='primary'
+                                                        endIcon={<ReplayIcon fontSize='small' />}
+                                                    >
+                                                        Start Over!
+                                                    </Button>
+                                                );
+
                                             default:
                                                 return null;
                                         }

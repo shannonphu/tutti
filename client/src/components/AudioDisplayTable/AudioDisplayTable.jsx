@@ -1,14 +1,20 @@
-import React, { Component } from 'react';
-import Tone from 'tone';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles, withTheme } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Tone from 'tone';
 import { AudioWaveform, RecordingSpinIcon } from '..';
+import { GAME_STAGE } from '../../utils/stateEnums';
 import styles from './AudioDisplayTableStyles';
+import StopIcon from '@material-ui/icons/Stop';
 
 class AudioDisplayTable extends Component {
     constructor(props) {
@@ -19,6 +25,13 @@ class AudioDisplayTable extends Component {
         this.getPlayerList = this.getPlayerList.bind(this);
         this.shouldPanelBeFixed = this.shouldPanelBeFixed.bind(this);
         this.handlePanelChange = this.handlePanelChange.bind(this);
+        this.LoopExpansionPanelSummary = this.LoopExpansionPanelSummary.bind(this);
+        this.handleOnClickRecord = this.handleOnClickRecord.bind(this);
+        this.handleOnClickPlay = this.handleOnClickPlay.bind(this);
+        this.handleOnClickStop = this.handleOnClickStop.bind(this);
+        this.recordTooltip = this.recordTooltip.bind(this);
+        this.stopTooltip = this.stopTooltip.bind(this);
+        this.playbackTooltip = this.playbackTooltip.bind(this);
 
         let availableAudio = {};
         let initExpand = {};
@@ -36,9 +49,17 @@ class AudioDisplayTable extends Component {
             isPlayingSingle: false,
             panelWidth: 500,
             isExpanded: initExpand,
-            baselinePlayerSet: (this.props.game.baselinePlayer !== null) 
+            isPlaying: false
         };
 
+        this.baselinePlayer = this.props.game.baselinePlayer;
+        if (this.props.game.baselinePlayer !== null) {
+            this.loopUrl = this.props.room.users[this.baselinePlayer.playerName].loopUrl;
+        }
+        else {
+            this.loopUrl = null;
+        }
+        
         this.sequence = null;
         this.player = new Tone.Players(availableAudio, {
             onload: () => {
@@ -132,23 +153,94 @@ class AudioDisplayTable extends Component {
         });
     }
 
+    handleOnClickRecord(event) {
+        event.preventDefault();
+        this.props.recordLoopFunction();
+    }
+
+    handleOnClickPlay(event) {
+        event.preventDefault();
+        this.setState({isPlaying: true});
+
+        this.props.playLoopFunction();
+    }
+
+    handleOnClickStop(event) {
+        event.preventDefault();
+        this.setState({isPlaying: false});
+
+        Tone.Transport.stop();
+    }
+
+    recordTooltip() {
+        const { classes, theme } = this.props;
+        return(
+            <Tooltip title="Record a Loop" placement="top">
+                <IconButton onClick={this.handleOnClickRecord}>
+                    <FiberManualRecordIcon style={{ fill: theme.palette.error.main }}/>
+                </IconButton>
+            </Tooltip>
+        );
+    }
+
+    playbackTooltip() {
+        return(
+            <Tooltip title={this.props.isLoopPlayerSet ? 'play back the loop' : 'record a loop first'} placement="top">
+                <span>
+                    <IconButton 
+                        color='primary'
+                        disabled = {!this.props.isLoopPlayerSet}
+                        onClick={this.handleOnClickPlay}
+                    >
+                        <PlayArrowIcon fontSize='large'/>
+                    </IconButton>
+                </span>
+            </Tooltip>
+        );
+    }
+    stopTooltip() {
+        return(
+            <Tooltip title= 'stop playback' placement="top">
+                <IconButton 
+                    color='secondary'
+                    onClick={this.handleOnClickStop}
+                >
+                    <StopIcon fontSize='large'/>
+                </IconButton>
+            </Tooltip>
+        );
+    }
+
+    LoopExpansionPanelSummary() {
+        switch (this.props.game.stage) {
+            case GAME_STAGE.BASELINE_PLAYER_RECORDING:
+                return (
+                    <ExpansionPanelSummary> 
+                        {this.props.isRecording ? <IconButton>< RecordingSpinIcon/></IconButton> : this.recordTooltip()}
+                        {this.state.isPlaying ? this.stopTooltip() : this.playbackTooltip()}
+                    </ExpansionPanelSummary>
+                );
+            default:
+                return (
+                    <ExpansionPanelSummary>
+                        {this.baselinePlayer !== null ? (<Typography>{this.baselinePlayer.playerName}'s Loop</Typography>) 
+                            :  <Typography>Ready to Record Loop~</Typography>}
+                    </ExpansionPanelSummary>
+                );
+        }
+    }
+
     render() {
         const { classes } = this.props;
-        let baselinePlayer = this.props.game.baselinePlayer;
-        let loopUrl = this.state.baselinePlayerSet ? this.props.room.users[baselinePlayer.playerName].loopUrl : null;
         return(
             <div width={1}>
                 <ExpansionPanel expanded = {true}>
-                    <ExpansionPanelSummary>
-                        {this.state.baselinePlayerSet ? (baselinePlayer.isRecording ? <RecordingSpinIcon /> : null) : null}
-                        {this.state.baselinePlayerSet ? (<Typography>{baselinePlayer.playerName}'s Loop</Typography>) 
-                            :  <Typography>Ready to Record Loop~</Typography>}
-                    </ExpansionPanelSummary>
+                    {this.LoopExpansionPanelSummary()}
                     <ExpansionPanelDetails>
                         <AudioWaveform
                             {...this.props}
                             audioName = 'Loop'
-                            audioUrl={(loopUrl !== null) ? (loopUrl) : 'Loop'}
+                            audioUrl={this.props.isLoopPlayerSet ? (this.loopUrl) : 'Loop'}
                             height={100}
                             width={this.state.panelWidth}
                             shouldShowControls={false}
@@ -166,8 +258,8 @@ class AudioDisplayTable extends Component {
                                 <Typography>{player.playerName}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails ref='expansionPanel'>
-                                {player.audioUrl != null ?
-                                    <AudioWaveform audioName={player.playerName} 
+                                {(player.audioUrl !== null) && (player.audioUrl !== undefined)
+                                    ? <AudioWaveform audioName={player.playerName} 
                                         audioUrl={player.audioUrl} 
                                         height={100} 
                                         width={this.state.panelWidth} 
@@ -186,4 +278,4 @@ AudioDisplayTable.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(AudioDisplayTable);
+export default withTheme(withStyles(styles)(AudioDisplayTable));

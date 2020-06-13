@@ -46,7 +46,7 @@ class VolumeSlider extends Component {
                     </Grid>
                 </Grid>
             </div>
-        )
+        );
     }
 }
 
