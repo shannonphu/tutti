@@ -187,7 +187,7 @@ class GamePortalContainer extends Component {
     }
 
     startRecording() {
-        if (this.mediaRecorder.state == 'inactive') {
+        if (this.mediaRecorder.state === 'inactive') {
             this.chunks = [];
             this.mediaRecorder.start(5);
             this.setState({ isRecording: true });
@@ -195,7 +195,7 @@ class GamePortalContainer extends Component {
     }
     // TODO #55 Combine with stop Recording
     stopRecordingLoop() {
-        if (this.mediaRecorder.state == 'recording') {
+        if (this.mediaRecorder.state === 'recording') {
             this.mediaRecorder.stop();
             this.setState({ isRecording: false });
             this.stopMicrophoneAccess();
@@ -207,7 +207,7 @@ class GamePortalContainer extends Component {
     }
     
     stopRecording() {
-        if (this.mediaRecorder.state == 'recording') {
+        if (this.mediaRecorder.state === 'recording') {
             this.mediaRecorder.stop();
             this.setState({ isRecording: false });
             this.stopMicrophoneAccess();

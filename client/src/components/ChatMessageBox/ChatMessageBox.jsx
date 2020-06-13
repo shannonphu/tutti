@@ -61,7 +61,7 @@ class ChatMessageBox extends Component {
                     <form onSubmit={this.submitHandler} autoComplete='off'>
                         <Grid container>
                             <Grid item xs={11}>
-                                <TextField autoFocus={this.props.room.lastUpdatedField == 'chat'} style={{'width': '100%'}} name='currMessage' ref='message' value={this.state.currMessage} onChange={this.handleTextFieldChange} helperText={'Type a message...'} />
+                                <TextField autoFocus={this.props.room.lastUpdatedField === 'chat'} style={{'width': '100%'}} name='currMessage' ref='message' value={this.state.currMessage} onChange={this.handleTextFieldChange} helperText={'Type a message...'} />
                             </Grid>
                             <Grid item xs={1}>
                                 <IconButton aria-label='send' type='submit' name='action'>

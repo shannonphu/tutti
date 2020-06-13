@@ -55,7 +55,7 @@ class TuttiContainer extends Component {
                                 return <LandingPage {...this.props} />;
                             }
 
-                            if (this.props.game.stage == GAME_STAGE.WAITING_FOR_PLAYERS) {
+                            if (this.props.game.stage === GAME_STAGE.WAITING_FOR_PLAYERS) {
                                 return(
                                     <div>
                                         <GameStageDisplay {...this.props} steps={this.getGameSteps()} activeStep={this.getCurrentGameStepIndex()} />                                    

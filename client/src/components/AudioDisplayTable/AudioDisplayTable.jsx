@@ -24,7 +24,7 @@ class AudioDisplayTable extends Component {
         let initExpand = {};
         Object.keys(this.props.room.users).map((playerName, i) => {
             let playerData = this.props.room.users[playerName];
-            if (playerData.audioUrl != null) {
+            if (playerData.audioUrl !== null) {
                 availableAudio[playerName] = playerData.audioUrl;
             }
 
@@ -35,7 +35,8 @@ class AudioDisplayTable extends Component {
             isPlayingMerged: false,
             isPlayingSingle: false,
             panelWidth: 500,
-            isExpanded: initExpand
+            isExpanded: initExpand,
+            baselinePlayerSet: (this.props.game.baselinePlayer !== null) 
         };
 
         this.sequence = null;
@@ -90,9 +91,9 @@ class AudioDisplayTable extends Component {
                 ...this.props.room.users[playerName],
                 playerName
             };
-            if (this.props.game.baselinePlayer && playerName == this.props.game.baselinePlayer.playerName) {
+            if (this.props.game.baselinePlayer && playerName === this.props.game.baselinePlayer.playerName) {
                 baselinePlayer = user;
-            } else if (playerName == this.props.user.playerName) {
+            } else if (playerName === this.props.user.playerName) {
                 currPlayer = user;
             } else {
                 playerList.push(user);
@@ -113,8 +114,8 @@ class AudioDisplayTable extends Component {
     }
 
     shouldPanelBeFixed(player) {
-        if (player.audioUrl && (player.playerName == this.props.game.baselinePlayer.playerName 
-            || player.playerName == this.props.user.playerName)) {
+        if (player.audioUrl && (player.playerName === this.props.game.baselinePlayer.playerName 
+            || player.playerName === this.props.user.playerName)) {
             return true;
         } else {
             return false;
@@ -125,22 +126,41 @@ class AudioDisplayTable extends Component {
         let newIsExpanded = {
             ...this.state.isExpanded,
             [player.playerName]: !this.state.isExpanded[player.playerName]
-        }
+        };
         this.setState({
             isExpanded: newIsExpanded
-        })
-    };
+        });
+    }
 
     render() {
         const { classes } = this.props;
-
+        let baselinePlayer = this.props.game.baselinePlayer;
+        let loopUrl = this.state.baselinePlayerSet ? this.props.room.users[baselinePlayer.playerName].loopUrl : null;
         return(
             <div width={1}>
+                <ExpansionPanel expanded = {true}>
+                    <ExpansionPanelSummary>
+                        {this.state.baselinePlayerSet ? (baselinePlayer.isRecording ? <RecordingSpinIcon /> : null) : null}
+                        {this.state.baselinePlayerSet ? (<Typography>{baselinePlayer.playerName}'s Loop</Typography>) 
+                            :  <Typography>Ready to Record Loop~</Typography>}
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <AudioWaveform
+                            {...this.props}
+                            audioName = 'Loop'
+                            audioUrl={(loopUrl !== null) ? (loopUrl) : 'Loop'}
+                            height={100}
+                            width={this.state.panelWidth}
+                            shouldShowControls={false}
+                        />
+                    </ExpansionPanelDetails>
+
+                </ExpansionPanel>
                 {this.getPlayerList().map((player, i) => {
                     return(
                         <ExpansionPanel key={i} expanded={this.shouldPanelBeFixed(player) || this.state.isExpanded[player.playerName]}>
                             <ExpansionPanelSummary 
-                                expandIcon={(player.audioUrl == undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
+                                expandIcon={(player.audioUrl === undefined || this.shouldPanelBeFixed(player)) ? null : <ExpandMoreIcon />} 
                                 onClick={() => this.handlePanelChange(player)}>
                                 {player.isRecording ? <RecordingSpinIcon /> : null}
                                 <Typography>{player.playerName}</Typography>
@@ -148,17 +168,17 @@ class AudioDisplayTable extends Component {
                             <ExpansionPanelDetails ref='expansionPanel'>
                                 {player.audioUrl != null ?
                                     <AudioWaveform audioName={player.playerName} 
-                                                audioUrl={player.audioUrl} 
-                                                height={100} 
-                                                width={this.state.panelWidth} 
-                                                shouldShowControls={false} /> 
-                                : null}
+                                        audioUrl={player.audioUrl} 
+                                        height={100} 
+                                        width={this.state.panelWidth} 
+                                        shouldShowControls={false} /> 
+                                    : null}
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
                     );
                 })}
             </div>
-        )
+        );
     }
 }
 

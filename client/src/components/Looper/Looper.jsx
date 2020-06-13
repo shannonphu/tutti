@@ -160,7 +160,7 @@ class Looper extends Component {
         this.looper.start(0); 
         this.looper.stop(this.toneTotalBars);
 
-        if (Tone.Transport.state == 'stopped') {
+        if (Tone.Transport.state === 'stopped') {
             Tone.Transport.start();
         }
     }

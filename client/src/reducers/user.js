@@ -15,7 +15,7 @@ function UserReducer(state = {
                 messages: [...state.messages, {
                     senderName: action.playerName,
                     message: action.message,
-                    id: action.playerName == state.playerName ? 0 : action.playerName
+                    id: action.playerName === state.playerName ? 0 : action.playerName
                 }]
             };
         case 'UPDATED_RECORDING_STATE':
@@ -25,7 +25,7 @@ function UserReducer(state = {
             };
         default:
             return state;
-        }
+    }
 }
 
 export default UserReducer;
