@@ -14,7 +14,7 @@ import Tone from 'tone';
 import { AudioWaveform, RecordingSpinIcon } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
 import styles from './AudioDisplayTableStyles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import StopIcon from '@material-ui/icons/Stop';
 
 class AudioDisplayTable extends Component {
     constructor(props) {
@@ -28,6 +28,10 @@ class AudioDisplayTable extends Component {
         this.LoopExpansionPanelSummary = this.LoopExpansionPanelSummary.bind(this);
         this.handleOnClickRecord = this.handleOnClickRecord.bind(this);
         this.handleOnClickPlay = this.handleOnClickPlay.bind(this);
+        this.handleOnClickStop = this.handleOnClickStop.bind(this);
+        this.recordTooltip = this.recordTooltip.bind(this);
+        this.stopTooltip = this.stopTooltip.bind(this);
+        this.playbackTooltip = this.playbackTooltip.bind(this);
 
         let availableAudio = {};
         let initExpand = {};
@@ -44,7 +48,8 @@ class AudioDisplayTable extends Component {
             isPlayingMerged: false,
             isPlayingSingle: false,
             panelWidth: 500,
-            isExpanded: initExpand
+            isExpanded: initExpand,
+            isPlaying: false
         };
 
         this.baselinePlayer = this.props.game.baselinePlayer;
@@ -155,35 +160,64 @@ class AudioDisplayTable extends Component {
 
     handleOnClickPlay(event) {
         event.preventDefault();
-        this.props.playLoopFunction();
+        this.setState({isPlaying: true});
 
+        this.props.playLoopFunction();
+    }
+
+    handleOnClickStop(event) {
+        event.preventDefault();
+        this.setState({isPlaying: false});
+
+        Tone.Transport.stop();
+    }
+
+    recordTooltip() {
+        const { classes, theme } = this.props;
+        return(
+            <Tooltip title="Record a Loop" placement="top">
+                <IconButton onClick={this.handleOnClickRecord}>
+                    <FiberManualRecordIcon style={{ fill: theme.palette.error.main }}/>
+                </IconButton>
+            </Tooltip>
+        );
+    }
+
+    playbackTooltip() {
+        return(
+            <Tooltip title={this.props.isLoopPlayerSet ? 'play back the loop' : 'record a loop first'} placement="top">
+                <span>
+                    <IconButton 
+                        color='primary'
+                        disabled = {!this.props.isLoopPlayerSet}
+                        onClick={this.handleOnClickPlay}
+                    >
+                        <PlayArrowIcon fontSize='large'/>
+                    </IconButton>
+                </span>
+            </Tooltip>
+        );
+    }
+    stopTooltip() {
+        return(
+            <Tooltip title= 'stop playback' placement="top">
+                <IconButton 
+                    color='secondary'
+                    onClick={this.handleOnClickStop}
+                >
+                    <StopIcon fontSize='large'/>
+                </IconButton>
+            </Tooltip>
+        );
     }
 
     LoopExpansionPanelSummary() {
-        const { classes, theme } = this.props;
         switch (this.props.game.stage) {
             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
                 return (
                     <ExpansionPanelSummary> 
-                        {this.props.isRecording 
-                            ? <IconButton>< RecordingSpinIcon/></IconButton> 
-                            : <Tooltip title="Record a Loop" placement="top">
-                                <IconButton onClick={this.handleOnClickRecord}>
-                                    <FiberManualRecordIcon style={{ fill: theme.palette.error.main }}/>
-                                </IconButton>
-                            </Tooltip>
-                        }
-                        <Tooltip title={this.props.isLoopPlayerSet ? 'Play Back the Loop' : 'Record a loop first'} placement="top">
-                            <span>
-                                <IconButton 
-                                    color='primary'
-                                    disabled = {!this.props.isLoopPlayerSet}
-                                    onClick={this.handleOnClickPlay}
-                                >
-                                    <PlayArrowIcon fontSize='large'/>
-                                </IconButton>
-                            </span>
-                        </Tooltip>
+                        {this.props.isRecording ? <IconButton>< RecordingSpinIcon/></IconButton> : this.recordTooltip()}
+                        {this.state.isPlaying ? this.stopTooltip() : this.playbackTooltip()}
                     </ExpansionPanelSummary>
                 );
             default:
@@ -198,7 +232,6 @@ class AudioDisplayTable extends Component {
 
     render() {
         const { classes } = this.props;
-        console.log(this.loopUrl !== null && undefined);
         return(
             <div width={1}>
                 <ExpansionPanel expanded = {true}>
@@ -207,7 +240,7 @@ class AudioDisplayTable extends Component {
                         <AudioWaveform
                             {...this.props}
                             audioName = 'Loop'
-                            audioUrl={(this.loopUrl !== null && undefined) ? (this.loopUrl) : 'Loop'}
+                            audioUrl={this.props.isLoopPlayerSet ? (this.loopUrl) : 'Loop'}
                             height={100}
                             width={this.state.panelWidth}
                             shouldShowControls={false}
@@ -225,7 +258,7 @@ class AudioDisplayTable extends Component {
                                 <Typography>{player.playerName}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails ref='expansionPanel'>
-                                {(player.audioUrl !== null && undefined)
+                                {this.props.isLoopPlayerSet
                                     ? <AudioWaveform audioName={player.playerName} 
                                         audioUrl={player.audioUrl} 
                                         height={100} 

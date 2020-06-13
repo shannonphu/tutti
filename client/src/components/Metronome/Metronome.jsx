@@ -8,8 +8,7 @@ class Metronome extends Component {
     constructor(props) {
         super(props);
         Tone.Transport.bpm.value = this.props.room.bpm;
-        Tone.Transport.cancel();
-        this.state = { metronomeState: (this.metronome === undefined) ? 'stopped' : this.metronome.state};
+        
 
         this.handleClick = this.handleClick.bind(this);
 
@@ -20,17 +19,19 @@ class Metronome extends Component {
         });
         this.metronome.loop = true;
         this.metronome.loopEnd = '4n';
+
+        this.state = { metronomeState: this.metronome.state};
     }
 
     handleClick(e) {
         e.preventDefault();
-
+        Tone.Transport.cancel();
         if (this.state.metronomeState === 'started') {
             this.metronome.stop();
         } else {
+            console.log('got here')
             this.metronome.start();
         }
-
         if (Tone.Transport.state === 'stopped') {
             Tone.Transport.start('+0.05');
         }
@@ -43,6 +44,7 @@ class Metronome extends Component {
                 aria-label='send' 
                 type='submit' 
                 name='action' 
+                disabled={this.props.isLoaded}
                 onClick={this.handleClick}
                 style={{ margin: '0 0 0 10px', padding: 0 }}>
                 {this.state.metronomeState === 'started' ? <StopIcon /> : <PlayArrowIcon />}

@@ -77,7 +77,7 @@ class GameInfoTable extends Component {
                                 <TableRow key={index}>
                                     <TableCell component='th' scope='row'>
                                         {row.label}
-                                        {row.name === 'bpm' ? <Metronome {...this.props} /> : null}
+                                        {row.name === 'bpm' ? <Metronome {...this.props} isLoaded = {this.state.isLoaded} /> : null}
                                     </TableCell>
                                     <TableCell align='left' colSpan={2}>
                                         {this.props.game.stage === GAME_STAGE.WAITING_FOR_PLAYERS || this.props.game.stage === GAME_STAGE.WAITING_TO_START ? 
