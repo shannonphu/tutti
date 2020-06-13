@@ -25,7 +25,7 @@ class AboutPage extends Component {
                 {
                     name: 'shannon',
                     roles: ['Principal Communications Executive', 'Corporate Applications Designer', 'Deployment Operations Architect'],
-                    description: 'Shannon specializes in graph mining and modelling, machine learning model evaluation techniques, big data analytics, real-time computer vision algorithms, and content-based and collaborative filtering recommendation systems. Outside of also being a full-stack web developer, she is additionally an expert in mobile application development. Sadly she does not play any musical instrument.',
+                    description: 'Shannon specializes in graph mining and modeling, machine learning model evaluation techniques, big data analytics, real-time computer vision algorithms, and content-based and collaborative filtering recommendation systems. She also happens to be versed in full-stack web development and is a subject matter expert in mobile applications. Sadly, Shannon is not a musician.',
                     imageUrl: shannonImage,
                     githubUrl: 'https://github.com/shannonphu'
                 }
