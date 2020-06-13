@@ -46,7 +46,7 @@ class AboutPage extends Component {
                 >
                     <Grid item md={4}>
                         <Typography variant='h2'>
-                            What is tutti?
+                            What is <strong style={{ fontFamily: 'Parisienne', fontSize: 72 }}>tutti</strong> ?
                         </Typography>
                     </Grid>
                     <Grid item md={8}>
@@ -59,7 +59,6 @@ class AboutPage extends Component {
                     className={classes.root} 
                     spacing={3} 
                     justify='center'
-                    alignItems='center'
                 >
                     <Grid item md={4}>
                         <Typography variant='h2' gutterBottom>
