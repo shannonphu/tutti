@@ -25,8 +25,8 @@ class GameInfoTable extends Component {
         let { room: { bpm, numBars, numLoops } } = this.props;
         return [
             { label: 'BPM', name: 'bpm', value: bpm },
-            { label: '# Bars', name: 'numBars', value: numBars },
-            { label: '# Loops', name: 'numLoops', value: numLoops }
+            { label: 'Bars per Loop', name: 'numBars', value: numBars },
+            { label: 'Loops', name: 'numLoops', value: numLoops }
         ];
     }
 
