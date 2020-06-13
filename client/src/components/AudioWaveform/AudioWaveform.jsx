@@ -55,7 +55,7 @@ class AudioWaveform extends Component {
                     scale: 128,
                     multiChannel: false
                 },
-                keyboard: true,
+                keyboard: false,
                 showPlayheadTime: true,
                 zoomLevels: [128, 256, 512, 1024, 2048, 4096]
             };
@@ -94,7 +94,7 @@ class AudioWaveform extends Component {
                             scale: 128,
                             multiChannel: false
                         },
-                        keyboard: true,
+                        keyboard: false,
                         showPlayheadTime: true,
                         zoomLevels: [128, 256, 512, 1024, 2048, 4096]
                     };
