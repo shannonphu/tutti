@@ -29,7 +29,6 @@ class Metronome extends Component {
         if (this.state.metronomeState === 'started') {
             this.metronome.stop();
         } else {
-            console.log('got here')
             this.metronome.start();
         }
         if (Tone.Transport.state === 'stopped') {

@@ -8,7 +8,7 @@ class Main extends Component {
     render() {
         return (
             <ThemeProvider theme={theme}>
-                <Nav />
+                <Nav {...this.props} />
 
                 {/*Alternate pages beneath navbar, based on current route*/}
                 <Switch>

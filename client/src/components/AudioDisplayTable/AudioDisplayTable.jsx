@@ -258,7 +258,7 @@ class AudioDisplayTable extends Component {
                                 <Typography>{player.playerName}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails ref='expansionPanel'>
-                                {this.props.isLoopPlayerSet
+                                {this.props.isAllUserPlayerSet
                                     ? <AudioWaveform audioName={player.playerName} 
                                         audioUrl={player.audioUrl} 
                                         height={100} 

@@ -19,5 +19,8 @@ export default (theme) => ({
     },
     aboutButton: {
         display: 'inline-block'
+    },
+    clickTrack: {
+        display: 'inline-block'
     }
 });
