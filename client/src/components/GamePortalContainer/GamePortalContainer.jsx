@@ -267,13 +267,15 @@ class GamePortalContainer extends Component {
         Tone.Transport.stop(); // Restart the Transport (probably unnecessary later)
         Tone.Transport.cancel(); 
 
-        // schedule the events
-        this.metronome.start(0).stop('1m');
-
         // click track
         // this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneNumBars);
         this.props.clickTrackStart('1m');
         this.props.clickTrackStop(Tone.Time('1m') + this.toneNumBars);
+
+        // schedule the events
+        this.metronome.start(0).stop('1m');
+
+
 
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
@@ -432,9 +434,6 @@ class GamePortalContainer extends Component {
                 </Grid>
             </Container>
         );
-    }
-    componentWillUnmount() {
-        Tone.Transport.cancel();
     }
 }
 
