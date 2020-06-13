@@ -12,7 +12,7 @@ class Game {
 
     static NextStage(stage) {
         let index = this.Progression.indexOf(stage);
-        index = index < this.Progression.length - 1 ? index + 1 : index;
+        index = index < this.Progression.length - 1 ? index + 1 : 0;
         return this.Progression[index];
     }
 }

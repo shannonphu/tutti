@@ -22,6 +22,7 @@ class GamePortalContainer extends Component {
         super(props);
         this.state = {
             isLoaded: false,
+            isRecording: false,
             isUserPlayerSet: false,
             isClickTrack: true,
             isLoopPlayerSet: false,
@@ -60,9 +61,10 @@ class GamePortalContainer extends Component {
             }
         );
 
+        this.eventEmitter = new Tone.Emitter();
         // useful Tone.Time objects (DO THESE UPDATE?)
         this.toneNumBars = Tone.Time(this.props.room.numBars, 'm');
-        this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm')
+        this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm');
     
         // declare the players
         this.loopPlayer = null;
@@ -113,6 +115,8 @@ class GamePortalContainer extends Component {
             var baselinePlayerName = this.props.game.baselinePlayer.playerName;
         }
         else {
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = { ...this.state, isLoopPlayerSet: false };
             return;
         }
         let playerData = this.props.room.users[baselinePlayerName];
@@ -134,7 +138,11 @@ class GamePortalContainer extends Component {
 
             // eslint-disable-next-line react/no-direct-mutation-state
             this.state = { ...this.state, isLoopPlayerSet: true };
-        } 
+        }
+        else {
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = { ...this.state, isLoopPlayerSet: false };
+        }
     }
 
     createAllUserPlayer() {
@@ -203,9 +211,6 @@ class GamePortalContainer extends Component {
             this.setState({ isRecording: false });
             this.stopMicrophoneAccess();
             this.saveLoopedAudio();
-
-            // After baseline player finishes recording, move onto next game stage
-            this.props.advanceToNextGameStage()
         }
     }
     
@@ -243,8 +248,9 @@ class GamePortalContainer extends Component {
     playLoop() {
         Tone.Transport.stop();
         Tone.Transport.cancel();
-        this.loopPlayer.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
-        Tone.Transport.start();
+        this.loopPlayer.start().stop(this.toneTotalBars);
+        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start().stop(this.toneTotalBars);
+        Tone.Transport.start('+0.05');
     }
 
     handleToggleClickTrack(event) {
@@ -271,7 +277,7 @@ class GamePortalContainer extends Component {
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
-        Tone.Transport.start();
+        Tone.Transport.start('+0.05');
     }
 
     handleRecordOverLoop() {
@@ -293,8 +299,9 @@ class GamePortalContainer extends Component {
 
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
+        new Tone.Event(() => this.eventEmitter.emit('AUDIO_RECORDED')).start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
 
-        Tone.Transport.start();
+        Tone.Transport.start('+0.05');
     }
 
     handlePlaybackMerged() {
@@ -306,26 +313,29 @@ class GamePortalContainer extends Component {
         this.loopPlayer.start(0).stop(this.toneTotalBars);
         this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
         
-        Tone.Transport.start();
+        Tone.Transport.start('+0.05');
     }
 
     performAudioActionsOnGameStage() {
         switch (this.props.game.stage) {
             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
-                this.handleRecordLoop();
+                Tone.Transport.stop();
+                Tone.Transport.cancel();
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
                 this.playLoop();
-                new Tone.Event(this.props.advanceToNextGameStage).start(Tone.Time('1m') + this.toneTotalBars);
+                this.eventEmitter.once('LOOP_PLAYED', this.props.advanceToNextGameStage);
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
                 this.handleRecordOverLoop();
-                new Tone.Event(this.props.advanceToNextGameStage).start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
+                this.eventEmitter.once('AUDIO_RECORDED', this.props.advanceToNextGameStage);
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();
                 break;
             default:
+                Tone.Transport.stop();
+                Tone.Transport.cancel();
                 break;
         }
     }
@@ -360,13 +370,18 @@ class GamePortalContainer extends Component {
             <Container fixed>
                 <Grid container spacing={5}>
                     <Grid item xs={8}>
-                        <AudioDisplayTable {...this.props} />
+                        <AudioDisplayTable 
+                            {...this.props} 
+                            recordLoopFunction = {this.handleRecordLoop} 
+                            playLoopFunction = {this.playLoop}
+                            isLoopPlayerSet={this.state.isLoopPlayerSet}
+                            isRecording = {this.state.isRecording}
+                        />
                         {this.createSnackbar(this.props.game.stage)}
                     </Grid>
                     <Grid item xs={4}>
-                        <GameInfoTable {...this.props} />
+                        <GameInfoTable {...this.props} isLoopPlayerSet={this.state.isLoopPlayerSet}/>
                         <ChatMessageBox {...this.props} />
-                        <Microphone {...this.props} />
                     </Grid>
                     <Grid item>
                         <ButtonGroup

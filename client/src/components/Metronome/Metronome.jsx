@@ -32,7 +32,7 @@ class Metronome extends Component {
         }
 
         if (Tone.Transport.state === 'stopped') {
-            Tone.Transport.start();
+            Tone.Transport.start('+0.05');
         }
         this.setState({ metronomeState: this.metronome.state });
     }
