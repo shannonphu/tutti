@@ -9,8 +9,15 @@ export default (theme) => ({
         color: theme.palette.primary.contrastText,
         textDecoration: 'none'
     },
-    slider: {
+    rightRail: {
+        paddingTop: '12px',
         position: 'absolute',
-        right: 0
+        right: 12
+    },
+    slider: {
+        display: 'inline-block'
+    },
+    aboutButton: {
+        display: 'inline-block'
     }
 });
