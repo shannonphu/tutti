@@ -12,9 +12,6 @@ import { VolumeSlider, ClickTrack} from '..';
 import styles from './NavStyles';
 
 class Nav extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const { classes } = this.props;

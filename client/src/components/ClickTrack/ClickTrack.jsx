@@ -31,6 +31,10 @@ class ClickTrack extends Component {
         this.clickTrack.mute = this.state.isClickTrack;
     }
 
+    componentDidUpdate() {
+        this.clickTrack.start(this.props.clickTrack.startTime);
+        this.clickTrack.stop(this.props.clickTrack.stopTime);
+    }
     render() {
         return(
             <Tooltip title={this.state.isClickTrack ? 'disable click track' : 'enable click track'} >

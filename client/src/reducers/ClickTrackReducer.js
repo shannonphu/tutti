@@ -2,7 +2,6 @@ function ClickTrackReducer(
     state = { startTime: 0, stopTime: null}, 
     action
 ) {
-    console.log(action)
     switch (action.type) {
         case 'SET_CLICK_TRACK_START':
             return {
