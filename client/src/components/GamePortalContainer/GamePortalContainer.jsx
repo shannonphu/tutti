@@ -58,7 +58,7 @@ class GamePortalContainer extends Component {
         );
 
         this.eventEmitter = new Tone.Emitter();
-        // useful Tone.Time objects (DO THESE UPDATE?)
+
         this.toneNumBars = Tone.Time(this.props.room.numBars, 'm');
         this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm');
     
@@ -67,6 +67,7 @@ class GamePortalContainer extends Component {
         this.userPlayers = null;
         this.allUserPlayer = null;
         this.metronome = null;
+        this.clcikTrack = null;
 
         // start and stop recording events
         this.startRecordEvent = new Tone.Event(this.startRecording);
@@ -75,8 +76,15 @@ class GamePortalContainer extends Component {
 
         if (!this.state.isLoopPlayerSet) this.createLoopPlayer();
         if (!this.state.isAllUserPlayerSet) this.createAllUserPlayer();
+        this.createClickTrack();
         this.createMetronome();
 
+    }
+
+    componentDidUpdate() {
+        if (this.clickTrack !== null) {
+            this.clickTrack.mute = !this.props.game.isClickTrack;
+        }
     }
 
     // -------------------------------------------------------------------------------------
@@ -86,6 +94,15 @@ class GamePortalContainer extends Component {
         let metronomeSynth = new Tone.MembraneSynth().toMaster();
         this.metronome = new Tone.Loop(
             (time) => {metronomeSynth.triggerAttackRelease('C1', '4n', time);},
+            '4n'
+        );
+    }
+
+    createClickTrack() {
+        let woodBlock = new Tone.Player(woodBlockUrl).toMaster();
+        woodBlock.volume.value = 1;
+        this.clickTrack = new Tone.Loop(
+            (time) => {woodBlock.start(time, 0, '4n');},
             '4n'
         );
     }
@@ -230,7 +247,7 @@ class GamePortalContainer extends Component {
         Tone.Transport.stop();
         Tone.Transport.cancel();
         this.loopPlayer.start().stop(this.toneTotalBars);
-        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start().stop(this.toneTotalBars);
+        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start(this.toneTotalBars);
         Tone.Transport.start('+0.05');
     }
 
@@ -246,13 +263,12 @@ class GamePortalContainer extends Component {
         // schedule the events
         this.metronome.start(0).stop('1m');
 
-        this.props.clickTrackStart('1m');
-        this.props.clickTrackStop(Tone.Time('1m') + this.toneNumBars);
+        this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneNumBars);
 
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
-        Tone.Transport.start('+0.05');
+        Tone.Transport.start('+0.1');
     }
 
     handleRecordOverLoop() {
@@ -266,10 +282,7 @@ class GamePortalContainer extends Component {
         // schedule the events
         this.metronome.start(0).stop('1m');
 
-        this.props.clickTrackStart('1m');
-        this.props.clickTrackStop(Tone.Time('1m') + this.toneTotalBars);
-
-        // playback loop and start recording
+        this.clickTrack.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
         this.loopPlayer.start('1m').stop(Tone.Time('1m') + this.toneTotalBars);
 
         this.startRecordEvent.start('1m');

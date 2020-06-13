@@ -15,33 +15,24 @@ class ClickTrack extends Component {
         };
 
         this.handleToggleClickTrack = this.handleToggleClickTrack.bind(this);
-
-        let woodBlock = new Tone.Player(woodBlockUrl).toMaster();
-        woodBlock.volume.value = 1;
-        this.clickTrack = new Tone.Loop(
-            (time) => {woodBlock.start(time, 0, '4n');},
-            '4n'
-        );
-
+        this.props.toggleClickTrack(this.state.isClickTrack);
     }
 
     handleToggleClickTrack(event) {
         event.preventDefault();
+
+        this.props.toggleClickTrack(!this.state.isClickTrack);
         this.setState({isClickTrack: !this.state.isClickTrack});
-        this.clickTrack.mute = this.state.isClickTrack;
+        
     }
 
-    componentDidUpdate() {
-        this.clickTrack.start(this.props.clickTrack.startTime);
-        this.clickTrack.stop(this.props.clickTrack.stopTime);
-    }
     render() {
         return(
             <Tooltip title={this.state.isClickTrack ? 'disable click track' : 'enable click track'} >
                 <IconButton
                     onClick = {this.handleToggleClickTrack}
                     variant = "contained"
-                    style={{ top: -6 }}
+                    style={{ top: -8 }}
                     edge='end'
                     color="inherit"
                 >
@@ -52,4 +43,4 @@ class ClickTrack extends Component {
     }
 }
 
-export default ClickTrack
+export default ClickTrack;
