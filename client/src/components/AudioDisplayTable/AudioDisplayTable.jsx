@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { AudioWaveform, RecordingSpinIcon } from '..';
 import styles from './AudioDisplayTableStyles';
-import SILENCE_MP3 from '../../assets/silence.mp3';
 
 class AudioDisplayTable extends Component {
     constructor(props) {
@@ -146,9 +145,10 @@ class AudioDisplayTable extends Component {
                             :  <Typography>Ready to Record Loop~</Typography>}
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <AudioWaveform 
+                        <AudioWaveform
+                            {...this.props}
                             audioName = 'Loop'
-                            audioUrl={this.state.baselinePlayerSet ? (loopUrl) : SILENCE_MP3}
+                            audioUrl={(loopUrl !== null) ? (loopUrl) : 'Loop'}
                             height={100}
                             width={this.state.panelWidth}
                             shouldShowControls={false}
