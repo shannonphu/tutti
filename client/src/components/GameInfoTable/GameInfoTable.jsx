@@ -16,6 +16,7 @@ import { Metronome } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
 import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
+import GameModel from '../../utils/GameModel';
 
 class GameInfoTable extends Component {
     constructor(props) {
@@ -56,11 +57,12 @@ class GameInfoTable extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        const nextStage = GameModel.NextStage(this.props.game.stage);
 
         if (this.props.game.stage === GAME_STAGE.WAITING_TO_START) {
             this.props.setBaselinePlayer();
         }
-        this.props.advanceToNextGameStage();
+        this.props.advanceToGameStage(nextStage);
     }
 
     render() {
@@ -124,8 +126,9 @@ class GameInfoTable extends Component {
                                                 }
                                                 return(
                                                     <Button 
-                                                        onClick={this.props.advanceToNextGameStage} 
-                                                        disabled={!this.props.isLoopPlayerSet || (this.props.user.playerName !== baselinePlayerName) }
+                                                        onClick={() => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage))} 
+                                                        disabled={!this.props.isLoopPlayerSet}
+                                                        name='start' 
                                                         color='primary'
                                                         endIcon={<SettingsInputAntennaIcon fontSize='small' />}
                                                     >
@@ -157,7 +160,7 @@ class GameInfoTable extends Component {
                                             case GAME_STAGE.FINAL_RECORDING_DONE:
                                                 return(
                                                     <Button 
-                                                        onClick={this.props.handlePlaybackMerged} 
+                                                        onClick={() => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage))} 
                                                         disabled={!this.props.isAllUserPlayerSet}
                                                         name='start' 
                                                         color='primary'

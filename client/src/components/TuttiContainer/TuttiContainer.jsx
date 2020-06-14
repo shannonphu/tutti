@@ -28,10 +28,9 @@ class TuttiContainer extends Component {
     getGameSteps() {
         if (this.props.game.baselinePlayer) {
             let i = Game.Progression.indexOf(GAME_STAGE.BASELINE_PLAYER_RECORDING);
-            let roomProgression = Game.Progression;
+            let roomProgression = Game.Progression.slice();
             const newLabel = `${this.props.game.baselinePlayer.playerName} is recording`;
             roomProgression[i] = newLabel
-            GAME_STAGE.BASELINE_PLAYER_RECORDING = newLabel;
             return roomProgression;
         } else {
             return Game.Progression;
@@ -39,7 +38,13 @@ class TuttiContainer extends Component {
     }
 
     getCurrentGameStepIndex() {
-        return Game.Progression.indexOf(this.props.game.stage);
+        let stage = this.props.game.stage;
+
+        if (this.props.game.stage == GAME_STAGE.BASELINE_PLAYER_RECORDING) {
+            stage = 'First player recording';
+        }
+
+        return Game.Progression.indexOf(stage);
     }
 
     render() {

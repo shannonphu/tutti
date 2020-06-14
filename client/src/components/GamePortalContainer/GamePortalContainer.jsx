@@ -9,6 +9,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import ReplayIcon from '@material-ui/icons/Replay';
 import DoneIcon from '@material-ui/icons/Done';
+import GameModel from '../../utils/GameModel';
 
 class GamePortalContainer extends Component {
     constructor(props) {
@@ -329,7 +330,7 @@ class GamePortalContainer extends Component {
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
                 this.playLoop();
                 console.log(this.state.isLoopPlayed)
-                if (this.state.isLoopPlayed) this.props.advanceToNextGameStage();
+                if (this.state.isLoopPlayed) this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage));
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
                 console.log(this.state);

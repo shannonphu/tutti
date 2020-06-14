@@ -1,15 +1,19 @@
 import { ROOM_STATE } from '../utils/stateEnums';
 
-function RoomReducer(state = { 
-    roomCode        : null,
-    roomState       : ROOM_STATE.EMPTY,
-    bpm             : 120,
-    numBars         : 4,
-    numLoops        : 3,
+const initialState = {
+    roomCode: null,
+    roomState: ROOM_STATE.EMPTY,
+    bpm: 120,
+    numBars: 4,
+    numLoops: 3,
     lastUpdatedField: 'bpm',
-    users           : {}
-}, action) {
+    users: {}
+}
+
+function RoomReducer(state = initialState, action) {
     switch (action.type) {
+        case 'RESET_ROOM_STATE':
+            return initialState;
         case 'SET_INVALID_ROOM':
             return {
                 ...state,

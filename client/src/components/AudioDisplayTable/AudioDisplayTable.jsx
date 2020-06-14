@@ -177,7 +177,7 @@ class AudioDisplayTable extends Component {
     }
 
     recordTooltip() {
-        const { classes, theme } = this.props;
+        const { theme } = this.props;
         return(
             <Tooltip 
                 title={this.isPlayerTheBaseline ? 'record a loop' : `${this.baselinePlayerName} is recording`}
@@ -187,6 +187,7 @@ class AudioDisplayTable extends Component {
                     <IconButton 
                         onClick={this.handleOnClickRecord}
                         disabled = {!this.isPlayerTheBaseline}
+                        style={{padding: 0}}
                     >
                         {this.isPlayerTheBaseline ? <FiberManualRecordIcon style={{ fill: theme.palette.error.main }}/> : <FiberManualRecordIcon disabled/>}
                     </IconButton>
@@ -211,6 +212,7 @@ class AudioDisplayTable extends Component {
                         color='primary'
                         disabled = {!this.props.isLoopPlayerSet}
                         onClick={this.handleOnClickPlay}
+                        style={{ padding: 0 }}
                     >
                         <PlayArrowIcon/>
                     </IconButton>
@@ -224,6 +226,7 @@ class AudioDisplayTable extends Component {
                 <IconButton 
                     color='secondary'
                     onClick={this.handleOnClickStop}
+                    style={{ padding: 0 }}
                 >
                     <StopIcon/>
                 </IconButton>
@@ -236,8 +239,10 @@ class AudioDisplayTable extends Component {
             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
                 return (
                     <ExpansionPanelSummary> 
-                        {this.props.isRecording ? <IconButton disabled>< RecordingSpinIcon/></IconButton> : this.recordTooltip()}
-                        {this.state.isPlaying ? this.stopTooltip() : this.playbackTooltip()}
+                        <Typography>
+                            {this.props.isRecording ? <IconButton style={{ padding: 0 }} disabled><RecordingSpinIcon /></IconButton> : this.recordTooltip()}
+                            {this.state.isPlaying ? this.stopTooltip() : this.playbackTooltip()}
+                        </Typography>
                     </ExpansionPanelSummary>
                 );
             default:
@@ -251,10 +256,9 @@ class AudioDisplayTable extends Component {
     }
 
     render() {
-        const { classes } = this.props;
         return(
             <div width={1}>
-                <ExpansionPanel expanded = {true}>
+                <ExpansionPanel expanded={true}>
                     {this.LoopExpansionPanelSummary()}
                     <ExpansionPanelDetails>
                         <AudioWaveform
