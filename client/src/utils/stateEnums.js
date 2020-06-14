@@ -4,7 +4,7 @@ module.exports = {
         INVALID: 'INVALID', 
         VALID: 'VALID'
     }),
-    GAME_STAGE: Object({
+    GAME_STAGE: Object.freeze({
         WAITING_FOR_PLAYERS: 'Waiting for players',
         WAITING_TO_START: 'Start game',
         BASELINE_PLAYER_RECORDING: 'First player recording',

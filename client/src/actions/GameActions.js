@@ -6,6 +6,13 @@ export function advanceToNextGameStage() {
     };
 }
 
+export function advanceToGameStage(stage) {
+    return (dispatch, prevState) => {
+        const { room: { roomCode } } = prevState();
+        dispatch({ type: 'socket/ADVANCE_TO_GAME_STAGE', roomCode, stage });
+    };
+}
+
 export function setBaselinePlayer() {
     return (dispatch, prevState) => {
         const { room: { roomCode }, user } = prevState();

@@ -16,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ReplayIcon from '@material-ui/icons/Replay';
 import LoopIcon from '@material-ui/icons/Loop';
 import DoneIcon from '@material-ui/icons/Done';
+import GameModel from '../../utils/GameModel';
 
 class GamePortalContainer extends Component {
     constructor(props) {
@@ -312,11 +313,11 @@ class GamePortalContainer extends Component {
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
                 this.playLoop();
-                this.eventEmitter.once('LOOP_PLAYED', this.props.advanceToNextGameStage);
+                this.eventEmitter.once('LOOP_PLAYED', () => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage)));
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
                 this.handleRecordOverLoop();
-                this.eventEmitter.once('AUDIO_RECORDED', this.props.advanceToNextGameStage);
+                this.eventEmitter.once('AUDIO_RECORDED', () => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage)));
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();

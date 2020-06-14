@@ -67,6 +67,9 @@ const SocketRouter = function (server, cache) {
             case 'socket/ADVANCE_GAME_NEXT_STAGE':
                 onAdvanceGameNextStage(action);
                 break;
+            case 'socket/ADVANCE_TO_GAME_STAGE':
+                onAdvanceGameToStage(action);
+                break;
             case 'socket/UPLOAD_AUDIO':
                 onUploadAudio(action);
                 break;
@@ -147,6 +150,13 @@ const SocketRouter = function (server, cache) {
     function onAdvanceGameNextStage(action) {
         io.sockets.in(action.roomCode).emit('action', {
             type: 'ADVANCE_NEXT_STAGE',
+        });
+    }
+
+    function onAdvanceGameToStage(action) {
+        io.sockets.in(action.roomCode).emit('action', {
+            type: 'ADVANCE_TO_STAGE',
+            stage: action.stage
         });
     }
 
