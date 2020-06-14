@@ -56,9 +56,9 @@ class GamePortalContainer extends Component {
                 this.performAudioActionsOnGameStage();
             }
         );
-
-        this.eventEmitter = new Tone.Emitter();
-
+        
+        this.transportDelay = '+0.01'; // offset for starting transports
+        this.eventEmitter = new Tone.Emitter(); // for emitting and listening for certain events
         this.toneNumBars = Tone.Time(this.props.room.numBars, 'm');
         this.toneTotalBars = Tone.Time(this.props.room.numBars * this.props.room.numLoops, 'm');
     
@@ -248,7 +248,7 @@ class GamePortalContainer extends Component {
         Tone.Transport.cancel();
         this.loopPlayer.start().stop(this.toneTotalBars);
         new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start(this.toneTotalBars);
-        Tone.Transport.start('+0.05');
+        Tone.Transport.start(this.transportDelay);
     }
 
     handleRecordLoop() {
@@ -268,7 +268,7 @@ class GamePortalContainer extends Component {
         this.startRecordEvent.start('1m');
         this.stopRecordLoopEvent.start(Tone.Time('1m') + this.toneNumBars + Tone.Time('4n'));
 
-        Tone.Transport.start('+0.1');
+        Tone.Transport.start(this.transportDelay);
     }
 
     handleRecordOverLoop() {
@@ -289,7 +289,7 @@ class GamePortalContainer extends Component {
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
         new Tone.Event(() => this.eventEmitter.emit('AUDIO_RECORDED')).start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
 
-        Tone.Transport.start('+0.05');
+        Tone.Transport.start(this.transportDelay);
     }
 
     handlePlaybackMerged() {
@@ -301,7 +301,7 @@ class GamePortalContainer extends Component {
         this.loopPlayer.start(0).stop(this.toneTotalBars);
         this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
         
-        Tone.Transport.start('+0.05');
+        Tone.Transport.start(this.transportDelay);
     }
 
     performAudioActionsOnGameStage() {
