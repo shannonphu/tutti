@@ -121,7 +121,16 @@ class LandingPage extends Component {
                                     onClose={() => this.setState({ snackBarOpen: false })}
                                     message='The room code is either invalid or the game has already begun.'
                                 /> 
-                            : null}
+                            : 
+                                this.props.room.roomState === ROOM_STATE.VALID && this.props.room.error ? 
+                                    <Snackbar
+                                        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                                        open={this.state.snackBarOpen}
+                                        autoHideDuration={5000}
+                                        onClose={() => this.setState({ snackBarOpen: false })}
+                                        message={this.props.room.error}
+                                    /> 
+                                :null }
                             <form onSubmit={isRoomCodeSet(this.props) ? this.handleJoinRoom : this.handleCreateRoom}>    
                                 <TextField
                                     autoFocus

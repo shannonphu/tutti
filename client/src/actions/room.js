@@ -87,19 +87,32 @@ export function addUserToRoom(user, cb) {
 
         api.addUserToRoom(user, roomCode)
             .then((response) => {
+                if (response.error) {
+                    if (response.error === 'Room does not exist') {
+                        dispatch({
+                            type: 'SET_INVALID_ROOM',
+                            roomCode: null,
+                            error: response.error
+                        });
+                    } else if (response.error === 'User name already taken in room') {
+                        dispatch({
+                            type: 'SET_ROOM_EXISTS_BUT_INVALID_NAME',
+                            roomCode: null,
+                            error: response.error
+                        });
+                    }
+                    
+                    return null;
+                }
+
                 if (response.data !== null) {
                     dispatch({
                         type: 'ADD_USER',
                         playerName: user.playerName
                     });
+                    dispatch({ type: 'CLEAR_ROOM_ERROR' });
                     dispatch({ type: 'socket/JOIN_ROOM', user, roomCode });
                     return response;
-                } else {
-                    dispatch({
-                        type: 'SET_INVALID_ROOM',
-                        roomCode: null
-                    });
-                    return null;
                 }
             })
             .then((response) => { if (cb) cb(response); })

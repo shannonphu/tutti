@@ -18,7 +18,18 @@ function RoomReducer(state = initialState, action) {
             return {
                 ...state,
                 roomCode: action.roomCode,
-                roomState: ROOM_STATE.INVALID
+                roomState: ROOM_STATE.INVALID,
+                error: action.error
+            };
+        case 'SET_ROOM_EXISTS_BUT_INVALID_NAME':
+            return {
+                ...state,
+                error: action.error
+            };
+        case 'CLEAR_ROOM_ERROR' :
+            return {
+                ...state,
+                error: null
             };
         case 'LOAD_ROOM':
             return {
