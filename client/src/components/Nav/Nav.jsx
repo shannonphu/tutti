@@ -12,6 +12,18 @@ import { VolumeSlider, ClickTrack} from '..';
 import styles from './NavStyles';
 
 class Nav extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+
+        this.resetState = this.resetState.bind(this);
+    }
+
+    resetState() {
+        this.props.resetUserState();
+        this.props.resetRoomState();
+        this.props.resetGameState();
+    }
 
     render() {
         const { classes } = this.props;
@@ -22,7 +34,7 @@ class Nav extends Component {
                         <MusicNoteIcon />
                     </IconButton>
                     <Typography variant='h6' color='inherit'>
-                        <Link to='/' className={classes.title}>tut.ti</Link>
+                        <Link to='/' className={classes.title} onClick={this.resetState}>tut.ti</Link>
                     </Typography>
                     <div className={classes.rightRail}>
                         <div className={classes.clickTrack}><ClickTrack {...this.props}/></div>

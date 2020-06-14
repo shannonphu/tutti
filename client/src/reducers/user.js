@@ -1,9 +1,13 @@
-function UserReducer(state = { 
-    playerName: null, 
-    messages: [], 
+const initialState = {
+    playerName: null,
+    messages: [],
     isRecording: false 
-}, action) {
+}
+
+function UserReducer(state = initialState, action) {
     switch (action.type) {
+        case 'RESET_USER_STATE':
+            return initialState;
         case 'ADD_USER':
             return {
                 ...state,

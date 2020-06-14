@@ -35,3 +35,8 @@ export function pingHello(text) {
         dispatch({ type: 'socket/HELLO', data: text });
     };
 }
+export function resetUserState() {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'RESET_USER_STATE' });
+    };
+}

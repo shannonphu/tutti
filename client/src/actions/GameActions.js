@@ -18,3 +18,9 @@ export function toggleClickTrack(isClickTrack) {
         dispatch({ type: 'TOGGLE_CLICK_TRACK', isClickTrack });
     };
 }
+
+export function resetGameState() {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'RESET_GAME_STATE' });
+    };
+}

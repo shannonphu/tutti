@@ -121,3 +121,9 @@ export function broadcastRecordingState(isRecording) {
         dispatch({ type: 'UPDATED_RECORDING_STATE', isRecording });
     };
 }
+
+export function resetRoomState() {
+    return (dispatch, prevState) => {
+        dispatch({ type: 'RESET_ROOM_STATE' });
+    };
+}
