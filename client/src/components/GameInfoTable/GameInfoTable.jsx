@@ -149,7 +149,7 @@ class GameInfoTable extends Component {
                                             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
                                                 return(
                                                     <Button
-                                                        onClick={this.props.advanceToNextGameStage(GAME_STAGE.FINAL_RECORDING_DONE)}
+                                                        onClick={() => this.props.advanceToGameStage(GAME_STAGE.FINAL_RECORDING_DONE)}
                                                         disabled={!this.props.isAllUserPlayerSet}
                                                         color='primary'
                                                         endIcon={<LibraryMusicIcon fontSize='small' />}

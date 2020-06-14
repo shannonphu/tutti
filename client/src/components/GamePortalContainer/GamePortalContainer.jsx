@@ -253,8 +253,10 @@ class GamePortalContainer extends Component {
 
         Tone.Transport.scheduleOnce(
             ()=>{
-                this.setState({isLoopPlayed: true}); 
-                this.performAudioActionsOnGameStage();
+                console.log('loop did play')
+                this.setState({isLoopPlayed: true});
+                this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_RECORDING);
+                // this.performAudioActionsOnGameStage();
             },
             this.toneTotalBars + Tone.Time(1)
         );
@@ -301,7 +303,8 @@ class GamePortalContainer extends Component {
         Tone.Transport.scheduleOnce(
             ()=>{
                 this.setState({isPlayerAudioRecorded: true});
-                this.performAudioActionsOnGameStage();
+                this.props.advanceToGameStage(GAME_STAGE.FINAL_RECORDING_DONE);
+                // this.performAudioActionsOnGameStage();
             },
             this.toneTotalBars + Tone.Time(1)
         );
@@ -310,10 +313,8 @@ class GamePortalContainer extends Component {
     }
 
     handlePlaybackMerged() {
-
         Tone.Transport.stop();
         Tone.Transport.cancel();
-
         // schedule playback
         this.loopPlayer.start(0).stop(this.toneTotalBars);
         this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
@@ -328,15 +329,20 @@ class GamePortalContainer extends Component {
                 Tone.Transport.cancel();
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
-                this.playLoop();
-                if (this.state.isLoopPlayed) this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_RECORDING);
+                if (this.state.isLoopPlayed) {
+                    console.log('OTHER_PLAYERS_LISTENING_TO_BASELINE: call advanced')
+                    // this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_RECORDING);
+                } else {
+                    this.playLoop();
+                }
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
+                console.log('this.state.isPlayerAudioRecorded: ' + this.state.isPlayerAudioRecorded)
                 if (!this.state.isPlayerAudioRecorded) {
                     this.handleRecordOverLoop();
                 }
-                Tone.Transport.stop();
-                Tone.Transport.cancel();
+                // Tone.Transport.stop();
+                // Tone.Transport.cancel();
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();
