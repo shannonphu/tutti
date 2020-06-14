@@ -12,7 +12,8 @@ class RoomController {
                 numBars,
                 numLoops,
                 users,
-                totalBars: numBars * numLoops
+                totalBars: numBars * numLoops,
+                stage: 'Waiting for players'
             })) {
                 console.log('Added room to cache');
                 console.log(cache.data);
@@ -39,7 +40,7 @@ class RoomController {
         this.getRoom = function (req, res) {
             let roomCode = req.params.roomCode;
             let room = _getRoomFromCache(roomCode);
-            if (room) {
+            if (room && room.stage === 'Waiting for players') {
                 res.json({
                     data: room
                 });
@@ -68,13 +69,17 @@ class RoomController {
             let user = req.body;
             let room = _getRoomFromCache(roomCode);
 
-            // add user to room
-            room.users[user.playerName] = {};
-            _addRoomToCache(roomCode, room.bpm, room.numBars, room.numLoops, room.users);
-            
-            console.log(`Added user: ${user.playerName}`);
-            console.log(cache.data);
-            res.json({data: _getRoomFromCache(roomCode)})
+            if (room !== null) {
+                // add user to room
+                room.users[user.playerName] = {};
+                _addRoomToCache(roomCode, room.bpm, room.numBars, room.numLoops, room.users);
+
+                console.log(`Added user: ${user.playerName}`);
+                console.log(cache.data);
+                res.json({ data: room })
+            } else {
+                res.json({ data: null })
+            }
         };
     }
 }

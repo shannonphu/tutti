@@ -154,10 +154,20 @@ const SocketRouter = function (server, cache) {
     }
 
     function onAdvanceGameToStage(action) {
-        io.sockets.in(action.roomCode).emit('action', {
-            type: 'ADVANCE_TO_STAGE',
+        let room = cache.get(action.roomCode);
+        if (room === undefined) {
+            return;
+        }
+
+        if (cache.set(action.roomCode, {
+            ...room,
             stage: action.stage
-        });
+        })) {
+            io.sockets.in(action.roomCode).emit('action', {
+                type: 'ADVANCE_TO_STAGE',
+                stage: action.stage
+            });
+        }
     }
 
     function onUploadAudio(action) {

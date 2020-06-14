@@ -87,12 +87,20 @@ export function addUserToRoom(user, cb) {
 
         api.addUserToRoom(user, roomCode)
             .then((response) => {
-                dispatch({
-                    type: 'ADD_USER',
-                    playerName: user.playerName
-                });
-                dispatch({ type: 'socket/JOIN_ROOM', user, roomCode });
-                return response;
+                if (response.data !== null) {
+                    dispatch({
+                        type: 'ADD_USER',
+                        playerName: user.playerName
+                    });
+                    dispatch({ type: 'socket/JOIN_ROOM', user, roomCode });
+                    return response;
+                } else {
+                    dispatch({
+                        type: 'SET_INVALID_ROOM',
+                        roomCode: null
+                    });
+                    return null;
+                }
             })
             .then((response) => { if (cb) cb(response); })
             .catch(error => console.error('Error in addUserToRoom: ' + error));
