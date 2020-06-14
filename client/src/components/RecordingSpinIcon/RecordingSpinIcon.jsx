@@ -16,8 +16,8 @@ class RecordingSpinIcon extends Component {
 
         return(
             <div className={classes.root}>
-                <FiberManualRecordIcon fontSize='small' style={{ fill: theme.palette.error.main }} />
-                <CircularProgress size={20} className={classes.progress} />
+                <FiberManualRecordIcon style={{ fill: theme.palette.error.main }} />
+                <CircularProgress size={24} className={classes.progress} />
             </div>
         )
     }

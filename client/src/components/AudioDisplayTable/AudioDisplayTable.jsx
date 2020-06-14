@@ -216,7 +216,7 @@ class AudioDisplayTable extends Component {
             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
                 return (
                     <ExpansionPanelSummary> 
-                        {this.props.isRecording ? <IconButton>< RecordingSpinIcon/></IconButton> : this.recordTooltip()}
+                        {this.props.isRecording ? <IconButton disabled>< RecordingSpinIcon/></IconButton> : this.recordTooltip()}
                         {this.state.isPlaying ? this.stopTooltip() : this.playbackTooltip()}
                     </ExpansionPanelSummary>
                 );
