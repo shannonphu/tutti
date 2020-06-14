@@ -5,11 +5,6 @@ import Container from '@material-ui/core/Container';
 import { ChatMessageBox, GameInfoTable, AudioDisplayTable } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
 import woodBlockUrl from '../../assets/woodblock.wav';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import ReplayIcon from '@material-ui/icons/Replay';
-import DoneIcon from '@material-ui/icons/Done';
-import GameModel from '../../utils/GameModel';
 
 class GamePortalContainer extends Component {
     constructor(props) {
@@ -41,7 +36,6 @@ class GamePortalContainer extends Component {
         this.saveLoopedAudio = this.saveLoopedAudio.bind(this);
         this.performAudioActionsOnGameStage = this.performAudioActionsOnGameStage.bind(this);
         this.playLoop = this.playLoop.bind(this);
-        this.createSnackbar = this.createSnackbar.bind(this);
         
         // singleton settings    
         Tone.context.latencyHint = 'interactive';
@@ -253,10 +247,8 @@ class GamePortalContainer extends Component {
 
         Tone.Transport.scheduleOnce(
             ()=>{
-                console.log('loop did play')
                 this.setState({isLoopPlayed: true});
                 this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_RECORDING);
-                // this.performAudioActionsOnGameStage();
             },
             this.toneTotalBars + Tone.Time(1)
         );
@@ -359,29 +351,6 @@ class GamePortalContainer extends Component {
         }
     }
 
-    createSnackbar(text) {
-        return(
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={true}
-                message={text}
-                action={
-                    <React.Fragment>
-                        <IconButton size='small' color='inherit'>
-                            <ReplayIcon fontSize='small' />
-                        </IconButton>
-                        <IconButton size='small' color='inherit'>
-                            <DoneIcon fontSize='small' />
-                        </IconButton>
-                    </React.Fragment>
-                }
-            />
-        );
-    }
-
     // -------------------------------------------------------------------------------------
 
     render() {
@@ -397,7 +366,6 @@ class GamePortalContainer extends Component {
                             isRecording = {this.state.isRecording}
                             loopUrl = {this.loopUrl}
                         />
-                        {this.createSnackbar(this.props.game.stage)}
                     </Grid>
                     <Grid item xs={4}>
                         <GameInfoTable 
