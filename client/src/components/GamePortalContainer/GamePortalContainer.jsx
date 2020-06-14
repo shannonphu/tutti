@@ -20,6 +20,7 @@ class GamePortalContainer extends Component {
             isClickTrack: true,
             isLoopPlayerSet: false,
             isAllUserPlayerSet: false,
+            isLoopPlayed: false,
             isPlayerAudioRecorded: false
         };
 
@@ -248,7 +249,15 @@ class GamePortalContainer extends Component {
         Tone.Transport.stop();
         Tone.Transport.cancel();
         this.loopPlayer.start().stop(this.toneTotalBars);
-        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start(this.toneTotalBars + Tone.Time(1));
+
+        Tone.Transport.scheduleOnce(
+            ()=>{
+                this.setState({isLoopPlayed: true}); 
+                this.performAudioActionsOnGameStage();
+            },
+            this.toneTotalBars + Tone.Time(1)
+        );
+
         Tone.Transport.start(this.transportDelay);
     }
 
@@ -288,7 +297,13 @@ class GamePortalContainer extends Component {
 
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
-        new Tone.Event(() => this.eventEmitter.emit('AUDIO_RECORDED')).start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
+        Tone.Transport.scheduleOnce(
+            ()=>{
+                this.setState({isPlayerAudioRecorded: true});
+                this.performAudioActionsOnGameStage();
+            },
+            this.toneTotalBars + Tone.Time(1)
+        );
 
         Tone.Transport.start(this.transportDelay);
     }
@@ -313,18 +328,16 @@ class GamePortalContainer extends Component {
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
                 this.playLoop();
-                this.eventEmitter.once('LOOP_PLAYED', this.props.advanceToNextGameStage);
+                console.log(this.state.isLoopPlayed)
+                if (this.state.isLoopPlayed) this.props.advanceToNextGameStage();
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
-                console.log(this.state)
+                console.log(this.state);
                 if (!this.state.isPlayerAudioRecorded) {
                     this.handleRecordOverLoop();
                 }
-                this.eventEmitter.once('AUDIO_RECORDED', () => {
-                    this.setState({isPlayerAudioRecorded: true});
-                    Tone.Transport.stop();
-                    Tone.Transport.cancel();
-                });
+                Tone.Transport.stop();
+                Tone.Transport.cancel();
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();
