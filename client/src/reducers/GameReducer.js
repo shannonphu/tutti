@@ -15,6 +15,11 @@ function GameReducer(state = initialState, action) {
                 ...state,
                 stage: GameModel.NextStage(state.stage)
             };
+        case 'ADVANCE_TO_STAGE':
+            return {
+                ...state,
+                stage: action.stage
+            };
         case 'SET_BASELINE_PLAYER':
             return {
                 ...state,
