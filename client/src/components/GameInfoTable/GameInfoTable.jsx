@@ -160,7 +160,7 @@ class GameInfoTable extends Component {
                                             case GAME_STAGE.FINAL_RECORDING_DONE:
                                                 return(
                                                     <Button 
-                                                        onClick={() => this.props.handlePlaybackMerged} 
+                                                        onClick={() => this.props.handlePlaybackMerged()} 
                                                         disabled={!this.props.isAllUserPlayerSet}
                                                         name='start' 
                                                         color='primary'

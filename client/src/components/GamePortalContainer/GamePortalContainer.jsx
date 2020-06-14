@@ -303,8 +303,6 @@ class GamePortalContainer extends Component {
         Tone.Transport.scheduleOnce(
             ()=>{
                 this.setState({isPlayerAudioRecorded: true});
-                this.props.advanceToGameStage(GAME_STAGE.FINAL_RECORDING_DONE);
-                // this.performAudioActionsOnGameStage();
             },
             this.toneTotalBars + Tone.Time(1)
         );
@@ -330,19 +328,26 @@ class GamePortalContainer extends Component {
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
                 if (this.state.isLoopPlayed) {
-                    console.log('OTHER_PLAYERS_LISTENING_TO_BASELINE: call advanced')
-                    // this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_RECORDING);
                 } else {
                     this.playLoop();
                 }
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
-                console.log('this.state.isPlayerAudioRecorded: ' + this.state.isPlayerAudioRecorded)
-                if (!this.state.isPlayerAudioRecorded) {
+                Tone.Transport.stop();
+                Tone.Transport.cancel();
+
+                let hasAudioUrl = false;
+
+                Object.keys(this.props.room.users).forEach(playerName => {
+                    let player = this.props.room.users[playerName];
+                    if (player.audioUrl !== undefined) {
+                        hasAudioUrl = true;
+                    }
+                })
+
+                if (hasAudioUrl === false) {
                     this.handleRecordOverLoop();
                 }
-                // Tone.Transport.stop();
-                // Tone.Transport.cancel();
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();
@@ -399,7 +404,7 @@ class GamePortalContainer extends Component {
                             {...this.props}
                             handlePlaybackMerged={this.handlePlaybackMerged}
                             isLoopPlayerSet={this.state.isLoopPlayerSet}
-                            isAllUserPlayerSet = {this.isAllUserPlayerSet}
+                            isAllUserPlayerSet = {this.state.isAllUserPlayerSet}
                         />
                         <ChatMessageBox {...this.props} />
                     </Grid>
