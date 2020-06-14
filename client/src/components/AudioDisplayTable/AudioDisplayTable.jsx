@@ -53,11 +53,14 @@ class AudioDisplayTable extends Component {
         };
 
         this.baselinePlayer = this.props.game.baselinePlayer;
-        if (this.props.game.baselinePlayer !== null) {
-            this.loopUrl = this.props.room.users[this.baselinePlayer.playerName].loopUrl;
+
+        if (this.baselinePlayer !== null) {
+            this.isPlayerTheBaseline = this.props.user.playerName === this.baselinePlayer.playerName;
+            this.baselinePlayerName = this.baselinePlayer.playerName;
         }
         else {
-            this.loopUrl = null;
+            this.isPlayerTheBaseline = false;
+            this.baselinePlayerName = null;
         }
         
         this.sequence = null;
@@ -169,23 +172,41 @@ class AudioDisplayTable extends Component {
         event.preventDefault();
         this.setState({isPlaying: false});
 
+        Tone.Transport.cancel();
         Tone.Transport.stop();
     }
 
     recordTooltip() {
         const { theme } = this.props;
         return(
-            <Tooltip title="Record a Loop" placement="top">
-                <IconButton onClick={this.handleOnClickRecord} style={{ padding: 0 }}>
-                    <FiberManualRecordIcon style={{ fill: theme.palette.error.main }}/>
-                </IconButton>
+            <Tooltip 
+                title={this.isPlayerTheBaseline ? 'record a loop' : `${this.baselinePlayerName} is recording`}
+                placement="top"
+            >
+                <span>
+                    <IconButton 
+                        onClick={this.handleOnClickRecord}
+                        disabled = {!this.isPlayerTheBaseline}
+                        style={{padding: 0}}
+                    >
+                        {this.isPlayerTheBaseline ? <FiberManualRecordIcon style={{ fill: theme.palette.error.main }}/> : <FiberManualRecordIcon disabled/>}
+                    </IconButton>
+                </span>
             </Tooltip>
         );
     }
 
     playbackTooltip() {
+        let title = null;
+        if (this.isPlayerTheBaseline) {
+            title = this.props.isLoopPlayerSet ? 'play back the loop' : 'record a loop first';
+        }
+        else {
+            title = this.props.isLoopPlayerSet ? 'play back the loop' : 'hold up';      
+        }
+        
         return(
-            <Tooltip title={this.props.isLoopPlayerSet ? 'play back the loop' : 'record a loop first'} placement="top">
+            <Tooltip title={title} placement="top">
                 <span>
                     <IconButton 
                         color='primary'
@@ -193,7 +214,7 @@ class AudioDisplayTable extends Component {
                         onClick={this.handleOnClickPlay}
                         style={{ padding: 0 }}
                     >
-                        <PlayArrowIcon />
+                        <PlayArrowIcon/>
                     </IconButton>
                 </span>
             </Tooltip>
@@ -207,7 +228,7 @@ class AudioDisplayTable extends Component {
                     onClick={this.handleOnClickStop}
                     style={{ padding: 0 }}
                 >
-                    <StopIcon />
+                    <StopIcon/>
                 </IconButton>
             </Tooltip>
         );
@@ -243,7 +264,7 @@ class AudioDisplayTable extends Component {
                         <AudioWaveform
                             {...this.props}
                             audioName = 'Loop'
-                            audioUrl={this.props.isLoopPlayerSet ? (this.loopUrl) : 'Loop'}
+                            audioUrl={this.props.isLoopPlayerSet ? (this.props.loopUrl) : 'Loop'}
                             height={100}
                             width={this.state.panelWidth}
                             shouldShowControls={false}

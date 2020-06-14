@@ -2,21 +2,9 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { ChatMessageBox, GameInfoTable, AudioDisplayTable } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
 import woodBlockUrl from '../../assets/woodblock.wav';
-import MicIcon from '@material-ui/icons/Mic';
-import TimerIcon from '@material-ui/icons/Timer';
-import TimerOffIcon from '@material-ui/icons/TimerOff';
-import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import ReplayIcon from '@material-ui/icons/Replay';
-import LoopIcon from '@material-ui/icons/Loop';
-import DoneIcon from '@material-ui/icons/Done';
-import GameModel from '../../utils/GameModel';
 
 class GamePortalContainer extends Component {
     constructor(props) {
@@ -27,7 +15,9 @@ class GamePortalContainer extends Component {
             isUserPlayerSet: false,
             isClickTrack: true,
             isLoopPlayerSet: false,
-            isAllUserPlayerSet: false
+            isAllUserPlayerSet: false,
+            isLoopPlayed: false,
+            isPlayerAudioRecorded: false
         };
 
         // get bindings out of the way:
@@ -46,7 +36,6 @@ class GamePortalContainer extends Component {
         this.saveLoopedAudio = this.saveLoopedAudio.bind(this);
         this.performAudioActionsOnGameStage = this.performAudioActionsOnGameStage.bind(this);
         this.playLoop = this.playLoop.bind(this);
-        this.createSnackbar = this.createSnackbar.bind(this);
         
         // singleton settings    
         Tone.context.latencyHint = 'interactive';
@@ -68,7 +57,9 @@ class GamePortalContainer extends Component {
         this.userPlayers = null;
         this.allUserPlayer = null;
         this.metronome = null;
-        this.clcikTrack = null;
+        this.clickTrack = null;
+
+        this.loopUrl = null;
 
         // start and stop recording events
         this.startRecordEvent = new Tone.Event(this.startRecording);
@@ -119,11 +110,16 @@ class GamePortalContainer extends Component {
             return;
         }
         let playerData = this.props.room.users[baselinePlayerName];
+        if (playerData === undefined) {
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = { ...this.state, isLoopPlayerSet: false };
+            return;
+        }
 
         if (playerData.loopUrl != null) {
-            let loopUrl = playerData.loopUrl;
+            this.loopUrl = playerData.loopUrl;
         
-            let player = new Tone.Player(loopUrl).toMaster();
+            let player = new Tone.Player(this.loopUrl).toMaster();
             player.fadeOut = '4n';
             
             this.loopPlayer = new Tone.Event(
@@ -248,7 +244,15 @@ class GamePortalContainer extends Component {
         Tone.Transport.stop();
         Tone.Transport.cancel();
         this.loopPlayer.start().stop(this.toneTotalBars);
-        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start(this.toneTotalBars);
+
+        Tone.Transport.scheduleOnce(
+            ()=>{
+                this.setState({isLoopPlayed: true});
+                this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_RECORDING);
+            },
+            this.toneTotalBars + Tone.Time(1)
+        );
+
         Tone.Transport.start(this.transportDelay);
     }
 
@@ -288,16 +292,19 @@ class GamePortalContainer extends Component {
 
         this.startRecordEvent.start('1m');
         this.stopRecordEvent.start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
-        new Tone.Event(() => this.eventEmitter.emit('AUDIO_RECORDED')).start(Tone.Time('1m') + this.toneTotalBars + Tone.Time('4n'));
+        Tone.Transport.scheduleOnce(
+            ()=>{
+                this.setState({isPlayerAudioRecorded: true});
+            },
+            this.toneTotalBars + Tone.Time(1)
+        );
 
         Tone.Transport.start(this.transportDelay);
     }
 
     handlePlaybackMerged() {
-
         Tone.Transport.stop();
         Tone.Transport.cancel();
-
         // schedule playback
         this.loopPlayer.start(0).stop(this.toneTotalBars);
         this.allUserPlayer.start(0).stop(this.toneNumBars + Tone.Time('4n'));
@@ -312,12 +319,27 @@ class GamePortalContainer extends Component {
                 Tone.Transport.cancel();
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
-                this.playLoop();
-                this.eventEmitter.once('LOOP_PLAYED', () => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage)));
+                if (this.state.isLoopPlayed) {
+                } else {
+                    this.playLoop();
+                }
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
-                this.handleRecordOverLoop();
-                this.eventEmitter.once('AUDIO_RECORDED', () => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage)));
+                Tone.Transport.stop();
+                Tone.Transport.cancel();
+
+                let hasAudioUrl = false;
+
+                Object.keys(this.props.room.users).forEach(playerName => {
+                    let player = this.props.room.users[playerName];
+                    if (player.audioUrl !== undefined) {
+                        hasAudioUrl = true;
+                    }
+                })
+
+                if (hasAudioUrl === false) {
+                    this.handleRecordOverLoop();
+                }
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();
@@ -327,29 +349,6 @@ class GamePortalContainer extends Component {
                 Tone.Transport.cancel();
                 break;
         }
-    }
-
-    createSnackbar(text) {
-        return(
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={true}
-                message={text}
-                action={
-                    <React.Fragment>
-                        <IconButton size='small' color='inherit'>
-                            <ReplayIcon fontSize='small' />
-                        </IconButton>
-                        <IconButton size='small' color='inherit'>
-                            <DoneIcon fontSize='small' />
-                        </IconButton>
-                    </React.Fragment>
-                }
-            />
-        );
     }
 
     // -------------------------------------------------------------------------------------
@@ -364,13 +363,17 @@ class GamePortalContainer extends Component {
                             recordLoopFunction = {this.handleRecordLoop} 
                             playLoopFunction = {this.playLoop}
                             isLoopPlayerSet={this.state.isLoopPlayerSet}
-                            isAllUserPlayerSet={this.state.isAllUserPlayerSet}
                             isRecording = {this.state.isRecording}
+                            loopUrl = {this.loopUrl}
                         />
-                        {this.createSnackbar(this.props.game.stage)}
                     </Grid>
                     <Grid item xs={4}>
-                        <GameInfoTable {...this.props} isLoopPlayerSet={this.state.isLoopPlayerSet}/>
+                        <GameInfoTable 
+                            {...this.props}
+                            handlePlaybackMerged={this.handlePlaybackMerged}
+                            isLoopPlayerSet={this.state.isLoopPlayerSet}
+                            isAllUserPlayerSet = {this.state.isAllUserPlayerSet}
+                        />
                         <ChatMessageBox {...this.props} />
                     </Grid>
                 </Grid>

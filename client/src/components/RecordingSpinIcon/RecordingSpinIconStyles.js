@@ -6,7 +6,7 @@ export default (theme) => ({
     },
     progress: {
         position: 'absolute',
-        top: 6,
+        top: 5.5,
         left: 0,
         zIndex: 1,
         color: theme.palette.error.main

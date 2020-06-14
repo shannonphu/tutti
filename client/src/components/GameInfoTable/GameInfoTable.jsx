@@ -14,6 +14,8 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import { Metronome } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
+import QueueMusicIcon from '@material-ui/icons/QueueMusic';
+import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 import GameModel from '../../utils/GameModel';
 
 class GameInfoTable extends Component {
@@ -118,28 +120,53 @@ class GameInfoTable extends Component {
                                                 );
 
                                             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
+                                                var baselinePlayerName = null;
+                                                if (this.props.game.baselinePlayer !== null) {
+                                                    baselinePlayerName = this.props.game.baselinePlayer.playerName;
+                                                }
                                                 return(
                                                     <Button 
-                                                        onClick={() => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage))} 
+                                                        onClick={() => this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE)} 
                                                         disabled={!this.props.isLoopPlayerSet}
                                                         name='start' 
                                                         color='primary'
                                                         endIcon={<SettingsInputAntennaIcon fontSize='small' />}
                                                     >
-                                                        Broadcast Loop!
+                                                        {this.props.user.playerName === baselinePlayerName ? 'Broadcast Loop!' : `Waiting...`}
                                                     </Button>
                                                 );
-
+                                                
+                                            case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
+                                                return(
+                                                    <Button 
+                                                        disabled
+                                                        color='primary'
+                                                        endIcon={<QueueMusicIcon fontSize='small' />}
+                                                    >
+                                                        Get Ready...
+                                                    </Button>
+                                                );
+                                            case GAME_STAGE.OTHER_PLAYERS_RECORDING:
+                                                return(
+                                                    <Button
+                                                        onClick={() => this.props.advanceToGameStage(GAME_STAGE.FINAL_RECORDING_DONE)}
+                                                        disabled={!this.props.isAllUserPlayerSet}
+                                                        color='primary'
+                                                        endIcon={<LibraryMusicIcon fontSize='small' />}
+                                                    >
+                                                        {this.props.isAllUserPlayerSet ? 'Mix all Recordings!' : 'Recording...'}
+                                                    </Button>
+                                                );
                                             case GAME_STAGE.FINAL_RECORDING_DONE:
                                                 return(
                                                     <Button 
-                                                        onClick={() => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage))} 
-                                                        disabled={!this.props.isLoopPlayerSet}
+                                                        onClick={() => this.props.handlePlaybackMerged()} 
+                                                        disabled={!this.props.isAllUserPlayerSet}
                                                         name='start' 
                                                         color='primary'
                                                         endIcon={<ReplayIcon fontSize='small' />}
                                                     >
-                                                        Start Over!
+                                                        Play back again!
                                                     </Button>
                                                 );
 
