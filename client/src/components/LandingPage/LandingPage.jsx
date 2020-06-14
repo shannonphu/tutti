@@ -4,17 +4,20 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
 import Paper from '@material-ui/core/Paper';
 import { TextField } from '@material-ui/core';
-import { isRoomCodeSet } from'../../utils/roomUtils.js';
+import { isRoomCodeSet } from '../../utils/roomUtils.js';
+import { ROOM_STATE } from'../../utils/stateEnums';
 import styles from './LandingPageStyles';
 
 class LandingPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            playerName : '',
-            isError    : false
+            playerName   : '',
+            isError      : false,
+            snackBarOpen : true
         };
 
         this.handleJoinRoom   = this.handleJoinRoom.bind(this);
@@ -110,6 +113,15 @@ class LandingPage extends Component {
                         className  = {classes.container}
                     >
                         <Grid item>
+                            {this.props.room.roomState === ROOM_STATE.INVALID ? 
+                                <Snackbar
+                                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                                    open={this.state.snackBarOpen}
+                                    autoHideDuration={5000}
+                                    onClose={() => this.setState({ snackBarOpen: false })}
+                                    message='The room code is either invalid or the game has already begun.'
+                                /> 
+                            : null}
                             <form onSubmit={isRoomCodeSet(this.props) ? this.handleJoinRoom : this.handleCreateRoom}>    
                                 <TextField
                                     autoFocus
