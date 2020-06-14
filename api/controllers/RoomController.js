@@ -69,17 +69,23 @@ class RoomController {
             let user = req.body;
             let room = _getRoomFromCache(roomCode);
 
-            if (room !== null) {
-                // add user to room
-                room.users[user.playerName] = {};
-                _addRoomToCache(roomCode, room.bpm, room.numBars, room.numLoops, room.users);
-
-                console.log(`Added user: ${user.playerName}`);
-                console.log(cache.data);
-                res.json({ data: room })
-            } else {
-                res.json({ data: null })
+            if (room === null) {
+                res.json({ data: null, error: 'Room does not exist' });
+                return;
             }
+
+            if (room.users[user.playerName] !== undefined) {
+                res.json({ data: null, error: 'User name already taken in room' });
+                return;
+            }
+
+            // add user to room
+            room.users[user.playerName] = {};
+            _addRoomToCache(roomCode, room.bpm, room.numBars, room.numLoops, room.users);
+
+            console.log(`Added user: ${user.playerName}`);
+            console.log(cache.data);
+            res.json({ data: room, error: null })
         };
     }
 }
