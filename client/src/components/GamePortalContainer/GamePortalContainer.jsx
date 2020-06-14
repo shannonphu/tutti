@@ -2,19 +2,12 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { ChatMessageBox, GameInfoTable, AudioDisplayTable } from '..';
 import { GAME_STAGE } from '../../utils/stateEnums';
 import woodBlockUrl from '../../assets/woodblock.wav';
-import MicIcon from '@material-ui/icons/Mic';
-import TimerIcon from '@material-ui/icons/Timer';
-import TimerOffIcon from '@material-ui/icons/TimerOff';
-import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import ReplayIcon from '@material-ui/icons/Replay';
-import LoopIcon from '@material-ui/icons/Loop';
 import DoneIcon from '@material-ui/icons/Done';
 
 class GamePortalContainer extends Component {
@@ -255,7 +248,7 @@ class GamePortalContainer extends Component {
         Tone.Transport.stop();
         Tone.Transport.cancel();
         this.loopPlayer.start().stop(this.toneTotalBars);
-        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start(this.toneTotalBars);
+        new Tone.Event(() => this.eventEmitter.emit('LOOP_PLAYED')).start(this.toneTotalBars + Tone.Time(1));
         Tone.Transport.start(this.transportDelay);
     }
 
@@ -323,8 +316,15 @@ class GamePortalContainer extends Component {
                 this.eventEmitter.once('LOOP_PLAYED', this.props.advanceToNextGameStage);
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
-                this.handleRecordOverLoop();
-                // this.eventEmitter.once('AUDIO_RECORDED', this.setState({isPlayerAudioRecorded: true}));
+                console.log(this.state)
+                if (!this.state.isPlayerAudioRecorded) {
+                    this.handleRecordOverLoop();
+                }
+                this.eventEmitter.once('AUDIO_RECORDED', () => {
+                    this.setState({isPlayerAudioRecorded: true});
+                    Tone.Transport.stop();
+                    Tone.Transport.cancel();
+                });
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();

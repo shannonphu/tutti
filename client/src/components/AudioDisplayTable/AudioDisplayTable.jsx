@@ -172,6 +172,7 @@ class AudioDisplayTable extends Component {
         event.preventDefault();
         this.setState({isPlaying: false});
 
+        Tone.Transport.cancel();
         Tone.Transport.stop();
     }
 
