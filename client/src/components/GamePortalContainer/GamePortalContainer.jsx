@@ -26,7 +26,8 @@ class GamePortalContainer extends Component {
             isUserPlayerSet: false,
             isClickTrack: true,
             isLoopPlayerSet: false,
-            isAllUserPlayerSet: false
+            isAllUserPlayerSet: false,
+            isPlayerAudioRecorded: false
         };
 
         // get bindings out of the way:
@@ -67,7 +68,9 @@ class GamePortalContainer extends Component {
         this.userPlayers = null;
         this.allUserPlayer = null;
         this.metronome = null;
-        this.clcikTrack = null;
+        this.clickTrack = null;
+
+        this.loopUrl = null;
 
         // start and stop recording events
         this.startRecordEvent = new Tone.Event(this.startRecording);
@@ -118,11 +121,16 @@ class GamePortalContainer extends Component {
             return;
         }
         let playerData = this.props.room.users[baselinePlayerName];
+        if (playerData === undefined) {
+            // eslint-disable-next-line react/no-direct-mutation-state
+            this.state = { ...this.state, isLoopPlayerSet: false };
+            return;
+        }
 
         if (playerData.loopUrl != null) {
-            let loopUrl = playerData.loopUrl;
+            this.loopUrl = playerData.loopUrl;
         
-            let player = new Tone.Player(loopUrl).toMaster();
+            let player = new Tone.Player(this.loopUrl).toMaster();
             player.fadeOut = '4n';
             
             this.loopPlayer = new Tone.Event(
@@ -316,7 +324,7 @@ class GamePortalContainer extends Component {
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
                 this.handleRecordOverLoop();
-                this.eventEmitter.once('AUDIO_RECORDED', this.props.advanceToNextGameStage);
+                // this.eventEmitter.once('AUDIO_RECORDED', this.setState({isPlayerAudioRecorded: true}));
                 break;
             case GAME_STAGE.FINAL_RECORDING_DONE:
                 this.handlePlaybackMerged();
@@ -363,13 +371,18 @@ class GamePortalContainer extends Component {
                             recordLoopFunction = {this.handleRecordLoop} 
                             playLoopFunction = {this.playLoop}
                             isLoopPlayerSet={this.state.isLoopPlayerSet}
-                            isAllUserPlayerSet={this.state.isAllUserPlayerSet}
                             isRecording = {this.state.isRecording}
+                            loopUrl = {this.loopUrl}
                         />
                         {this.createSnackbar(this.props.game.stage)}
                     </Grid>
                     <Grid item xs={4}>
-                        <GameInfoTable {...this.props} isLoopPlayerSet={this.state.isLoopPlayerSet}/>
+                        <GameInfoTable 
+                            {...this.props}
+                            handlePlaybackMerged={this.handlePlaybackMerged}
+                            isLoopPlayerSet={this.state.isLoopPlayerSet}
+                            isAllUserPlayerSet = {this.isAllUserPlayerSet}
+                        />
                         <ChatMessageBox {...this.props} />
                     </Grid>
                 </Grid>

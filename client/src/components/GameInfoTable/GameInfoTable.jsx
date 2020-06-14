@@ -116,28 +116,32 @@ class GameInfoTable extends Component {
                                                 );
 
                                             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
+                                                var baselinePlayerName = null;
+                                                if (this.props.game.baselinePlayer !== null) {
+                                                    baselinePlayerName = this.props.game.baselinePlayer.playerName;
+                                                }
                                                 return(
                                                     <Button 
                                                         onClick={this.props.advanceToNextGameStage} 
-                                                        disabled={!this.props.isLoopPlayerSet}
+                                                        disabled={!this.props.isLoopPlayerSet || (this.props.user.playerName !== baselinePlayerName) }
                                                         name='start' 
                                                         color='primary'
                                                         endIcon={<SettingsInputAntennaIcon fontSize='small' />}
                                                     >
-                                                        Broadcast Loop!
+                                                        {this.props.user.playerName === baselinePlayerName ? 'Broadcast Loop!' : `Waiting...`}
                                                     </Button>
                                                 );
 
                                             case GAME_STAGE.FINAL_RECORDING_DONE:
                                                 return(
                                                     <Button 
-                                                        onClick={this.props.advanceToNextGameStage} 
-                                                        disabled={!this.props.isLoopPlayerSet}
+                                                        onClick={this.props.handlePlaybackMerged} 
+                                                        disabled={!this.props.isAllUserPlayerSet}
                                                         name='start' 
                                                         color='primary'
                                                         endIcon={<ReplayIcon fontSize='small' />}
                                                     >
-                                                        Start Over!
+                                                        Play back again!
                                                     </Button>
                                                 );
 

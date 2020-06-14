@@ -1,11 +1,11 @@
 export default (theme) => ({
     root: {
-        paddingTop: 5.5,
+        paddingTop: 0,
         paddingLeft: 0
     },
     progress: {
         position: 'absolute',
-        top: 17.5,
+        top: 12,
         left: 12,
         zIndex: 1,
         color: theme.palette.error.main
