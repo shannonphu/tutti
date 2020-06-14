@@ -126,7 +126,7 @@ class GameInfoTable extends Component {
                                                 }
                                                 return(
                                                     <Button 
-                                                        onClick={() => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage))} 
+                                                        onClick={() => this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE)} 
                                                         disabled={!this.props.isLoopPlayerSet}
                                                         name='start' 
                                                         color='primary'
@@ -149,7 +149,7 @@ class GameInfoTable extends Component {
                                             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
                                                 return(
                                                     <Button
-                                                        onClick={this.props.advanceToNextGameStage}
+                                                        onClick={this.props.advanceToNextGameStage(GAME_STAGE.FINAL_RECORDING_DONE)}
                                                         disabled={!this.props.isAllUserPlayerSet}
                                                         color='primary'
                                                         endIcon={<LibraryMusicIcon fontSize='small' />}
@@ -160,7 +160,7 @@ class GameInfoTable extends Component {
                                             case GAME_STAGE.FINAL_RECORDING_DONE:
                                                 return(
                                                     <Button 
-                                                        onClick={() => this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage))} 
+                                                        onClick={() => this.props.handlePlaybackMerged} 
                                                         disabled={!this.props.isAllUserPlayerSet}
                                                         name='start' 
                                                         color='primary'

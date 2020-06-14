@@ -329,11 +329,9 @@ class GamePortalContainer extends Component {
                 break;
             case GAME_STAGE.OTHER_PLAYERS_LISTENING_TO_BASELINE:
                 this.playLoop();
-                console.log(this.state.isLoopPlayed)
-                if (this.state.isLoopPlayed) this.props.advanceToGameStage(GameModel.NextStage(this.props.game.stage));
+                if (this.state.isLoopPlayed) this.props.advanceToGameStage(GAME_STAGE.OTHER_PLAYERS_RECORDING);
                 break;
             case GAME_STAGE.OTHER_PLAYERS_RECORDING:
-                console.log(this.state);
                 if (!this.state.isPlayerAudioRecorded) {
                     this.handleRecordOverLoop();
                 }
