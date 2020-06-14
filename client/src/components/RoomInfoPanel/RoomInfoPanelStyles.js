@@ -12,5 +12,8 @@ export default (theme) => ({
     },
     gridListTile: {
         textAlign: 'center'
+    },
+    linkTextfield: {
+        width: '100%'
     }
 });

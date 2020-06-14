@@ -11,6 +11,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import styles from './RoomInfoPanelStyles';
 
 class RoomInfoPanel extends Component {
@@ -18,10 +19,16 @@ class RoomInfoPanel extends Component {
         super(props);
         this.state = {};
         this.getExternalRoomUrl = this.getExternalRoomUrl.bind(this);
+        this.onCopy = this.onCopy.bind(this);
     }
 
     getExternalRoomUrl() {
         return `https://tut-ti.herokuapp.com/room/${this.props.room.roomCode}`;
+    }
+
+    onCopy() {
+        navigator.clipboard.writeText(this.getExternalRoomUrl());
+        this.refs.linkTextfield.getElementsByTagName('input')[0].select();
     }
 
     render() {
@@ -34,10 +41,10 @@ class RoomInfoPanel extends Component {
                 </Typography>
                 <Grid container alignItems='center'>
                     <Grid item xs={10}>
-                        <Link to={`/room/${this.props.room.roomCode}`} className={classes.link}>{this.getExternalRoomUrl()}</Link>
+                        <TextField value={this.getExternalRoomUrl()} ref='linkTextfield' className={classes.linkTextfield} />
                     </Grid>
                     <Grid item xs={2}>
-                        <IconButton color='primary' aria-label='copy' onClick={() => { navigator.clipboard.writeText(`https://tut-ti.herokuapp.com/room/${this.props.room.roomCode}`) }}>
+                        <IconButton color='primary' aria-label='copy' onClick={this.onCopy}>
                             <FileCopyIcon />
                         </IconButton>
                     </Grid>
