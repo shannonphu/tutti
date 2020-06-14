@@ -173,10 +173,10 @@ class AudioDisplayTable extends Component {
     }
 
     recordTooltip() {
-        const { classes, theme } = this.props;
+        const { theme } = this.props;
         return(
             <Tooltip title="Record a Loop" placement="top">
-                <IconButton onClick={this.handleOnClickRecord}>
+                <IconButton onClick={this.handleOnClickRecord} style={{ padding: 0 }}>
                     <FiberManualRecordIcon style={{ fill: theme.palette.error.main }}/>
                 </IconButton>
             </Tooltip>
@@ -191,8 +191,9 @@ class AudioDisplayTable extends Component {
                         color='primary'
                         disabled = {!this.props.isLoopPlayerSet}
                         onClick={this.handleOnClickPlay}
+                        style={{ padding: 0 }}
                     >
-                        <PlayArrowIcon fontSize='large'/>
+                        <PlayArrowIcon />
                     </IconButton>
                 </span>
             </Tooltip>
@@ -204,8 +205,9 @@ class AudioDisplayTable extends Component {
                 <IconButton 
                     color='secondary'
                     onClick={this.handleOnClickStop}
+                    style={{ padding: 0 }}
                 >
-                    <StopIcon fontSize='large'/>
+                    <StopIcon />
                 </IconButton>
             </Tooltip>
         );
@@ -216,8 +218,10 @@ class AudioDisplayTable extends Component {
             case GAME_STAGE.BASELINE_PLAYER_RECORDING:
                 return (
                     <ExpansionPanelSummary> 
-                        {this.props.isRecording ? <IconButton disabled>< RecordingSpinIcon/></IconButton> : this.recordTooltip()}
-                        {this.state.isPlaying ? this.stopTooltip() : this.playbackTooltip()}
+                        <Typography>
+                            {this.props.isRecording ? <IconButton style={{ padding: 0 }} disabled><RecordingSpinIcon /></IconButton> : this.recordTooltip()}
+                            {this.state.isPlaying ? this.stopTooltip() : this.playbackTooltip()}
+                        </Typography>
                     </ExpansionPanelSummary>
                 );
             default:
@@ -231,10 +235,9 @@ class AudioDisplayTable extends Component {
     }
 
     render() {
-        const { classes } = this.props;
         return(
             <div width={1}>
-                <ExpansionPanel expanded = {true}>
+                <ExpansionPanel expanded={true}>
                     {this.LoopExpansionPanelSummary()}
                     <ExpansionPanelDetails>
                         <AudioWaveform
